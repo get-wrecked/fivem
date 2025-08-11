@@ -8,16 +8,19 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.1.11",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "tailwindcss": "^4.1.11"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.11",
+    "@types/node": "^24.2.1",
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react": "^4.7.0",
-    "globals": "^16.3.0",
+    "postcss": "^8.5.6",
+    "postcss-color-converter": "^1.2.1",
+    "postcss-preset-env": "^10.2.4",
     "typescript": "~5.8.3",
     "vite": "^7.1.1"
   },
