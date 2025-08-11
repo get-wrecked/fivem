@@ -12,7 +12,7 @@ A FiveM/GTA V server resource that integrates with the Medal.tv desktop client t
 
 - FiveM server (FX Server from after 2020-05)
 - Medal.tv client installed, and running on the player’s PC (to use the features)
-- Node.js LTS with pnpm installed
+- Node.js LTS with pnpm installed (just to build the UI, one time)
 
 ## Installation
 
