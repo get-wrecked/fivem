@@ -1,15 +1,23 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import type React from 'react';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
 import './index.css';
-import App from './App'
-import { NuiProvider, NuiVisibilityProvider } from "@tsfx/hooks";
+import Providers from './providers';
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <NuiProvider>
-    <NuiVisibilityProvider>
-      <App />
-    </NuiVisibilityProvider>
-    </NuiProvider>
-    </StrictMode>,
-);
+const App: React.FC = () => {
+    return <span>TODO</span>;
+};
+
+const rootElement = document.getElementById('root');
+
+if (!rootElement.innerHTML) {
+    const root = createRoot(rootElement);
+
+    root.render(
+        <StrictMode>
+            <Providers>
+                <App />
+            </Providers>
+        </StrictMode>,
+    );
+}
