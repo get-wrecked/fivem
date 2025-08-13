@@ -2,6 +2,7 @@ import { useNuiVisibility } from '@tsfx/hooks';
 import { X } from 'lucide-react';
 import type React from 'react';
 import type { PropsWithChildren } from 'react';
+import { cn } from '@/lib/utils';
 import logo from '../assets/logo.svg';
 
 const Header: React.FC = () => {
@@ -26,8 +27,16 @@ const Header: React.FC = () => {
 };
 
 export const Container: React.FC<PropsWithChildren> = ({ children }) => {
+    const { visible } = useNuiVisibility();
+
     return (
-        <div className='absolute right-0 top-1/2 mr-8 -translate-y-1/2 w-[360px] h-[420px] bg-third-layer rounded-lg overflow-hidden flex flex-col'>
+        <div
+            data-state={visible ? 'show' : 'hide'}
+            className={cn(
+                'absolute right-0 top-1/2 mr-8 -translate-y-1/2 w-[360px] h-[420px] bg-third-layer rounded-lg overflow-hidden flex flex-col',
+                'data-[state=show]:animate-in data-[state=hide]:animate-out slide-in-from-right slide-out-to-right duration-200 ease-in-out',
+            )}
+        >
             <Header />
 
             <div className='w-full grow py-4 px-6 flex flex-col gap-4 text-foreground-0'>
