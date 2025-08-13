@@ -1,3 +1,4 @@
+import { X } from 'lucide-react';
 import type React from 'react';
 import type { PropsWithChildren } from 'react';
 import logo from '../assets/logo.svg';
@@ -13,22 +14,7 @@ const Header: React.FC = () => {
                 type='button'
                 className='size-14 flex items-center justify-center text-foreground-300 hover:bg-accent-secondary hover:text-foreground-0'
             >
-                <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    width='24'
-                    height='24'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeWidth='2'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    role='img'
-                    aria-label='Close'
-                >
-                    <path d='M18 6 6 18' />
-                    <path d='m6 6 12 12' />
-                </svg>
+                <X />
                 <span className='sr-only'>Close</span>
             </button>
         </div>
