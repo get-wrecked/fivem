@@ -34,7 +34,7 @@ export const Container: React.FC<PropsWithChildren> = ({ children }) => {
             data-state={visible ? 'show' : 'hide'}
             className={cn(
                 'absolute right-0 top-1/2 mr-8 -translate-y-1/2 w-[360px] h-[420px] bg-third-layer rounded-lg overflow-hidden flex flex-col',
-                'data-[state=show]:animate-in data-[state=hide]:animate-out slide-in-from-right slide-out-to-right duration-200 ease-in-out',
+                'data-[state=show]:animate-in data-[state=hide]:animate-out slide-in-from-right fade-in slide-out-to-right fade-out duration-200 ease-in-out',
             )}
         >
             <Header />
