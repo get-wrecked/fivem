@@ -10,11 +10,13 @@ import Providers from './providers';
 
 export const App: React.FC = () => {
     return (
-        <Container>
-            <ServerDetails />
-            <AutoClipping />
-            <ClipLength />
-        </Container>
+        <div className='w-screen h-screen overflow-hidden relative'>
+            <Container>
+                <ServerDetails />
+                <AutoClipping />
+                <ClipLength />
+            </Container>
+        </div>
     );
 };
 
