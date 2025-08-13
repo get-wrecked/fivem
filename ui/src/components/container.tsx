@@ -30,7 +30,9 @@ export const Container: React.FC<PropsWithChildren> = ({ children }) => {
         <div className='absolute right-0 top-1/2 mr-8 -translate-y-1/2 w-[360px] h-[420px] bg-third-layer rounded-lg overflow-hidden flex flex-col'>
             <Header />
 
-            <div className='w-full grow py-4 px-6'>{children}</div>
+            <div className='w-full grow py-4 px-6 flex flex-col gap-4 text-foreground-0'>
+                {children}
+            </div>
         </div>
     );
 };
