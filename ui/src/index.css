@@ -1,1 +1,101 @@
 @import "tailwindcss";
+
+@theme static {
+  /* Resets for default tailwind classes we don't want to use */
+  --color-*: initial;
+
+  /* Border radius */
+  --border-radius-8: 8px;
+
+  /* Medal colors */
+  --color-brand-secondary-400: oklch(0.6645 0.22 32.29);
+
+  /* Background colors */
+  --bg-first-layer: oklch(0 0 0);
+  --bg-second-layer: oklch(0.2006 0.002 286.22);
+  --bg-third-layer: oklch(0.2397 0.0019 286.26);
+
+  /* Text and icon colors */
+  --color-foreground-0: oklch(1 0 0);
+  --color-foreground-300: oklch(0.7635 0.0074 304.21);
+
+  /* Accent colors */
+  --color-accent-secondary: var(--color-brand-secondary-400);
+}
+
+/* ==========================================================================
+   Theme Utilities
+   ========================================================================== */
+
+@layer utilities {
+  /*  variables/colors that we only want to apply to a specific class
+      some of the theme colors are only used for a specific class so we do not want to generate all them
+  */
+  .bg-first-layer {
+    background-color: var(--bg-first-layer);
+  }
+
+  .bg-second-layer {
+    background-color: var(--bg-second-layer);
+  }
+
+  .bg-third-layer {
+    background-color: var(--bg-third-layer);
+  }
+
+  /* Animations */
+  @keyframes slide {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-slide {
+    animation: slide 40s linear infinite;
+  }
+}
+
+/* ==========================================================================
+   Base Styles
+   ========================================================================== */
+
+@layer base {
+  /* Global interactive transitions */
+  button,
+  a,
+  [role="button"],
+  [role="link"],
+  input,
+  select,
+  textarea {
+    @apply transition-colors duration-200 ease-in-out;
+  }
+
+  a, [role="link"], a *, [role="link"] * {
+    cursor: pointer;
+  }
+
+  /* Text cursor only for form inputs */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="number"],
+  textarea {
+    cursor: text;
+  }
+
+  input:focus {
+    outline: none;
+  }
+
+  /* Typography classes */
+  p {
+    margin: 0; /* Remove default margin applied by browser user agent stylesheets from p tags */
+  }
+}
