@@ -1,9 +1,12 @@
+import { useNuiVisibility } from '@tsfx/hooks';
 import { X } from 'lucide-react';
 import type React from 'react';
 import type { PropsWithChildren } from 'react';
 import logo from '../assets/logo.svg';
 
 const Header: React.FC = () => {
+    const { setVisible } = useNuiVisibility();
+
     return (
         <div className='w-full h-14 bg-second-layer flex items-center justify-between'>
             <span className='grow px-6 py-4'>
@@ -12,7 +15,8 @@ const Header: React.FC = () => {
 
             <button
                 type='button'
-                className='size-14 flex items-center justify-center text-foreground-300 hover:bg-accent-secondary hover:text-foreground-0'
+                onClick={() => setVisible(false)}
+                className='size-14 flex items-center justify-center text-foreground-300 hover:bg-accent-secondary hover:text-foreground-0 cursor-pointer'
             >
                 <X />
                 <span className='sr-only'>Close</span>
