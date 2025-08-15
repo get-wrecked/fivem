@@ -10,7 +10,7 @@ import Providers from './providers';
 
 export const App: React.FC = () => {
     return (
-        <div className='w-screen h-screen overflow-hidden relative'>
+        <div className='w-screen h-screen overflow-hidden relative select-none'>
             <Container>
                 <ServerDetails />
                 <AutoClipping />
