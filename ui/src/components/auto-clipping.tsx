@@ -5,7 +5,7 @@ import { Switch } from './ui/switch';
 
 export const AutoClipping: React.FC = () => {
     return (
-        <div className='w-full grow flex flex-col gap-2'>
+        <div className='w-full grow flex flex-col gap-2 font-medium'>
             <div className='w-full h-6 flex items-center justify-between'>
                 <span>Auto Clipping</span>
 
