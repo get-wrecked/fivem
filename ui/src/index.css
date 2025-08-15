@@ -26,6 +26,10 @@
   --bg-second-layer: oklch(0.2006 0.002 286.22);
   --bg-third-layer: oklch(0.2397 0.0019 286.26);
 
+  /* Neutral colors */
+  --color-neutral-300: oklch(0.7668 0 0);
+  --color-neutral-800: oklch(0.4243 0.0016 286.33);
+
   /* Text and icon colors */
   --color-foreground-0: oklch(1 0 0);
   --color-foreground-300: oklch(0.7635 0.0074 304.21);
