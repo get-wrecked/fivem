@@ -7,10 +7,10 @@ export const AutoClipping: React.FC = () => {
     return (
         <div className='w-full grow flex flex-col gap-2 font-medium'>
             <div className='w-full h-6 flex items-center justify-between'>
-                <span>Auto Clipping</span>
+                <h4 className='font-medium'>Auto Clipping</h4>
 
                 <div className='flex items-center gap-1.5'>
-                    <span className='text-foreground-0/50 text-xs'>ON</span>
+                    <span className='text-foreground-0/50 text-xs font-normal'>ON</span>
                     <Switch />
                 </div>
             </div>
