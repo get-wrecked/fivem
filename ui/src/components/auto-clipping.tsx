@@ -1,4 +1,5 @@
 import type React from 'react';
+import { Event } from './event';
 import { ScrollArea } from './ui/scroll-area';
 import { Switch } from './ui/switch';
 
@@ -15,7 +16,9 @@ export const AutoClipping: React.FC = () => {
             </div>
 
             <div className='w-full grow' style={{ containerType: 'size' }}>
-                <ScrollArea style={{ height: '100cqh' }}></ScrollArea>
+                <ScrollArea style={{ height: '100cqh' }}>
+                    <Event />
+                </ScrollArea>
             </div>
         </div>
     );
