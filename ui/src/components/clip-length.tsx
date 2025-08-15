@@ -1,6 +1,6 @@
 import type React from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { useState } from 'react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 export const ClipLength: React.FC = () => {
     const [length, setLength] = useState<string>('30');
