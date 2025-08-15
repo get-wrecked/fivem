@@ -17,7 +17,10 @@ export const AutoClipping: React.FC = () => {
 
             <div className='w-full grow' style={{ containerType: 'size' }}>
                 <ScrollArea style={{ height: '100cqh' }}>
-                    <Event />
+                    <div className='size-full flex flex-col gap-2'>
+                        <Event />
+                        <Event />
+                    </div>
                 </ScrollArea>
             </div>
         </div>
