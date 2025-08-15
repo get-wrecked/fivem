@@ -10,7 +10,7 @@ export const AutoClipping: React.FC = () => {
                 <h4 className='font-medium'>Auto Clipping</h4>
 
                 <div className='flex items-center gap-1.5'>
-                    <span className='text-foreground-0/50 text-xs font-normal'>ON</span>
+                    <span className='text-foreground-700 text-xs font-normal'>ON</span>
                     <Switch />
                 </div>
             </div>

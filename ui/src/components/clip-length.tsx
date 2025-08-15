@@ -6,8 +6,8 @@ export const ClipLength: React.FC = () => {
     const [length, setLength] = useState<string>('30');
 
     return (
-        <div className='w-full h-9 flex items-center justify-between font-medium'>
-            <span>Clip Length</span>
+        <div className='w-full h-9 flex items-center justify-between font-normal'>
+            <span className='font-medium'>Clip Length</span>
 
             <Select value={length} onValueChange={setLength}>
                 <SelectTrigger className='w-32'>

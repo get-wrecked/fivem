@@ -7,7 +7,7 @@ export const Event: React.FC = () => {
         <div className='w-full h-7 p-1 flex items-center gap-1.5'>
             <Checkbox />
 
-            <span className='text-sm'>Test</span>
+            <p className='text-base'>Test</p>
 
             <Tooltip>
                 <TooltipTrigger>
@@ -17,7 +17,7 @@ export const Event: React.FC = () => {
                         viewBox='0 0 20 20'
                         fill='none'
                         xmlns='http://www.w3.org/2000/svg'
-                        className='size-3'
+                        className='size-3.5'
                         role='img'
                         aria-label='info'
                     >
