@@ -51,7 +51,7 @@ function SelectTrigger({
                         strokeWidth='1.5'
                         strokeMiterlimit='10'
                         strokeLinecap='round'
-                        stroke-linejoin='round'
+                        strokeLinejoin='round'
                     />
                 </svg>
             </SelectPrimitive.Icon>
