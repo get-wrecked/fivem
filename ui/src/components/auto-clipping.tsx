@@ -1,0 +1,28 @@
+import type React from 'react';
+import { Event } from './event';
+import { ScrollArea } from './ui/scroll-area';
+import { Switch } from './ui/switch';
+
+export const AutoClipping: React.FC = () => {
+    return (
+        <div className='w-full grow flex flex-col gap-2 font-medium'>
+            <div className='w-full h-6 flex items-center justify-between'>
+                <h4 className='font-medium'>Auto Clipping</h4>
+
+                <div className='flex items-center gap-1.5'>
+                    <span className='text-foreground-700 text-xs font-normal'>ON</span>
+                    <Switch />
+                </div>
+            </div>
+
+            <div className='w-full grow' style={{ containerType: 'size' }}>
+                <ScrollArea style={{ height: '100cqh' }}>
+                    <div className='size-full flex flex-col gap-2'>
+                        <Event />
+                        <Event />
+                    </div>
+                </ScrollArea>
+            </div>
+        </div>
+    );
+};

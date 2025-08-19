@@ -1,1 +1,110 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@theme static {
+  /* Resets for default tailwind classes we don't want to use */
+  --color-*: initial;
+
+  /* Font families */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-display: "Funnel Display", "Inter", system-ui, Georgia, Cambria, "Times New Roman", Times, serif;
+
+  /* Font sizes */
+  --font-size-h4: 16px;
+
+  /* Font weights */
+  --font-weight-bold: 700;
+
+  /* Line heights */
+  --line-height-h4: 24px;
+
+  /* Medal colors */
+  --color-brand-secondary-400: oklch(0.6645 0.22 32.29);
+
+  /* Background colors */
+  --bg-first-layer: oklch(0 0 0);
+  --bg-second-layer: oklch(0.2006 0.002 286.22);
+  --bg-third-layer: oklch(0.2397 0.0019 286.26);
+
+  /* Neutral colors */
+  --color-neutral-300: oklch(0.7668 0 0);
+  --color-neutral-800: oklch(0.4243 0.0016 286.33);
+
+  /* Text and icon colors */
+  --color-foreground-0: oklch(1 0 0);
+  --color-foreground-300: oklch(0.7635 0.0074 304.21);
+  --color-foreground-500: oklch(0.6467 0 0);
+  --color-foreground-700: oklch(0.4783 0.0083 304.1);
+
+  /* Accent colors */
+  --color-accent-secondary: var(--color-brand-secondary-400);
+}
+
+/* ==========================================================================
+   Theme Utilities
+   ========================================================================== */
+
+@layer utilities {
+  /*  variables/colors that we only want to apply to a specific class
+      some of the theme colors are only used for a specific class so we do not want to generate all them
+  */
+  .bg-first-layer {
+    background-color: var(--bg-first-layer);
+  }
+
+  .bg-second-layer {
+    background-color: var(--bg-second-layer);
+  }
+
+  .bg-third-layer {
+    background-color: var(--bg-third-layer);
+  }
+}
+
+/* ==========================================================================
+   Base Styles
+   ========================================================================== */
+
+@layer base {
+  /* Global interactive transitions */
+  button,
+  a,
+  [role="button"],
+  [role="link"],
+  input,
+  select,
+  textarea {
+    @apply transition-colors duration-200 ease-in-out;
+  }
+
+  a, [role="link"], a *, [role="link"] * {
+    cursor: pointer;
+  }
+
+  /* Text cursor only for form inputs */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="number"],
+  textarea {
+    cursor: text;
+  }
+
+  input:focus {
+    outline: none;
+  }
+
+  /* Typography classes */
+  h4 {
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-h4);
+    line-height: var(--line-height-h4);
+  }
+
+  p {
+    margin: 0; /* Remove default margin applied by browser user agent stylesheets from p tags */
+  }
+}
