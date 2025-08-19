@@ -1,6 +1,6 @@
 import { NuiProvider, NuiVisibilityProvider } from '@tsfx/hooks';
 import type { PropsWithChildren } from 'react';
-import NuiHandlers from './handlers/NuiHandlers';
+import NuiHandlers from './handlers/nui-handlers';
 
 const Providers: React.FC<PropsWithChildren<{ debug?: boolean }>> = ({
     children,
