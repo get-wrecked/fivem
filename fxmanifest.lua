@@ -4,13 +4,18 @@ use_experimental_fxv2_oal 'yes'
 lua54 'yes'
 
 shared_scripts {
-  'shared/config.lua'
+  'shared/config.lua',
 }
 client_scripts { 
-  'client/*.lua' ,
+  'clipping/client-main.lua',
+  'datavein/client-main.lua',
+  'screenshot/client-main.lua',
+  'lib/client-main.lua',
 }
 server_scripts {
-  'server/*.lua' ,
+  'clipping/server-main.lua' ,
+  'datavein/server-main.lua',
+  'lib/server-main.lua',
 }
 
 
