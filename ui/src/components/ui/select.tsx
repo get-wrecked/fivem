@@ -50,7 +50,7 @@ function SelectTrigger({
                         stroke='white'
                         strokeWidth='1.5'
                         strokeMiterlimit='10'
-                        stroke-linecap='round'
+                        strokeLinecap='round'
                         stroke-linejoin='round'
                     />
                 </svg>
