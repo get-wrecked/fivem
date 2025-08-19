@@ -18,8 +18,9 @@ export const AutoClipping: React.FC = () => {
             <div className='w-full grow' style={{ containerType: 'size' }}>
                 <ScrollArea style={{ height: '100cqh' }}>
                     <div className='size-full flex flex-col gap-2'>
-                        <Event />
-                        <Event />
+                        <Event title='Player Killed' hint='Triggered when you die' />
+                        <Event title='Player Died' hint='Triggered when you die' />
+                        <Event title='Fall Out of Vehicle' hint='Triggered when you die' />
                     </div>
                 </ScrollArea>
             </div>
