@@ -4,7 +4,7 @@ use_experimental_fxv2_oal 'yes'
 lua54 'yes'
 
 shared_scripts {
-  'shared/config.lua',
+  'config.lua',
 }
 client_scripts { 
   'clipping/client-main.lua',
