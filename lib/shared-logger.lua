@@ -13,7 +13,7 @@ local prefixes = {
 }
 
 local function log(level, ...)
-    if level == levels.debug and not Config.Debug then
+    if level == levels.debug and Config and not Config.Debug then
         return
     end
 
