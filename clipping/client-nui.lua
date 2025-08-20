@@ -9,7 +9,7 @@ RegisterCommand(Config.Command, function ()
     SetNuiFocus(true, true)
     SendNUIMessage({
         action = 'show',
-        payload = false
+        payload = true
     })
 end, false)
 
