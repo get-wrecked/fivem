@@ -6,11 +6,13 @@ local cache = {}
 
 ---@protected
 cache.__index = function (self, key)
-    if rawget(cache, key) then
-        return rawget(cache, key)
+    local value = rawget(self, key)
+
+    if value ~= nil then
+        return value
     end
 
-    return rawget(self, key)
+    return rawget(cache, key)
 end
 
 ---Create a new cache instance
