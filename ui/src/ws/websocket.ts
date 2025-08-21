@@ -1,13 +1,7 @@
 //=-- WebSocket client public module: types + implementation
 import { WsConfig, WsEvent, MessageHandler, OpenHandler, ErrorHandler, CloseHandler } from './types';
+import { DEFAULTS } from './defaults';
 export * from './types';
-
-const DEFAULTS: Required<Pick<WsConfig, 'host' | 'port' | 'protocol'>> & Pick<WsConfig, 'path'> = {
-  host: '127.0.0.1',
-  port: 63325,
-  protocol: 'ws',
-  path: undefined,
-};
 
 /** Build a WebSocket URL from configuration
  * @internal
