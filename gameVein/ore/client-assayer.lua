@@ -1,0 +1,2 @@
+--//=-- GameVein Ore Assayer: Handling the data retrieval of various "ores" (chunks of game data) to pass off in "minecarts".
+--//=-- -- Each different "ore" is a different source of data, and thus each "ore" is retrieved in a different way, by a different file.
