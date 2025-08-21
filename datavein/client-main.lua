@@ -73,3 +73,11 @@ local function prospectVein(override)
     end
     SendNUIMessage({ action = 'ws:connect', data = cfg })
 end
+
+--- Push a minecart: send a payload over the NUI WebSocket client's connection.
+--- Non-string payloads will be stringified when needed.
+---@param payload any
+local function pushMinecart(payload)
+    SendNUIMessage({ action = 'ws:send', data = payload })
+end
+
