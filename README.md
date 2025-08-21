@@ -71,8 +71,8 @@ The UI has its own Node.js project under `ui`. Use pnpm to install and build the
 
 ## Contributors
 
-- @lynexer
-- @imthatguyhere
+- [lynexer](https://github.com/lynexer)
+- [Imthatguyhere](https://github.com/imthatguyhere)
 
 ---
 
