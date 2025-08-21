@@ -145,3 +145,7 @@ class WSClient {
     return () => map[event].delete(handler);
   };
 }
+
+/** Shared instance of the WebSocket client */
+export const wsClient = new WSClient();
+export default wsClient;
