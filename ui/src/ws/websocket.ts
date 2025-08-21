@@ -24,7 +24,7 @@ function buildUrl(cfg: WsConfig): string {
 /** Minimal WebSocket client wrapper
  * Provides a simple API to connect, send, close, and subscribe to events.
  */
-class WSClient {
+class WsClient {
   /** Internal state */
   private ws: WebSocket | null = null;
   private cfg: WsConfig = { ...DEFAULTS };
@@ -147,5 +147,5 @@ class WSClient {
 }
 
 /** Shared instance of the WebSocket client */
-export const wsClient = new WSClient();
+export const wsClient = new WsClient();
 export default wsClient;
