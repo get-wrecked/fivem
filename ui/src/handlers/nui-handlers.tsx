@@ -28,6 +28,16 @@ export const NuiHandlers: React.FC = () => {
             wsClient.connect(cfg ?? {});
         },
     });
+    //=-- Send arbitrary payload over the socket. Will stringify non-string payloads.
+    useNuiEvent<unknown>('ws:send', {
+        handler: (payload) => {
+            try {
+                wsClient.send(payload);
+            } catch {
+                //=-- Socket not open; ignore
+            }
+        },
+    });
     //=-- Ex: Add more handlers below as your server/client scripts emit events
     //=-- useNuiEvent<TypeGoesHere>('your:event:name', { handler: (payload) => { /*//=-- do thing */ } });
 
