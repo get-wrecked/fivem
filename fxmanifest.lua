@@ -10,14 +10,14 @@ shared_scripts {
 
 client_scripts {
   'clipping/client-main.lua',
-  'datavein/client-main.lua',
+  'dataVein/client-main.lua',
   'screenshot/client-main.lua',
   'lib/client-*.lua',
 }
 
 server_scripts {
   'clipping/server-main.lua' ,
-  'datavein/server-main.lua',
+  'dataVein/server-main.lua',
   'lib/server-*.lua',
 }
 
