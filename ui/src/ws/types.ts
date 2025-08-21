@@ -30,11 +30,22 @@ export interface WsConfig {
 export type WsEvent = 'open' | 'message' | 'error' | 'close';
 
 /**
+ * A JSON envelope for our WebSocket messages
+ * Always includes a required `type` string, but has an optional `data` payload
+ */
+export interface WsEnvelope {
+  /** Message kind discriminator */
+  type: string;
+  /** Optional payload */
+  data?: unknown;
+}
+
+/**
  * Handler invoked when a message is received
- * @param data - Parsed payload if JSON, otherwise the raw data value
+ * @param data - Parsed JSON envelope with a `type` required, and an optional `data`
  * @param raw - The original browser `MessageEvent`
  */
-export type MessageHandler = (data: unknown, raw: MessageEvent) => void;
+export type MessageHandler = (data: WsEnvelope, raw: MessageEvent) => void;
 
 /**
  * Handler invoked when the socket opens
