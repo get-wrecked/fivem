@@ -1,5 +1,5 @@
 //=-- WebSocket client public module: types + implementation
-import { WsConfig, WsEvent, MessageHandler, OpenHandler, ErrorHandler, CloseHandler } from './types';
+import { WsConfig, WsEvent, MessageHandler, OpenHandler, ErrorHandler, CloseHandler, WsEnvelope } from './types';
 import { DEFAULTS } from './defaults';
 export * from './types';
 
