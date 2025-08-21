@@ -29,3 +29,20 @@ local function readWsConfig()
     return cfg
 end
 
+--- Open (or request to open) the WebSocket, on the UI side, via NUI.
+--- Sends `{ action = 'ws:connect', data = <cfg> }` to the UI.
+local function openUiWebSocket()
+    local cfg = readWsConfig()
+
+    if Config and Config.Debug then
+        --//=-- Basic debug printout (avoid JSON deps); include only present fields
+        local parts = {}
+        if cfg.host then parts[#parts+1] = ('host=%s'):format(cfg.host) end
+        if cfg.port then parts[#parts+1] = ('port=%d'):format(cfg.port) end
+        if cfg.protocol then parts[#parts+1] = ('protocol=%s'):format(cfg.protocol) end
+        if cfg.path then parts[#parts+1] = ('path=%s'):format(cfg.path) end
+        print(('[datavein] UI ws:connect ' .. table.concat(parts, ' ')))
+    end
+
+    SendNUIMessage({ action = 'ws:connect', data = cfg })
+end
