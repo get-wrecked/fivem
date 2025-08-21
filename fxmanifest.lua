@@ -11,8 +11,8 @@ shared_scripts {
 client_scripts {
   'clipping/client-main.lua',
   'gameVein/client-main.lua',
-  'gameVein/client-overseer.lua',
-  'gameVein/client-minecart.lua',
+  'gameVein/shaft/client-overseer.lua',
+  'gameVein/shaft/client-minecart.lua',
   'screenshot/client-main.lua',
   'lib/client-*.lua',
 }
