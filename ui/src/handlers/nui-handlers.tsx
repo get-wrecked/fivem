@@ -1,5 +1,7 @@
 import React from 'react';
 import { useNuiEvent, useNuiVisibility } from '@tsfx/hooks';
+import wsClient from '../ws/websocket';
+import type { WsConfig } from '../ws/types';
 
 //=-- Centralized NUI message listeners for messages coming from Lua/CFX
 //=-- This component registers event handlers via @tsfx/hooks and renders nothing
