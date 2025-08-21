@@ -1,3 +1,7 @@
+--- DataVein client
+--- Loads the WebSocket config from `Config` (`../config.lua`) and opens the NUI WebSocket client's connection.
+--- Uses an NUI message of `ws:connect`
+
 ---@class WsConfigLua
 ---@field host? string          # WebSocket host (default 127.0.0.1)
 ---@field port? integer         # WebSocket port (default 63325)
