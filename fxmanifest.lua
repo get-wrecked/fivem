@@ -10,16 +10,16 @@ shared_scripts {
 
 client_scripts {
   'clipping/client-main.lua',
-  'dataVein/client-main.lua',
-  'dataVein/client-overseer.lua',
-  'dataVein/client-minecart.lua',
+  'gameVein/client-main.lua',
+  'gameVein/client-overseer.lua',
+  'gameVein/client-minecart.lua',
   'screenshot/client-main.lua',
   'lib/client-*.lua',
 }
 
 server_scripts {
   'clipping/server-main.lua' ,
-  'dataVein/server-main.lua',
+  'gameVein/server-main.lua',
   'lib/server-*.lua',
 }
 
