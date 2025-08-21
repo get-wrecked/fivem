@@ -50,12 +50,20 @@ class WsClient {
     });
 
     this.ws.addEventListener('message', (ev) => {
-      let parsed: unknown = ev.data;
+      let env: WsEnvelope;
       try {
-        //=-- Attempt to parse JSON but fall back to raw data
-        parsed = JSON.parse(String(ev.data));
-      } catch { /*//=-- keep raw */ }
-      for (const h of this.onMessageHandlers) h(parsed, ev);
+        const parsed = JSON.parse(String(ev.data));
+        if (parsed && typeof parsed === 'object' && typeof (parsed as any).type === 'string') {
+          env = parsed as WsEnvelope;
+        } else {
+          //=-- Fallback: Wrap non-envelope JSON into a raw envelope
+          env = { type: 'raw', data: parsed };
+        }
+      } catch {
+        //=-- Fallback: Toss non-JSON into a raw envelope
+        env = { type: 'raw', data: ev.data };
+      }
+      for (const h of this.onMessageHandlers) h(env, ev);
     });
 
     this.ws.addEventListener('error', (ev) => {
