@@ -81,3 +81,9 @@ local function pushMinecart(payload)
     SendNUIMessage({ action = 'ws:send', data = payload })
 end
 
+--- Seal the shaft: Close the NUI WebSocket client's connection — with an optional code and reason.
+---@param code? integer
+---@param reason? string
+local function sealShaft(code, reason)
+    SendNUIMessage({ action = 'ws:close', data = { code = code, reason = reason } })
+end
