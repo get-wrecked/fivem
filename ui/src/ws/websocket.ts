@@ -85,27 +85,31 @@ class WsClient {
     this.ws = null;
   };
 
-  /** Send data over the WebSocket
-    * If `data` is an object, it will be JSON-stringified. Strings, ArrayBuffers, and Blobs are sent as-is.
+  /** Send a JSON envelope over the WebSocket
+    * Usage:
+    *  - send('type', data?)
+    *  - send({ type, data? })
     * @throws Error if the socket is not open
     */
-  send = (data: unknown) => {
+  send(type: string, data?: unknown): void;
+  send(envelope: WsEnvelope): void;
+  send(arg1: string | WsEnvelope, data?: unknown): void {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
       throw new Error('WebSocket not open');
     }
 
-    if (typeof data === 'string' || data instanceof ArrayBuffer || data instanceof Blob) {
-      this.ws.send(data as any);
-      return;
-    }
+    //=-- Normalize to envelope
+    const env: WsEnvelope = typeof arg1 === 'string'
+      ? { type: arg1, data }
+      : (arg1 as WsEnvelope);
 
     try {
-      this.ws.send(JSON.stringify(data));
-    } catch (e) {
-      //=-- Fallback: attempt stringify
-      this.ws.send(String(data));
+      this.ws.send(JSON.stringify(env));
+    } catch {
+      //=-- Last resort string
+      this.ws.send(String(env as any));
     }
-  };
+  }
 
   /** Subscribe helpers */
   /** Subscribe to message events
