@@ -46,3 +46,12 @@ local function openUiWebSocket()
 
     SendNUIMessage({ action = 'ws:connect', data = cfg })
 end
+
+--//=-- Open the WebSocket connection, shortly after this resource starts
+AddEventHandler('onClientResourceStart', function(resourceName)
+    if resourceName ~= GetCurrentResourceName() then return end
+    CreateThread(function()
+        Wait(500)
+        openUiWebSocket()
+    end)
+end)
