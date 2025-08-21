@@ -11,6 +11,8 @@ shared_scripts {
 client_scripts {
   'clipping/client-main.lua',
   'dataVein/client-main.lua',
+  'dataVein/client-overseer.lua',
+  'dataVein/client-minecart.lua',
   'screenshot/client-main.lua',
   'lib/client-*.lua',
 }

@@ -14,9 +14,9 @@ DataVein = DataVein or {} --//=-- The namespace for the client DataVein function
 --- Accepts any of these, and the first present wins:
 --- - `Config.DataVein.WebSocket`
 --- - `Config.DataVein.WS`
-function DataVein.readWsConfig()
+--- - `Config.DataVein.Ws`
 ---@return WsConfigLua cfg
-local function readWsConfig()
+function DataVein.readWsConfig()
     --//=-- Start with empty, as the NUI side has defaults if fields are missing.
     local cfg = {}
 
@@ -35,10 +35,10 @@ local function readWsConfig()
     return cfg
 end
 
+--- Open (or request to open) the WebSocket, on the UI side, via NUI.
+--- Sends `{ action = 'ws:connect', data = <cfg> }` to the UI.
 function DataVein.openUiWebSocket()
     local cfg = DataVein.readWsConfig()
-local function openUiWebSocket()
-    local cfg = readWsConfig()
 
     if Config and Config.Debug then
         --//=-- Basic debug printout (avoid JSON deps); include only present fields
@@ -56,8 +56,8 @@ end
 --//=-- Open the WebSocket connection, shortly after this resource starts
 AddEventHandler('onClientResourceStart', function(resourceName)
     if resourceName ~= GetCurrentResourceName() then return end
-        DataVein.openUiWebSocket()
+    CreateThread(function()
         Wait(500)
-        openUiWebSocket()
-    SendNUIMessage({ action = 'ws:close', data = { code = code, reason = reason } })
-end
+        DataVein.openUiWebSocket()
+    end)
+end)
