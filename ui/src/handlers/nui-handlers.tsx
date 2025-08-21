@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNuiEvent, useNuiVisibility } from '@tsfx/hooks';
 import wsClient from '../ws/websocket';
-import type { WsConfig } from '../ws/types';
+import type { WsConfig, WsEnvelope } from '../ws/types';
 
 //=-- Centralized NUI message listeners for messages coming from Lua/CFX
 //=-- This component registers event handlers via @tsfx/hooks and renders nothing
@@ -29,13 +29,28 @@ export const NuiHandlers: React.FC = () => {
         },
     });
 
-    //=-- Send arbitrary payload over the socket. Will stringify non-string payloads.
+    //=-- Send a JSON envelope over the socket: { type: string, data?: unknown }
+    //=-- Accepts either a string (treated as the type), an envelope object, or any other value wrapped as { type: 'raw', data: value }
     useNuiEvent<unknown>('ws:send', {
-        handler: (payload) => {
+        handler: (value) => {
             try {
-                wsClient.send(payload);
+                //=-- String: Treated as a type only, with no data
+                if (typeof value === 'string') {
+                    wsClient.send(value);
+                    return;
+                }
+
+                //=-- Object: With `{ type }` is considered an envelope already
+                if (value && typeof value === 'object' && 'type' in (value as any) && typeof (value as any).type === 'string') {
+                    wsClient.send(value as WsEnvelope);
+                    return;
+                }
+
+                //=-- Fallback: Attempt to wrap the arbitrary value into a raw envelope
+                wsClient.send({ type: 'raw', data: value } as WsEnvelope);
             } catch {
-                //=-- Socket not open; ignore
+                //=-- Socket closed; ???
+                // TODO: Log error
             }
         },
     });
