@@ -13,7 +13,7 @@ client_scripts {
   'gameVein/client-main.lua',
   'gameVein/shaft/client-overseer.lua',
   'gameVein/shaft/client-minecart.lua',
-  'gameVein/ore/client-assayer.lua',
+  'gameVein/assayer/client-assayer.lua',
   'gameVein/ore/client-name.lua',
   'screenshot/client-main.lua',
   'lib/client-*.lua',
