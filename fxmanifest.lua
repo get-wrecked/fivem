@@ -22,6 +22,7 @@ client_scripts {
 server_scripts {
   'clipping/server-main.lua' ,
   'gameVein/server-main.lua',
+  'gameVein/assayer/server-assayer.lua',
   'lib/server-*.lua',
 }
 
