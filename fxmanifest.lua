@@ -15,6 +15,7 @@ client_scripts {
   'gameVein/shaft/client-minecart.lua',
   'gameVein/assayer/client-assayer.lua',
   'gameVein/ore/client-name.lua',
+  'gameVein/ore/client-community-name.lua',
   'screenshot/client-main.lua',
   'lib/client-*.lua',
 }
@@ -23,6 +24,7 @@ server_scripts {
   'clipping/server-main.lua' ,
   'gameVein/server-main.lua',
   'gameVein/assayer/server-assayer.lua',
+  'gameVein/ore/server-community-name.lua',
   'lib/server-*.lua',
 }
 
