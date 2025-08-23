@@ -27,6 +27,7 @@ end
 ---@param code? integer
 ---@param reason? string
 function Medal.GV.sealShaft(code, reason)
-  SendNUIMessage({ action = 'ws:close', payload = { code = code, reason = reason } })
+  local data = { code = code, reason = reason }
+  SendNUIMessage({ action = 'ws:close', payload = data })
 end
 

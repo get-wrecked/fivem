@@ -37,7 +37,7 @@ function Medal.GV.readWsConfig()
 end
 
 --- Open (or request to open) the WebSocket, on the UI side, via NUI.
---- Sends `{ action = 'ws:connect', data = <cfg> }` to the UI.
+--- Sends `{ action = 'ws:connect', payload = <cfg> }` to the UI.
 function Medal.GV.openUiWebSocket()
     local cfg = Medal.GV.readWsConfig()
 
