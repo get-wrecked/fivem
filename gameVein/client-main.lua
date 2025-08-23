@@ -2,11 +2,11 @@
 --- Loads the WebSocket config from `Config` (`../config.lua`) and opens the NUI WebSocket client's connection.
 --- Uses an NUI message of `ws:connect`
 
----@class WsConfigLua
----@field host? string          # WebSocket host (default 127.0.0.1)
----@field port? integer         # WebSocket port (default 63325)
----@field protocol? 'ws'|'wss'  # WebSocket scheme (default 'ws')
----@field path? string          # Optional path, ex: `/socket`
+--- @class WsConfigLua
+--- @field host? string          # WebSocket host (default 127.0.0.1)
+--- @field port? integer         # WebSocket port (default 63325)
+--- @field protocol? WsProtocol  # WebSocket scheme (default 'ws')
+--- @field path? string          # Optional path, ex: `/socket`
 
 Medal = Medal or {}
 Medal.GV = Medal.GV or {} --//=-- The namespace for the client GameVein functions
