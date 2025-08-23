@@ -50,7 +50,8 @@ end)
 --- @return FrameworkKey key The detected framework key, or 'unknown' on timeout
 function Medal.GV.Assayer.getFrameworkKey(timeoutMs)
     --// TODO: Create a thread here ??? 
-    local reqId = ('%d:%d'):format(Cache.player, GetGameTimer())
+    local pid = (Cache and Cache.player) or PlayerId()
+    local reqId = ('%d:%d'):format(pid, GetGameTimer())
     --//=-- Send request to server
     TriggerServerEvent('medal:gv:assayer:reqFrameworkKey', reqId)
 

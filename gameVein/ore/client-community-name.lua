@@ -13,8 +13,8 @@ end)
 ---Get the community project name
 ---@return string icon The community project name or hostname
 function Medal.GV.Ore.communityName()
-function GameVein.Ore.communityName()
-    local requestId = ('%d:%d'):format(Cache.player, GetGameTimer())
+    local pid = (Cache and Cache.player) or PlayerId()
+    local requestId = ('%d:%d'):format(pid, GetGameTimer())
 
     TriggerServerEvent('medal:gv:ore:reqCommunityName', requestId)
 
