@@ -19,12 +19,12 @@ function GameVein.prospectVein(override)
         }
     end
 
-    SendNUIMessage({ action = 'ws:connect', data = cfg })
+    SendNUIMessage({ action = 'ws:connect', payload = cfg })
 end
 
 --//=-- Seal the shaft: Close the NUI WebSocket client's connection — with an optional code and reason.
 ---@param code? integer
 ---@param reason? string
 function GameVein.sealShaft(code, reason)
-    SendNUIMessage({ action = 'ws:close', data = { code = code, reason = reason } })
+    SendNUIMessage({ action = 'ws:close', payload = { code = code, reason = reason } })
 end

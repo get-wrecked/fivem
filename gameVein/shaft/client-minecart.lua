@@ -20,5 +20,5 @@ function GameVein.pushMinecart(a, b)
         envelope = { type = 'raw', data = a }
     end
 
-    SendNUIMessage({ action = 'ws:send', data = envelope })
+    SendNUIMessage({ action = 'ws:send', payload = envelope })
 end
