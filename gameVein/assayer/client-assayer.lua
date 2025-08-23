@@ -40,8 +40,7 @@ end
 --//=-- In-flight results, keyed by request id
 local pendingResults = {}
 
-RegisterNetEvent('medal:gameVein:assayer:resFrameworkKey')
-AddEventHandler('medal:gameVein:assayer:resFrameworkKey', function(reqId, key)
+RegisterNetEvent('medal:gameVein:assayer:resFrameworkKey', function(reqId, key)
     pendingResults[reqId] = key
 end)
 
