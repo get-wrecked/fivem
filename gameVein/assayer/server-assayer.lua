@@ -108,7 +108,7 @@ local cached
 
 --- Detect the active framework on the server.
 --- If multiple frameworks are present, the first match in the search order wins.
---- Search order: QBX -> QB -> ESX -> OX -> ND -> TMC.
+--- Search order: ESX -> QB -> QBX -> ND -> OX -> TMC.
 ---
 ---@param forceRefresh? boolean Set true to bypass cache and re-check all detectors
 ---@return FrameworkKey
@@ -118,7 +118,7 @@ function GameVein.Assayer.detectFramework(forceRefresh)
     end
 
     --//=-- Run specific detectors in priority order
-    local detectors = { detectESX, detectQB, detectQBX, detectOX, detectND, detectTMC }
+    local detectors = { detectESX, detectQB, detectQBX, detectND, detectOX, detectTMC }
     for _, fn in ipairs(detectors) do
         local ok, res = pcall(fn)
         if ok and res ~= nil then
@@ -142,5 +142,4 @@ local function handleReqFrameworkKey(reqId)
     TriggerClientEvent('gameVein:assayer:resFrameworkKey', src, reqId, key)
 end
 
-RegisterNetEvent('gameVein:assayer:reqFrameworkKey')
-AddEventHandler('gameVein:assayer:reqFrameworkKey', handleReqFrameworkKey)
+RegisterNetEvent('gameVein:assayer:reqFrameworkKey', handleReqFrameworkKey)
