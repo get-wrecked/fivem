@@ -20,11 +20,11 @@ end
 --- Get the current client's player name
 --- @return string name The player's name or "unknown"
 function GameVein.Ore.name()
-  local playerName = 'unknown'
+    local playerName = 'unknown'
 
-  if not framework or framework == 'none' then
-    playerName = getFivemName()
-  end
+    if not framework or framework == 'none' then
+        playerName = getFivemName()
+    end
 
-  return playerName
+    return playerName
 end
