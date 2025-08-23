@@ -29,6 +29,10 @@ function GameVein.Ore.assay(req)
         return GameVein.Ore.name()
     end
 
+    if oreType == 'communityName' then
+        return GameVein.Ore.communityName()
+    end
+
     --//=-- Unknown ore type
     return nil
 end
