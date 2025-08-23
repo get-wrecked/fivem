@@ -30,6 +30,10 @@ function Medal.GV.Ore.assay(req)
         return Medal.GV.Ore.name()
     end
 
+    if oreType == 'communityName' then
+        return GameVein.Ore.communityName()
+    end
+
     --//=-- Unknown ore type
     return nil
 end
@@ -46,7 +50,7 @@ end)
 --- @return 'qbx'|'qb'|'esx'|'ox'|'nd'|'tmc'|'unknown' key The detected framework key, or 'unknown' on timeout
 function Medal.GV.Assayer.getFrameworkKey(timeoutMs)
     --// TODO: Create a thread here ??? 
-    local reqId = ('%d:%d'):format(PlayerId(), GetGameTimer())
+    local reqId = ('%d:%d'):format(Cache.player, GetGameTimer())
     --//=-- Send request to server
     TriggerServerEvent('medal:gv:assayer:reqFrameworkKey', reqId)
 

@@ -51,7 +51,7 @@ function Medal.GV.openUiWebSocket()
         print(('[gamevein] UI ws:connect ' .. table.concat(parts, ' ')))
     end
 
-    SendNUIMessage({ action = 'ws:connect', data = cfg })
+    SendNUIMessage({ action = 'ws:connect', payload = cfg })
 end
 
 --//=-- Open the WebSocket connection, shortly after this resource starts
