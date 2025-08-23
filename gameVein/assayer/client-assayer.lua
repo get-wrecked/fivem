@@ -7,7 +7,7 @@ Medal.GV.Ore = Medal.GV.Ore or {}
 
 --- Client-side Assayer API
 ---@class GameVeinAssayerClient
----@field getFrameworkKey fun(timeoutMs?: integer): 'qbx'|'qb'|'esx'|'ox'|'nd'|'tmc'|'unknown'
+---@field getFrameworkKey fun(timeoutMs?: integer): FrameworkKey
 ---@type GameVeinAssayerClient
 Medal.GV.Assayer = Medal.GV.Assayer or {}
 
@@ -47,7 +47,7 @@ end)
 
 --- Request the server framework key and wait for a response
 --- @param timeoutMs? integer Optional timeout in milliseconds (default 5000)
---- @return 'qbx'|'qb'|'esx'|'ox'|'nd'|'tmc'|'unknown' key The detected framework key, or 'unknown' on timeout
+--- @return FrameworkKey key The detected framework key, or 'unknown' on timeout
 function Medal.GV.Assayer.getFrameworkKey(timeoutMs)
     --// TODO: Create a thread here ??? 
     local reqId = ('%d:%d'):format(Cache.player, GetGameTimer())
