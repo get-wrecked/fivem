@@ -31,7 +31,7 @@ function Medal.GV.Ore.assay(req)
     end
 
     if oreType == 'communityName' then
-        return GameVein.Ore.communityName()
+        return Medal.GV.Ore.communityName()
     end
 
     --//=-- Unknown ore type
