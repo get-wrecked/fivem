@@ -13,22 +13,9 @@ end)
 ---Get the community project name
 ---@return string icon The community project name or hostname
 function Medal.GV.Ore.communityName()
-    local pid = (Cache and Cache.player) or PlayerId()
-    local requestId = ('%d:%d'):format(pid, GetGameTimer())
+    local requestId = Medal.GV.Request.buildId()
 
     TriggerServerEvent('medal:gv:ore:reqCommunityName', requestId)
 
-    local deadline = GetGameTimer() + 5000
-    while GetGameTimer() < deadline do
-        local v = pendingResults[requestId]
-        if v ~= nil then
-            pendingResults[requestId] = nil
-            return v
-        end
-        Wait(0)
-    end
-
-    pendingResults[requestId] = nil
-
-    return 'FXServer'
+    return Medal.GV.Request.await(pendingResults, requestId, 5000, 'FXServer')
 end
