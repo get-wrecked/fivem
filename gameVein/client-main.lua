@@ -8,7 +8,8 @@
 ---@field protocol? 'ws'|'wss'  # WebSocket scheme (default 'ws')
 ---@field path? string          # Optional path, ex: `/socket`
 
-GameVein = GameVein or {} --//=-- The namespace for the client GameVein functions
+Medal = Medal or {}
+Medal.GV = Medal.GV or {} --//=-- The namespace for the client GameVein functions
 
 --- Safely reads the WebSocket config from the shared `Config` table.
 --- Accepts any of these, and the first present wins:
@@ -16,7 +17,7 @@ GameVein = GameVein or {} --//=-- The namespace for the client GameVein function
 --- - `Config.GameVein.WS`
 --- - `Config.GameVein.Ws`
 ---@return WsConfigLua cfg
-function GameVein.readWsConfig()
+function Medal.GV.readWsConfig()
     --//=-- Start with empty, as the NUI side has defaults if fields are missing.
     local cfg = {}
 
@@ -37,8 +38,8 @@ end
 
 --- Open (or request to open) the WebSocket, on the UI side, via NUI.
 --- Sends `{ action = 'ws:connect', data = <cfg> }` to the UI.
-function GameVein.openUiWebSocket()
-    local cfg = GameVein.readWsConfig()
+function Medal.GV.openUiWebSocket()
+    local cfg = Medal.GV.readWsConfig()
 
     if Config and Config.Debug then
         --//=-- Basic debug printout (avoid JSON deps); include only present fields
@@ -58,6 +59,7 @@ AddEventHandler('onClientResourceStart', function(resourceName)
     if resourceName ~= GetCurrentResourceName() then return end
     CreateThread(function()
         Wait(500)
-        GameVein.openUiWebSocket()
+        Medal.GV.openUiWebSocket()
     end)
 end)
+

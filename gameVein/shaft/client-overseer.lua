@@ -1,13 +1,14 @@
 --//=-- GameVein Overseer: open/re-open and close the WebSocket connection via NUI
 
-GameVein = GameVein or {} --//=-- Just in case
+Medal = Medal or {}
+Medal.GV = Medal.GV or {} --//=-- Just in case
 
 --//=-- Prospect the game vein: open or reopen the NUI WebSocket client's connection.
 --//=-- If `override` is provided, the configurations will be merged on top of values read from `Config`.
 ---@param override? table
-function GameVein.prospectVein(override)
+function Medal.GV.prospectVein(override)
     --//=-- Merge override on top of config-derived values
-    local base = GameVein.readWsConfig()
+    local base = Medal.GV.readWsConfig()
     local cfg = base
 
     if type(override) == 'table' then
@@ -25,6 +26,7 @@ end
 --//=-- Seal the shaft: Close the NUI WebSocket client's connection — with an optional code and reason.
 ---@param code? integer
 ---@param reason? string
-function GameVein.sealShaft(code, reason)
+function Medal.GV.sealShaft(code, reason)
     SendNUIMessage({ action = 'ws:close', data = { code = code, reason = reason } })
 end
+

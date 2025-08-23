@@ -1,8 +1,9 @@
 --//=-- GameVein Ore: Player Name
 --//=-- Retrieves the player's name, differing depending on the server's framework
 
-GameVein = GameVein or {}
-GameVein.Ore = GameVein.Ore or {}
+Medal = Medal or {}
+Medal.GV = Medal.GV or {}
+Medal.GV.Ore = Medal.GV.Ore or {}
 
 local framework = 'none'
 
@@ -19,7 +20,7 @@ end
 
 --- Get the current client's player name
 --- @return string name The player's name or "unknown"
-function GameVein.Ore.name()
+function Medal.GV.Ore.name()
   local playerName = 'unknown'
 
   if not framework or framework == 'none' then

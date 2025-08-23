@@ -1,16 +1,14 @@
 --//=-- GameVein Assayer: Framework detection utilities, and ore routing
 --//=-- This module attempts to determine which FiveM framework is running on the server.
 
-GameVein = GameVein or {}
+Medal = Medal or {}
+Medal.GV = Medal.GV or {}
 
----@alias FrameworkKey 'qbx'|'qb'|'esx'|'ox'|'nd'|'tmc'|'unknown'
-
---- Assayer API (server)
 ---@class GameVeinAssayer
 ---@field detectFramework fun(forceRefresh?: boolean): FrameworkKey
 
 ---@type GameVeinAssayer
-GameVein.Assayer = GameVein.Assayer or {}
+Medal.GV.Assayer = Medal.GV.Assayer or {}
 
 --- Internal: check if a resource is in the 'started' state
 ---@param resource string
@@ -112,7 +110,7 @@ local cached
 ---
 ---@param forceRefresh? boolean Set true to bypass cache and re-check all detectors
 ---@return FrameworkKey
-function GameVein.Assayer.detectFramework(forceRefresh)
+function Medal.GV.Assayer.detectFramework(forceRefresh)
     if not forceRefresh and cached ~= nil then
         return cached
     end
@@ -137,9 +135,9 @@ end
 --- @param reqId string
 local function handleReqFrameworkKey(reqId)
     local src = source
-    local key = GameVein.Assayer.detectFramework(false)
+    local key = Medal.GV.Assayer.detectFramework(false)
     --//=-- Respond only to the requesting player
-    TriggerClientEvent('gameVein:assayer:resFrameworkKey', src, reqId, key)
+    TriggerClientEvent('medal:gv:assayer:resFrameworkKey', src, reqId, key)
 end
 
-RegisterNetEvent('gameVein:assayer:reqFrameworkKey', handleReqFrameworkKey)
+RegisterNetEvent('medal:gv:assayer:reqFrameworkKey', handleReqFrameworkKey)

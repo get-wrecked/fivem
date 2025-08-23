@@ -1,14 +1,15 @@
 --//=-- GameVein Ore Assayer: Handling the data retrieval of various "ores" (chunks of game data) to pass off in "minecarts".
 --//=-- -- Each different "ore" is a different source of data, and thus each "ore" is retrieved in a different way, by a different file.
 
-GameVein = GameVein or {}
-GameVein.Ore = GameVein.Ore or {}
+Medal = Medal or {}
+Medal.GV = Medal.GV or {}
+Medal.GV.Ore = Medal.GV.Ore or {}
 
 --- Client-side Assayer API
 ---@class GameVeinAssayerClient
 ---@field getFrameworkKey fun(timeoutMs?: integer): 'qbx'|'qb'|'esx'|'ox'|'nd'|'tmc'|'unknown'
 ---@type GameVeinAssayerClient
-GameVein.Assayer = GameVein.Assayer or {}
+Medal.GV.Assayer = Medal.GV.Assayer or {}
 
 --- Assay a requested ore, and return the relevant data
 --- Accepted forms:
@@ -16,7 +17,7 @@ GameVein.Assayer = GameVein.Assayer or {}
 ---  - table: { type = 'name', ... }
 --- @param req string|table
 --- @return any result The data for the requested ore, or nil if unknown
-function GameVein.Ore.assay(req)
+function Medal.GV.Ore.assay(req)
     local oreType = nil
 
     if type(req) == 'string' then
@@ -26,7 +27,7 @@ function GameVein.Ore.assay(req)
     end
 
     if oreType == 'name' then
-        return GameVein.Ore.name()
+        return Medal.GV.Ore.name()
     end
 
     --//=-- Unknown ore type
@@ -36,19 +37,18 @@ end
 --//=-- In-flight results, keyed by request id
 local pendingResults = {}
 
-RegisterNetEvent('medal:gameVein:assayer:resFrameworkKey')
-AddEventHandler('medal:gameVein:assayer:resFrameworkKey', function(reqId, key)
+RegisterNetEvent('medal:gv:assayer:resFrameworkKey', function(reqId, key)
     pendingResults[reqId] = key
 end)
 
 --- Request the server framework key and wait for a response
 --- @param timeoutMs? integer Optional timeout in milliseconds (default 5000)
 --- @return 'qbx'|'qb'|'esx'|'ox'|'nd'|'tmc'|'unknown' key The detected framework key, or 'unknown' on timeout
-function GameVein.Assayer.getFrameworkKey(timeoutMs)
+function Medal.GV.Assayer.getFrameworkKey(timeoutMs)
     --// TODO: Create a thread here ??? 
     local reqId = ('%d:%d'):format(PlayerId(), GetGameTimer())
     --//=-- Send request to server
-    TriggerServerEvent('medal:gameVein:assayer:reqFrameworkKey', reqId)
+    TriggerServerEvent('medal:gv:assayer:reqFrameworkKey', reqId)
 
     --//=-- Await response with timeout
     local deadline = GetGameTimer() + (timeoutMs or 5000)
