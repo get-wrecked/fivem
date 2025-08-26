@@ -10,14 +10,22 @@ shared_scripts {
 
 client_scripts {
   'clipping/client-main.lua',
-  'datavein/client-main.lua',
+  'gameVein/client-main.lua',
+  'gameVein/shaft/client-overseer.lua',
+  'gameVein/shaft/client-minecart.lua',
+  'gameVein/assayer/client-assayer.lua',
+  'gameVein/ore/client-name.lua',
+  'gameVein/ore/client-community-name.lua',
+  'gameVein/ore/client-heartbeat.lua',
   'screenshot/client-main.lua',
   'lib/client-*.lua',
 }
 
 server_scripts {
   'clipping/server-main.lua' ,
-  'datavein/server-main.lua',
+  'gameVein/server-main.lua',
+  'gameVein/assayer/server-assayer.lua',
+  'gameVein/ore/server-community-name.lua',
   'lib/server-*.lua',
 }
 
