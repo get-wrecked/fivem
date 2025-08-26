@@ -16,6 +16,7 @@ client_scripts {
   'gameVein/assayer/client-assayer.lua',
   'gameVein/ore/client-name.lua',
   'gameVein/ore/client-community-name.lua',
+  'gameVein/ore/client-heartbeat.lua',
   'screenshot/client-main.lua',
   'lib/client-*.lua',
 }
