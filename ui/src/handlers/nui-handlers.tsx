@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNuiEvent, useNuiVisibility } from '@tsfx/hooks';
 import wsClient from '../ws/websocket';
 import type { WsConfig, WsEnvelope } from '../ws/types';
+import { nuiLog, nuiPost } from '../lib/nui';
 
 //=-- Centralized NUI message listeners for messages coming from Lua/CFX
 //=-- This component registers event handlers via @tsfx/hooks and renders nothing
@@ -63,6 +64,26 @@ export const NuiHandlers: React.FC = () => {
             wsClient.close(code, reason);
         },
     });
+
+    //=-- WebSocket inbound message handling (e.g., heartbeat, name, communityName, etc)
+    useEffect(() => {
+        const off = wsClient.onMessage((env) => {
+            if (env?.type === 'heartbeat') {
+                //=-- Print the data via shared Lua logger
+                void nuiLog(env.data, 'info');
+
+                //=-- Replies over WebSocket when requested: Use the minecart to send the ore from Lua to NUI
+                if ((env as WsEnvelope).data === 'request') {
+                    (async () => {
+                        try {
+                            await nuiPost('ws:minecart', { type: 'heartbeat' });
+                        } catch { /*//=-- ignore */ }
+                    })();
+                }
+            }
+        });
+        return () => { try { off(); } catch (err) { /*//=-- log cleanup failure */ void nuiLog({ event: 'ws:onMessage:off-failed', err }, 'warning'); } };
+    }, []);
 
     //=-- Ex: Add more handlers below as your server/client scripts emit events
     //=-- useNuiEvent<TypeGoesHere>('your:event:name', { handler: (payload) => { /*//=-- do thing */ } });
