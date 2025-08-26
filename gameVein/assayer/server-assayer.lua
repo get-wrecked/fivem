@@ -6,6 +6,7 @@ Medal.GV = Medal.GV or {}
 
 ---@class GameVeinAssayer
 ---@field detectFramework fun(forceRefresh?: boolean): FrameworkKey
+---@field safeExport fun(resource: string, method: string|string[], ...): any|nil
 
 ---@type GameVeinAssayer
 Medal.GV.Assayer = Medal.GV.Assayer or {}
@@ -17,20 +18,27 @@ local function hasStarted(resource)
     return GetResourceState(resource) == 'started'
 end
 
---- Internal: safe export fetcher (won't error if resource/exports are missing)
---- 
+--- Internal: safe export fetcher/invoker (won't error if resource/exports are missing)
 ---@param resource string
----@param exportName string
+---@param method string|string[]
+---@param ... any
 ---@return any|nil
-local function safeExport(resource, exportName) --//=-- unused
-    local ok, result = pcall(function()
-        local ex = exports and exports[resource]
-        if ex and ex[exportName] then
-            return ex[exportName](ex)
-        end
-        return nil
-    end)
-    if ok then return result end
+function Medal.GV.Assayer.safeExport(resource, method, ...)
+    if not resource or not hasStarted(resource) then return nil end
+    local methods = type(method) == 'table' and method or { method }
+    local args = { ... }
+    for _, name in ipairs(methods) do
+        local ok, result = pcall(function()
+            local ex = exports and exports[resource]
+            local fn = ex and ex[name]
+            if type(fn) == 'function' then
+                --//=-- Call with explicit self to support ':' style exports
+                return fn(ex, table.unpack(args))
+            end
+            return nil
+        end)
+        if ok and result ~= nil then return result end
+    end
     return nil
 end
 
