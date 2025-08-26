@@ -11,15 +11,43 @@ Medal.GV = Medal.GV or {} --//=-- Just in case
 --- @param a string|table|any First argument: Either a string, an envelope table, or any value (for raw)
 --- @param b string|table|any Optional second argument: Data when the first arg is a string
 function Medal.GV.pushMinecart(a, b)
-    local envelope
+  local envelope
 
-    if type(a) == 'string' then
-        envelope = { type = a, data = b }
-    elseif type(a) == 'table' and type(a.type) == 'string' then
-        envelope = a
-    else
-        envelope = { type = 'raw', data = a }
+  if type(a) == 'string' then
+    envelope = { type = a, data = b }
+  elseif type(a) == 'table' and type(a.type) == 'string' then
+    envelope = a
+  else
+    envelope = { type = 'raw', data = a }
+  end
+
+  SendNUIMessage({ action = 'ws:send', payload = envelope })
+end
+
+--//=-- NUI: Minecart ore endpoint (assay and push ore in a minecart to NUI, via ws:send)
+RegisterNUICallback('ws:minecart', function(req, cb)
+  local ok, result = pcall(function()
+    local ore = Medal.GV.Ore.assay(req)
+    local oreType = nil
+    if type(req) == 'string' then
+      oreType = req
+    elseif type(req) == 'table' and type(req.type) == 'string' then
+      oreType = req.type
     end
 
-    SendNUIMessage({ action = 'ws:send', payload = envelope })
-end
+    if oreType ~= nil and ore ~= nil then
+    Medal.GV.pushMinecart(oreType, ore)
+      return true
+    end
+
+    return { error = 'ore-unavailable' }
+  end)
+
+  if not ok then
+    Logger.error('minecart-assay-failed', req)
+    cb({ error = 'minecart-assay-failed' })
+    return
+  end
+
+  cb(result)
+end)
