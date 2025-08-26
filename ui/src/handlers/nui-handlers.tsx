@@ -3,13 +3,21 @@ import { useNuiEvent, useNuiVisibility } from '@tsfx/hooks';
 import wsClient from '../ws/websocket';
 import type { WsConfig, WsEnvelope } from '../ws/types';
 import { nuiLog, nuiPost } from '../lib/nui';
-
-//=-- Centralized NUI message listeners for messages coming from Lua/CFX
-//=-- This component registers event handlers via @tsfx/hooks and renders nothing
+/**
+ * NUI message handlers component.
+ *
+ * Registers LUA/CFX to UI listeners. Uses `@tsfx/hooks`
+ * for subscriptions and delegates WebSocket control to `wsClient`.
+ *
+ * Handled actions:
+ * - `ui:setVisible`, `ui:open`, `ui:close`
+ * - `ws:connect`, `ws:send`, `ws:close`
+ * - inbound `heartbeat` with optional `request` echo via minecart
+ */
 export const NuiHandlers: React.FC = () => {
     const { setVisible } = useNuiVisibility();
 
-    //=-- Visibility controls (common pattern)
+    //=-- Visibility controls
     useNuiEvent<boolean>('ui:setVisible', {
         handler: (v) => setVisible(Boolean(v)),
     });
@@ -22,7 +30,7 @@ export const NuiHandlers: React.FC = () => {
         handler: () => setVisible(false),
     });
 
-    //=-- WebSocket controls from Lua → UI
+    //=-- WebSocket controls from LUA to UI
     //=-- Connect with optional config (host/port/protocol/path). Defaults to ws://127.0.0.1:63325
     useNuiEvent<WsConfig | undefined>('ws:connect', {
         handler: (cfg) => {
