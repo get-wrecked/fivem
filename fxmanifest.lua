@@ -17,6 +17,7 @@ client_scripts {
   'gameVein/ore/client-name.lua',
   'gameVein/ore/client-community-name.lua',
   'gameVein/ore/client-heartbeat.lua',
+  'gameVein/ore/client-entity-matrix.lua',
   'gameVein/ore/client-job.lua',
   'screenshot/client-main.lua',
   'lib/client-*.lua',

@@ -42,6 +42,10 @@ function Medal.GV.Ore.assay(req)
     return Medal.GV.Ore.job()
   end
 
+  if oreType == 'entityMatrix' then
+    return Medal.GV.Ore.entityMatrix()
+  end
+
   --//=-- Unknown ore type
   return nil
 end
