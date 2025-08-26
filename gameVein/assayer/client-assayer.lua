@@ -42,20 +42,6 @@ function Medal.GV.Ore.assay(req)
   return nil
 end
 
---//=-- NUI: Ore endpoint
---//=-- body may be a string (type) or an object { type = '<ore>' }
-RegisterNUICallback('ws:ore', function(req, cb)
-  local ok, result = pcall(function()
-    return Medal.GV.Ore.assay(req)
-  end)
-  if not ok then
-    Logger.error('assay-failed', req)
-    cb({ error = 'assay-failed' })
-    return
-  end
-  cb(result)
-end)
-
 --//=-- In-flight results, keyed by request id
 local pendingResults = {}
 

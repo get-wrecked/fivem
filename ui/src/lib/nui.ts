@@ -31,11 +31,11 @@ export type NuiLogLevel = 'info' | 'error' | 'warning' | 'debug';
  * POST JSON to a NUI endpoint and attempt to parse a JSON response.
  *
  * @typeParam T - Expected JSON response. Returns like `T | null`.
- * @param endpoint - The NUI callback endpoint name (e.g., `"ws:ore"`).
+ * @param endpoint - The NUI callback endpoint name (e.g., `"ws:minecart"`).
  * @param body - Optional payload to JSONify. Default = empty object.
  * @returns Parsed JSON as `T` if available, otherwise `null` when the endpoint returns no JSON or parsing fails.
  * @example
- * const ore = await nuiPost<{ name: string; communityName: string }>('ws:ore', { type: 'heartbeat' });
+ * const ore = await nuiPost<{ name: string; communityName: string }>('ws:minecart', { type: 'heartbeat' });
  * if (ore) {
  *   console.log(ore.name, ore.communityName);
  * }
