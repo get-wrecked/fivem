@@ -11,7 +11,7 @@ RegisterNUICallback('ws:log', function(data, cb)
   if type(logFn) == 'function' then
     --//=-- Spread args if available, else log a placeholder
     if type(args) == 'table' and next(args) ~= nil then
-    logFn(table.unpack(args))
+      logFn(table.unpack(args))
   else
       logFn('[NUI]', 'ws:log (no data)')
     end
