@@ -131,12 +131,15 @@ class WsClient {
     this.ws = null;
   };
 
-  /** Send a JSON envelope over the WebSocket
-    * Usage:
-    *  - send('type', data?)
-    *  - send({ type, data? })
-    * @throws Error if the socket is not open
-    */
+  /**
+   * Send a JSON envelope over the WebSocket.
+   *
+   * Usage:
+   *  - send('type', data?)
+   *  - send({ type, data? })
+   *
+   * @throws Error if the socket is not open
+   */
   send(type: string, data?: unknown): void;
   send(envelope: WsEnvelope): void;
   send(arg1: string | WsEnvelope, data?: unknown): void {
@@ -152,8 +155,23 @@ class WsClient {
     try {
       this.ws.send(JSON.stringify(env));
     } catch {
-      //=-- Last resort string
-      this.ws.send(String(env as any));
+      //=-- Fallback: Stringify to avoid sending "[object Object]"
+      try {
+        const seen = new WeakSet<object>();
+        const json = JSON.stringify(env, (_k, v) => {
+          if (typeof v === 'bigint') return v.toString();
+          if (v && typeof v === 'object') {
+            if (seen.has(v as object)) return '[Circular]';
+            seen.add(v as object);
+          }
+          return v;
+        });
+        this.ws.send(json);
+      } catch {
+        //=-- Last resort: send a minimal, descriptive envelope
+        const fallback = JSON.stringify({ type: (env as any).type ?? 'raw', data: '[Unserializable payload]' });
+        this.ws.send(fallback);
+      }
     }
   }
 
