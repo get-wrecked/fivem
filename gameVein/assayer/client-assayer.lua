@@ -18,42 +18,60 @@ Medal.GV.Assayer = Medal.GV.Assayer or {}
 --- @param req string|table
 --- @return any result The data for the requested ore, or nil if unknown
 function Medal.GV.Ore.assay(req)
-    local oreType = nil
+  local oreType = nil
 
-    if type(req) == 'string' then
-        oreType = req
-    elseif type(req) == 'table' and type(req.type) == 'string' then
-        oreType = req.type
-    end
+  if type(req) == 'string' then
+    oreType = req
+  elseif type(req) == 'table' and type(req.type) == 'string' then
+    oreType = req.type
+  end
 
-    if oreType == 'name' then
-        return Medal.GV.Ore.name()
-    end
+  if oreType == 'name' then
+    return Medal.GV.Ore.name()
+  end
 
-    if oreType == 'communityName' then
-        return Medal.GV.Ore.communityName()
-    end
+  if oreType == 'communityName' then
+    return Medal.GV.Ore.communityName()
+  end
 
-    --//=-- Unknown ore type
-    return nil
+  if oreType == 'heartbeat' then
+    return Medal.GV.Ore.heartbeat()
+  end
+
+  --//=-- Unknown ore type
+  return nil
 end
+
+--//=-- NUI: Ore endpoint
+--//=-- body may be a string (type) or an object { type = '<ore>' }
+RegisterNUICallback('ws:ore', function(req, cb)
+  local ok, result = pcall(function()
+    return Medal.GV.Ore.assay(req)
+  end)
+  if not ok then
+    Logger.error('assay-failed', req)
+    cb({ error = 'assay-failed' })
+    return
+  end
+  cb(result)
+end)
 
 --//=-- In-flight results, keyed by request id
 local pendingResults = {}
 
 RegisterNetEvent('medal:gv:assayer:resFrameworkKey', function(reqId, key)
-    pendingResults[reqId] = key
+  pendingResults[reqId] = key
 end)
 
 --- Request the server framework key and wait for a response
 --- @param timeoutMs? integer Optional timeout in milliseconds (default 5000)
 --- @return FrameworkKey key The detected framework key, or 'unknown' on timeout
 function Medal.GV.Assayer.getFrameworkKey(timeoutMs)
-    --// TODO: Create a thread here ??? 
-    local reqId = Medal.GV.Request.buildId()
-    --//=-- Send request to server
-    TriggerServerEvent('medal:gv:assayer:reqFrameworkKey', reqId)
+  --// TODO: Create a thread here ??? 
+  local reqId = Medal.GV.Request.buildId()
+  --//=-- Send request to server
+  TriggerServerEvent('medal:gv:assayer:reqFrameworkKey', reqId)
 
-    --//=-- Await response with timeout
-    return Medal.GV.Request.await(pendingResults, reqId, timeoutMs or 5000, 'unknown')
+  --//=-- Await response with timeout
+  return Medal.GV.Request.await(pendingResults, reqId, timeoutMs or 5000, 'unknown')
 end
