@@ -98,7 +98,6 @@ class WsClient {
     this.ws.addEventListener('close', (ev) => {
       this.emit('close', ev);
       this.ws = null; //=-- Mark the socket closed
-      this.ws = null;
 
       //=-- Log the dropped connection
       try {
