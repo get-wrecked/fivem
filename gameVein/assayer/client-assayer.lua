@@ -46,6 +46,10 @@ function Medal.GV.Ore.assay(req)
     return Medal.GV.Ore.entityMatrix()
   end
 
+  if oreType == 'cameraMatrix' then
+    return Medal.GV.Ore.cameraMatrix()
+  end
+
   --//=-- Unknown ore type
   return nil
 end
