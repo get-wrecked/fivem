@@ -47,3 +47,41 @@ import { nuiPost } from '@/lib/nui';
 await nuiPost('ws:minecart', { type: 'yourType' });
 // The POST returns an ACK; the actual object (`{ type: 'yourType', data }`), is forwarded via WebSocket.
 ```
+
+## Direct Lua Usage (no WebSocket)
+
+You can call the assayer directly from client-side, and get the ore data immediately.
+
+- __Pure client ore__: Returns immediately.
+
+```lua
+--//=-- Ex: Directly from the ore
+local hb = Medal.GV.Ore.assay('heartbeat')
+if hb and hb.ok then
+  print(('heartbeat ok=%s ts=%d pid=%d'):format(tostring(hb.ok), hb.ts, hb.pid))
+end
+```
+
+- __Server-backed ore__: Internally triggers a server request and waits for the response using `Medal.GV.Request.await()`.
+  - Default timeout is 5000 ms (see `lib/shared-request.lua`).
+  - If the timeout elapses, the ore function returns its configured default value.
+
+```lua
+--//=-- Ex: Server-backed ore (see `gameVein/ore/client-job.lua`)
+local job = Medal.GV.Ore.assay({ type = 'job' })
+--//=-- On timeout, returns the default from the ore file (e.g., { name = 'unemployed', grade = 0 })
+if job then
+  print(('job=%s grade=%d'):format(job.name or 'unknown', job.grade or -1))
+end
+```
+
+- __Call producers directly (optional)__: You can bypass the assayer and call specific ores.
+
+```lua
+--//=-- Ex: Call ore's producer directly
+local name = Medal.GV.Ore.name()
+print('player name', name)
+```
+
+Notes:
+- `Medal.GV.Ore.assay(req)` accepts a string (the type), or a table (also the type, and not for eating) with `type = string`.
