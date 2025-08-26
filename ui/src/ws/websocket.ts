@@ -16,8 +16,10 @@ function buildUrl(cfg: WsConfig): string {
   return `${protocol}://${host}:${port}${normalizedPath}`;
 }
 
-/** Minimal WebSocket client wrapper
- * Provides a simple API to connect, send, close, and subscribe to events.
+/**
+ * Minimal WebSocket client wrapper.
+ *
+ * Provides a simple API to: connect, send, close, and subscribe to events.
  */
 class WsClient {
   /** Internal state */
@@ -35,11 +37,14 @@ class WsClient {
   private reconnectTimer: number | null = null;
   private intentionalClose = false;
 
-  /** Connect or reconnect the client
-    * Creates a new WebSocket using the last known configuration merged with the provided `cfg`.
-    * If an existing socket is open or connecting, it is closed first with code `1000` and reason "reconnect".
-    * @param cfg - Optional configuration overrides
-    */
+  /**
+   * Connect or reconnect the client.
+   *
+   * Creates a new WebSocket using the last known configuration merged with the provided `cfg`.
+   * If an existing socket is open or connecting, it is closed first with code `1000` and reason "reconnect".
+   *
+   * @param cfg - Optional configuration overrides
+   */
   connect = (cfg?: WsConfig) => {
     if (cfg) this.cfg = { ...this.cfg, ...cfg };
 
@@ -115,18 +120,22 @@ class WsClient {
     });
   };
 
-  /** Close the current WebSocket connection
-    * @param code - Optional close code
-    * @param reason - Optional human-readable reason
-    */
+  /**
+   * Close the current WebSocket connection.
+   *
+   * @param code - Optional close code
+   * @param reason - Optional human-readable reason
+   */
   close = (code?: number, reason?: string) => {
-    //=-- Prevent auto-reconnect, as this is intentional
-    this.intentionalClose = true;
+    this.intentionalClose = true; //=-- Prevent auto-reconnect, as this is intentional
+    
     if (this.reconnectTimer !== null) {
       try { clearInterval(this.reconnectTimer); } catch { /*//=-- noop */ }
       this.reconnectTimer = null;
     }
+
     if (!this.ws) return;
+
     try { this.ws.close(code, reason); } catch { /*//=-- noop */ }
     this.ws = null;
   };
@@ -176,20 +185,33 @@ class WsClient {
   }
 
   /** Subscribe helpers */
-  /** Subscribe to message events
-    * @param handler - Callback invoked on every message with parsed data and the raw event
-    * @returns Unsubscribe function
-    */
+  /**
+   * Subscribe to message events.
+   *
+   * @param handler - The callback invoked on every message with the parsed data and the raw event
+   * @returns Unsubscribe function
+   */
   onMessage = (handler: MessageHandler) => {
     this.onMessageHandlers.add(handler);
     return () => this.onMessageHandlers.delete(handler);
   };
 
-  /** Subscribe to open events */
+  /** Subscribe to open events.
+   * @param handler - The callback invoked when the socket opens
+   * @returns Unsubscribe function
+   */
   onOpen = (handler: OpenHandler) => this.add('open', handler);
-  /** Subscribe to error events */
+  /**
+   * Subscribe to error events.
+   * @param handler - The callback invoked when the socket errors
+   * @returns Unsubscribe function
+   */
   onError = (handler: ErrorHandler) => this.add('error', handler);
-  /** Subscribe to close events */
+  /**
+   * Subscribe to close events.
+   * @param handler - The callback invoked when the socket closes
+   * @returns Unsubscribe function
+   */
   onClose = (handler: CloseHandler) => this.add('close', handler);
 
   //=-- Internal emitter/add helpers
