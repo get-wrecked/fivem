@@ -8,6 +8,11 @@ import { Container } from './components/container';
 import { ServerDetails } from './components/server-details';
 import Providers from './providers';
 
+/**
+ * Root application component.
+ *
+ * Renders the primary container and child panels for the Medal auto-clipping in-game UI.
+ */
 export const App: React.FC = () => {
     return (
         <div className='w-screen h-screen overflow-hidden relative select-none'>
@@ -22,6 +27,7 @@ export const App: React.FC = () => {
 
 const rootElement = document.getElementById('root');
 
+//=-- Bootstrap the React root, ONCE
 if (!rootElement.innerHTML) {
     const root = createRoot(rootElement);
 

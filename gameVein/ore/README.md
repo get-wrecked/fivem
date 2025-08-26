@@ -1,0 +1,105 @@
+# gameVein/ore
+
+Functions that return discrete pieces of data ("ores").
+Each ore is exposed as a function on `Medal.GV.Ore` and may be purely client-side or use a request/response
+to communicate with the server.
+
+## Built-in Ores
+
+- __name__ — `Medal.GV.Ore.name()` returns the player name using FiveM API.
+- __communityName__ — `Medal.GV.Ore.communityName()` requests the community name from the server.
+- __heartbeat__ — `Medal.GV.Ore.heartbeat()` returns `{ ok, ts, pid }` for round-trip diagnostics.
+
+See implementations in this folder for reference:
+- `client-name.lua`
+- `client-community-name.lua`
+- `client-heartbeat.lua`
+
+## How Ore Routing/Assaying Works
+
+The router in `gameVein/assayer/client-assayer.lua` inspects the request and calls the matching producer:
+
+```lua
+--//=-- Inside Medal.GV.Ore.assay(req)
+if oreType == 'name' then
+  return Medal.GV.Ore.name()
+end
+if oreType == 'communityName' then
+  return Medal.GV.Ore.communityName()
+end
+if oreType == 'heartbeat' then
+  return Medal.GV.Ore.heartbeat()
+end
+```
+
+## Add a New Ore Type
+
+1) __Create a new ore__ in this directory.
+
+```lua
+--//=-- gameVein/ore/client-job.lua
+Medal = Medal or {}
+Medal.GV = Medal.GV or {}
+Medal.GV.Ore = Medal.GV.Ore or {}
+
+--- Return the player's current job (example)
+--- @return table payload { name: string, grade?: number }
+function Medal.GV.Ore.job()
+  --//=-- Build your payload from framework exports/resources
+  return { name = 'unemployed', grade = 0 }
+end
+```
+
+2) __Route it__ in `gameVein/assayer/client-assayer.lua`:
+
+```lua
+--//=-- Inside Medal.GV.Ore.assay(req)
+if oreType == 'job' then
+  return Medal.GV.Ore.job()
+end
+```
+
+3) __If server data is required__, use the shared Request helpers from `lib/shared-request.lua`.
+
+Client side pattern:
+
+```lua
+--//=-- Client
+local pendingResults = {}
+RegisterNetEvent('medal:gv:ore:resJob', function(requestId, data)
+  pendingResults[requestId] = data
+end)
+
+function Medal.GV.Ore.job()
+  local requestId = Medal.GV.Request.buildId()
+  TriggerServerEvent('medal:gv:ore:reqJob', requestId)
+  return Medal.GV.Request.await(pendingResults, requestId, 5000, { name = 'unknown' })
+end
+```
+
+Server side pattern:
+
+```lua
+--//=-- Server
+RegisterNetEvent('medal:gv:ore:reqJob', function(requestId)
+  local src = source
+  --//=-- Get job data here, from the various frameworks
+  local job = { name = 'unemployed', grade = 0 }
+  TriggerClientEvent('medal:gv:ore:resJob', src, requestId, job)
+end)
+```
+
+4) __Consume from UI__, via the NUI endpoint `ws:minecart`, handled by `gameVein/shaft/client-minecart.lua`:
+
+```ts
+// NUI/UI
+import { nuiPost } from '@/lib/nui';
+
+const ore = await nuiPost('ws:minecart', { type: 'job' });
+```
+
+## Conventions
+
+- __Function name__: `Medal.GV.Ore.<type>()` where `<type>` is the request `type`.
+- __Events__: For server-backed ores use `medal:gv:ore:req<Type>` and `medal:gv:ore:res<Type>`.
+- __Timeouts__: Default 5000ms using `Medal.GV.Request.await()`.

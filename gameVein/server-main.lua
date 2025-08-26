@@ -1,1 +1,2 @@
---==// Placeholder
+--//=-- GameVein server entrypoint
+--//=-- A placeholder for future server-sided GameVein code.
