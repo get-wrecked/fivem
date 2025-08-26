@@ -11,7 +11,7 @@ RegisterNetEvent('medal:gv:ore:resCommunityName', function (requestId, name)
 end)
 
 ---Get the community project name
----@return string icon The community project name or hostname
+---@return string name The community project name or hostname
 function Medal.GV.Ore.communityName()
     local requestId = Medal.GV.Request.buildId()
 
