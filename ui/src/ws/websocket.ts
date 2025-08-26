@@ -1,6 +1,7 @@
 //=-- WebSocket client public module: types + implementation
 import { WsConfig, WsEvent, MessageHandler, OpenHandler, ErrorHandler, CloseHandler, WsEnvelope } from './types';
 import { DEFAULTS } from './defaults';
+import { nuiLog } from '../lib/nui';
 export * from './types';
 
 /** Build a WebSocket URL from configuration
@@ -29,6 +30,11 @@ class WsClient {
   private onErrorHandlers = new Set<ErrorHandler>();
   private onCloseHandlers = new Set<CloseHandler>();
 
+  /** Reconnect config/state */
+  private reconnectIntervalMs = 30_000;
+  private reconnectTimer: number | null = null;
+  private intentionalClose = false;
+
   /** Connect or reconnect the client
     * Creates a new WebSocket using the last known configuration merged with the provided `cfg`.
     * If an existing socket is open or connecting, it is closed first with code `1000` and reason "reconnect".
@@ -36,6 +42,13 @@ class WsClient {
     */
   connect = (cfg?: WsConfig) => {
     if (cfg) this.cfg = { ...this.cfg, ...cfg };
+
+    //=-- New connect attempt cancels any existing reconnect loop
+    if (this.reconnectTimer !== null) {
+      try { clearInterval(this.reconnectTimer); } catch { /*//=-- noop */ }
+      this.reconnectTimer = null;
+    }
+    this.intentionalClose = false;
 
     //=-- Close any existing socket before reconnect
     if (this.ws && (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)) {
@@ -47,6 +60,13 @@ class WsClient {
 
     this.ws.addEventListener('open', (ev) => {
       this.emit('open', ev);
+      //=-- Cancel reconnect loop on successful open
+      if (this.reconnectTimer !== null) {
+        try { clearInterval(this.reconnectTimer); } catch { /*//=-- noop */ }
+        this.reconnectTimer = null;
+      }
+      //=-- Log connection
+      try { void nuiLog(`[ws] connected: ${url}`, 'info'); } catch { /*//=-- noop */ }
     });
 
     this.ws.addEventListener('message', (ev) => {
@@ -72,6 +92,26 @@ class WsClient {
 
     this.ws.addEventListener('close', (ev) => {
       this.emit('close', ev);
+      //=-- Mark the socket closed
+      this.ws = null;
+
+      //=-- Log the dropped connection
+      try {
+        void nuiLog(`[ws] connection dropped (code=${(ev as CloseEvent).code}, reason=${(ev as CloseEvent).reason || 'n/a'})`, 'warning');
+      } catch { /*//=-- noop */ }
+
+      //=-- Start the reconnect loop, if it was not intentionally closed
+      if (!this.intentionalClose && this.reconnectTimer === null) {
+        this.reconnectTimer = window.setInterval(() => {
+          try {
+            //=-- If it is already open/connecting, skip
+            if (this.ws && (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)) return;
+            //=-- Attempt reconnection 
+            try { void nuiLog('[ws] attempting reconnect...', 'debug'); } catch { /*//=-- noop */ }
+            this.connect();
+          } catch { /*//=-- ignore */ }
+        }, this.reconnectIntervalMs);
+      }
     });
   };
 
@@ -80,6 +120,12 @@ class WsClient {
     * @param reason - Optional human-readable reason
     */
   close = (code?: number, reason?: string) => {
+    //=-- Prevent auto-reconnect, as this is intentional
+    this.intentionalClose = true;
+    if (this.reconnectTimer !== null) {
+      try { clearInterval(this.reconnectTimer); } catch { /*//=-- noop */ }
+      this.reconnectTimer = null;
+    }
     if (!this.ws) return;
     try { this.ws.close(code, reason); } catch { /*//=-- noop */ }
     this.ws = null;
