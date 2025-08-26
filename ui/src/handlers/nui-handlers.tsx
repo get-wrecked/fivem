@@ -49,9 +49,9 @@ export const NuiHandlers: React.FC = () => {
 
                 //=-- Fallback: Attempt to wrap the arbitrary value into a raw envelope
                 wsClient.send({ type: 'raw', data: value } as WsEnvelope);
-            } catch {
-                //=-- Socket closed; ???
-                // TODO: Log error
+            } catch (err) {
+                //=-- Socket closed; log error
+                void nuiLog({ event: 'ws:send:failed', error: err }, 'error');
             }
         },
     });
