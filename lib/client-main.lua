@@ -1,1 +1,2 @@
---==// Placeholder
+--//=-- The client-sided `Lib` entrypoint
+--//=-- A placeholder for future shared client logic/hooks.
