@@ -67,6 +67,7 @@ export const NuiHandlers: React.FC = () => {
 
     //=-- WebSocket inbound message handling (e.g., heartbeat, name, communityName, etc)
     useEffect(() => {
+        let mounted = true;
         const off = wsClient.onMessage((env) => {
             if (env?.type === 'heartbeat') {
                 //=-- Print the data via shared Lua logger
@@ -82,7 +83,21 @@ export const NuiHandlers: React.FC = () => {
                 }
             }
         });
-        return () => { try { off(); } catch (err) { /*//=-- log cleanup failure */ void nuiLog({ event: 'ws:onMessage:off-failed', err }, 'warning'); } };
+        return () => {
+            //=-- Determine if we were still mounted before cleanup; set unmounted immediately
+            const wasMounted = mounted;
+            mounted = false;
+            try {
+                off();
+            } catch (err) {
+                //=-- Avoid NUI logging post-unmount; fall back to console
+                if (wasMounted) {
+                    void nuiLog({ event: 'ws:onMessage:off-failed', err }, 'warning');
+                } else {
+                    try { console.warn('[ws:onMessage:off-failed]', err); } catch { /*//=-- ignore */ }
+                }
+            }
+        };
     }, []);
 
     //=-- Ex: Add more handlers below as your server/client scripts emit events
