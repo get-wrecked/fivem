@@ -70,8 +70,8 @@ class WsClient {
         try { clearInterval(this.reconnectTimer); } catch { /*//=-- noop */ }
         this.reconnectTimer = null;
       }
-      //=-- Log connection
-      try { void nuiLog(`[ws] connected: ${url}`, 'info'); } catch { /*//=-- noop */ }
+      this.reconnectAttempts = 0; //=-- Reset attempts on a successful connection
+      try { void nuiLog(`[ws] connected: ${url}`, 'info'); } catch { /*//=-- noop */ } //=-- Log connection
     });
 
     this.ws.addEventListener('message', (ev) => {
@@ -97,7 +97,7 @@ class WsClient {
 
     this.ws.addEventListener('close', (ev) => {
       this.emit('close', ev);
-      //=-- Mark the socket closed
+      this.ws = null; //=-- Mark the socket closed
       this.ws = null;
 
       //=-- Log the dropped connection
@@ -196,7 +196,8 @@ class WsClient {
     return () => this.onMessageHandlers.delete(handler);
   };
 
-  /** Subscribe to open events.
+  /**
+   * Subscribe to open events.
    * @param handler - The callback invoked when the socket opens
    * @returns Unsubscribe function
    */
