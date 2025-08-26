@@ -69,6 +69,28 @@ The UI has its own Node.js project under `ui`. Use pnpm to install and build the
 
 3. This builds `ui/src` into `ui/dist`, which is the NUI loaded by the resource/FXServer.
 
+## Additional READMEs for Features
+
+- **Core**
+  - [gameVein/](gameVein/README.md)
+    - [ore/](gameVein/ore/README.md)
+    - [assayer/](gameVein/assayer/README.md)
+    - [shaft/](gameVein/shaft/README.md)
+  - [lib/](lib/README.md)
+- **UI**
+  - [ui/](ui/README.md)
+    - [ui/src/](ui/src/README.md)
+      - [handlers/](ui/src/handlers/README.md)
+      - [ws/](ui/src/ws/README.md)
+      - [lib/](ui/src/lib/README.md)
+      - [components/](ui/src/components/README.md)
+      - [components/ui/](ui/src/components/ui/README.md)
+      - [assets/](ui/src/assets/README.md)
+- **Utilities**
+  - [clipping/](clipping/README.md)
+  - [screenshot/](screenshot/README.md)
+  - [services/](services/README.md)
+
 ## Contributors
 
 - [![lynexer's Avatar](https://avatars.githubusercontent.com/u/5565402?s=18&v=4)  lynexer](https://github.com/lynexer)
