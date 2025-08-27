@@ -9,11 +9,18 @@ to communicate with the server.
 - __name__ — `Medal.GV.Ore.name()` returns the player name using FiveM API.
 - __communityName__ — `Medal.GV.Ore.communityName()` requests the community name from the server.
 - __heartbeat__ — `Medal.GV.Ore.heartbeat()` returns `{ ok, ts, pid }` for round-trip diagnostics.
+- __job__ — `Medal.GV.Ore.job()` returns a Job table `{ id, name, rank, rankName }` resolved server-side.
+- __entityMatrix__ — `Medal.GV.Ore.entityMatrix()` returns an entity matrix `{ right, forward, up, position }` (client).
+- __cameraMatrix__ — `Medal.GV.Ore.cameraMatrix()` returns a camera matrix `{ right, forward, up, position }` (client).
 
 See implementations in this folder for reference:
 - `client-name.lua`
 - `client-community-name.lua`
 - `client-heartbeat.lua`
+- `client-job.lua`
+- `server-job.lua`
+- `client-entity-matrix.lua`
+- `client-camera-matrix.lua`
 
 ## How Ore Routing/Assaying Works
 
@@ -29,6 +36,15 @@ if oreType == 'communityName' then
 end
 if oreType == 'heartbeat' then
   return Medal.GV.Ore.heartbeat()
+end
+if oreType == 'job' then
+  return Medal.GV.Ore.job()
+end
+if oreType == 'entityMatrix' then
+  return Medal.GV.Ore.entityMatrix()
+end
+if oreType == 'cameraMatrix' then
+  return Medal.GV.Ore.cameraMatrix()
 end
 ```
 
