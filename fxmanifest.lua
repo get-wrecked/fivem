@@ -17,6 +17,7 @@ client_scripts {
   'gameVein/ore/client-name.lua',
   'gameVein/ore/client-community-name.lua',
   'gameVein/ore/client-heartbeat.lua',
+  'gameVein/ore/client-cfx-id.lua',
   'screenshot/client-main.lua',
   'lib/client-*.lua',
 }
@@ -26,6 +27,7 @@ server_scripts {
   'gameVein/server-main.lua',
   'gameVein/assayer/server-assayer.lua',
   'gameVein/ore/server-community-name.lua',
+  'gameVein/ore/server-cfx-id.lua',
   'lib/server-*.lua',
 }
 

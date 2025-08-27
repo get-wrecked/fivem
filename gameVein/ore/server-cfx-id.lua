@@ -16,7 +16,7 @@ end)
 ---@param requestId string
 local function handleReqServerId(requestId)
     local playerSrc = source
-    TriggerClientEvent('medal:clipping:resServerId', playerSrc, requestId, serverId)
+    TriggerClientEvent('medal:gv:ore:resCfxId', playerSrc, requestId, serverId)
 end
 
-RegisterNetEvent('medal:clipping:reqServerId', handleReqServerId)
+RegisterNetEvent('medal:gv:ore:reqCfxId', handleReqServerId)
