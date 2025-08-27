@@ -1,6 +1,7 @@
 import { NuiProvider, NuiVisibilityProvider } from '@tsfx/hooks';
 import type { PropsWithChildren } from 'react';
 import NuiHandlers from './handlers/nui-handlers';
+import { ServerDetailsProvider } from './providers/server-details-provider';
 
 /**
  * The React app's providers helper.
@@ -17,9 +18,11 @@ const Providers: React.FC<PropsWithChildren<{ debug?: boolean }>> = ({
     return (
         <NuiProvider debug={debug}>
             <NuiVisibilityProvider debug={debug}>
-                {/*//=-- Registers listeners for messages from Lua/CFX */}
-                <NuiHandlers />
-                {children}
+                <ServerDetailsProvider>
+                    {/*//=-- Registers listeners for messages from Lua/CFX */}
+                    <NuiHandlers />
+                    {children}
+                </ServerDetailsProvider>
             </NuiVisibilityProvider>
         </NuiProvider>
     );
