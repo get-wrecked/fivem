@@ -9,7 +9,7 @@ to communicate with the server.
 - __name__ — `Medal.GV.Ore.name()` returns the player name using FiveM API.
 - __communityName__ — `Medal.GV.Ore.communityName()` requests the community name from the server.
 - __heartbeat__ — `Medal.GV.Ore.heartbeat()` returns `{ ok, ts, pid }` for round-trip diagnostics.
-- __job__ — `Medal.GV.Ore.job()` returns a Job table `{ id, name, rank, rankName }` resolved server-side.
+- __job__ — `Medal.GV.Ore.job()` returns a Job table `{ id, name, rank, rankName }` resolved client-first, with a server fallback for ESX.
 - __entityMatrix__ — `Medal.GV.Ore.entityMatrix()` returns an entity matrix `{ right, forward, up, position }` (client).
 - __cameraMatrix__ — `Medal.GV.Ore.cameraMatrix()` returns a camera matrix `{ right, forward, up, position }` (client).
 
@@ -119,3 +119,23 @@ const ore = await nuiPost('ws:minecart', { type: 'job' });
 - __Function name__: `Medal.GV.Ore.<type>()` where `<type>` is the request `type`.
 - __Events__: For server-backed ores use `medal:gv:ore:req<Type>` and `medal:gv:ore:res<Type>`.
 - __Timeouts__: Default 5000ms using `Medal.GV.Request.await()`.
+
+## Job Ore Details
+
+- __Resolution order (client)__: TMC statebag → QBCore (qb-core) → QBX (qbx_core) → ND statebag → ox_core groups → server fallback.
+- __Server fallback__: Only ESX is resolved on the server. Other frameworks return `unknown` server-side and should be handled by the client resolvers above.
+- __Statebag keys used__:
+  - TMC: `LocalPlayer.state.jobs` (array), prefers `onduty == true`.
+  - ND: `LocalPlayer.state.job` or `LocalPlayer.state.nd_job`.
+  - OX: `LocalPlayer.state.groups`/`group`/`ox_groups` and the `'job'` group.
+  - QB/QBX: Uses the core's client API `QBCore.Functions.GetPlayerData()` and reads `job`.
+
+The returned shape for all resolvers is normalized to:
+
+```lua
+---@class Job
+---@field id string
+---@field name string
+---@field rank integer   -- -1 indicates unknown
+---@field rankName string
+```
