@@ -12,9 +12,9 @@ AddEventHandler('gameEventTriggered', function (event, data)
         local attackerSrc = GetEntityServerId(data[2])
 
         if isFatal then
-            if victimSrc == Cache.playerSrc then
+            if victimSrc == Cache.playerSrc and data[1] == Cache.ped then
                 Medal.AC.Lookout.handlePlayerDeath()
-            elseif attackerSrc == Cache.playerSrc and victimSrc ~= 0 then
+            elseif attackerSrc == Cache.playerSrc and victimSrc ~= Cache.playerSrc and victimSrc ~= 0 then
                 Medal.AC.Lookout.handlePlayerKill()
             end
         end
