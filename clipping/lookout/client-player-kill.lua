@@ -10,7 +10,7 @@ local eventId = 'player_kill'
 function Medal.AC.Lookout.handlePlayerKill()
     local details = Medal.AC.readEventConfig(eventId)
 
-    if details.enabled then
+    if details.enabled and Settings.eventToggles[eventId] then
         Medal.AC.vesselDepart({
             eventId = eventId,
             eventName = details.title,
