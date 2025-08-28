@@ -1,7 +1,7 @@
 import type { CheckedState } from '@radix-ui/react-checkbox';
 import { fetchNui } from '@tsfx/hooks';
 import type React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Checkbox } from './ui/checkbox';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
@@ -20,6 +20,12 @@ export const Event: React.FC<{ event: EventData }> = ({ event }) => {
         setEnabled(toggle);
         fetchNui('ac:event:toggle', { payload: { toggle, id: event.id } });
     };
+
+    useEffect(() => {
+        fetchNui<boolean>('ac:event:enable', { payload: event.id }).then((result) => {
+            setEnabled(result);
+        });
+    }, []);
 
     return (
         <div className='w-full h-7 p-1 flex items-center gap-1.5'>

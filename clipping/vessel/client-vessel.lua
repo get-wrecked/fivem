@@ -14,3 +14,7 @@ RegisterNuiCallback('ac:event:toggle', function (data, cb)
 
     cb(true)
 end)
+
+RegisterNuiCallback('ac:event:enable', function (eventId, cb)
+    cb(Settings.eventToggles[eventId])
+end)
