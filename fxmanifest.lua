@@ -9,6 +9,7 @@ shared_scripts {
 }
 
 client_scripts {
+  'lib/client-*.lua',
   'gameVein/client-main.lua',
   'gameVein/shaft/client-overseer.lua',
   'gameVein/shaft/client-minecart.lua',
@@ -20,14 +21,13 @@ client_scripts {
   'clipping/lookout/client-*.lua',
   'clipping/signal/client-*.lua',
   'screenshot/client-main.lua',
-  'lib/client-*.lua',
 }
 
 server_scripts {
+  'lib/server-*.lua',
   'gameVein/server-main.lua',
   'gameVein/assayer/server-assayer.lua',
   'gameVein/ore/server-cfx-id.lua',
-  'lib/server-*.lua',
 }
 
 files {
