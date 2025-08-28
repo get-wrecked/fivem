@@ -54,6 +54,11 @@ function Medal.AC.buildClippingUi()
         payload = Medal.GV.Ore.assay('cfxId')
     })
 
+    SendNUIMessage({
+        action = 'ac:enable',
+        payload = Settings.clippingEnabled
+    })
+
     for _, event in ipairs(Config.ClippingEvents) do
         if event.enabled then
             SendNUIMessage({
@@ -74,6 +79,13 @@ AddEventHandler('onClientResourceStart', function (resourceName)
         Medal.AC.registerCommand()
         Medal.AC.buildClippingUi()
     end)
+end)
+
+RegisterNuiCallback('ac:toggle', function (toggle, cb)
+    Settings.clippingEnabled = toggle
+    Settings:save()
+
+    cb(true)
 end)
 
 RegisterNuiCallback('hide', function (_, cb)

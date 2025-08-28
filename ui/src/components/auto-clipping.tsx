@@ -1,4 +1,4 @@
-import { useNuiEvent } from '@tsfx/hooks';
+import { fetchNui, useNuiEvent } from '@tsfx/hooks';
 import clsx from 'clsx';
 import type React from 'react';
 import { useState } from 'react';
@@ -9,6 +9,17 @@ import { Switch } from './ui/switch';
 export const AutoClipping: React.FC = () => {
     const [events, setEvents] = useState<EventData[]>([]);
     const [enabled, setEnabled] = useState<boolean>(false);
+
+    const updateEnabled = (toggle: boolean): void => {
+        setEnabled(toggle);
+        fetchNui('ac:toggle', { payload: toggle });
+    };
+
+    useNuiEvent<boolean>('ac:enable', {
+        handler: (enabled) => {
+            setEnabled(enabled);
+        },
+    });
 
     useNuiEvent<EventData>('ac:event:register', {
         handler: (event) => {
@@ -28,7 +39,7 @@ export const AutoClipping: React.FC = () => {
                         {enabled ? 'ON' : 'OFF'}
                     </span>
 
-                    <Switch checked={enabled} onCheckedChange={setEnabled} />
+                    <Switch checked={enabled} onCheckedChange={updateEnabled} />
                 </div>
             </div>
 
