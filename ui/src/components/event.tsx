@@ -1,3 +1,5 @@
+import type { CheckedState } from '@radix-ui/react-checkbox';
+import { fetchNui } from '@tsfx/hooks';
 import type React from 'react';
 import { useState } from 'react';
 import { Checkbox } from './ui/checkbox';
@@ -12,12 +14,16 @@ export interface EventData {
 export const Event: React.FC<{ event: EventData }> = ({ event }) => {
     const [enabled, setEnabled] = useState<boolean>(true);
 
+    const updateEnabled = (checked: CheckedState): void => {
+        const toggle = checked === 'indeterminate' ? false : checked;
+
+        setEnabled(toggle);
+        fetchNui('ac:event:toggle', { payload: { toggle, id: event.id } });
+    };
+
     return (
         <div className='w-full h-7 p-1 flex items-center gap-1.5'>
-            <Checkbox
-                checked={enabled}
-                onCheckedChange={(checked: boolean) => setEnabled(checked)}
-            />
+            <Checkbox checked={enabled} onCheckedChange={updateEnabled} />
 
             <p className='text-base'>{event.title}</p>
 

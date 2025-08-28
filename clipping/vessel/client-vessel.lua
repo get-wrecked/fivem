@@ -7,3 +7,10 @@ Medal.AC = Medal.AC or {}
 function Medal.AC.vesselDepart(cargo)
     -- TODO
 end
+
+RegisterNuiCallback('ac:event:toggle', function (data, cb)
+    Settings.eventToggles[data.id] = data.toggle
+    Settings:save()
+
+    cb(true)
+end)
