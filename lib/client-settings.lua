@@ -3,6 +3,8 @@
 ---@field clippingEnabled boolean
 ---@field eventToggles table<string, boolean>
 local settings = {}
+
+---@protected
 settings.__index = settings
 
 ---Create a new settings instance
@@ -34,6 +36,8 @@ function settings:initialize()
     for _, event in ipairs(Config.ClippingEvents) do
         self.eventToggles[event.id] = GetResourceKvpInt(('medal:event:%s'):format(event.id)) == 1
     end
+
+    self:save()
 
     return self
 end
