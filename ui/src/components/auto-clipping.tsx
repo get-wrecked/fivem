@@ -1,4 +1,5 @@
 import { useNuiEvent } from '@tsfx/hooks';
+import clsx from 'clsx';
 import type React from 'react';
 import { useState } from 'react';
 import { Event, type EventData } from './event';
@@ -31,7 +32,10 @@ export const AutoClipping: React.FC = () => {
                 </div>
             </div>
 
-            <div className='w-full grow' style={{ containerType: 'size' }}>
+            <div
+                className={clsx('w-full grow', !enabled && 'opacity-40 pointer-events-none')}
+                style={{ containerType: 'size' }}
+            >
                 <ScrollArea style={{ height: '100cqh' }}>
                     <div className='size-full flex flex-col gap-2'>
                         {events.map((event) => (
