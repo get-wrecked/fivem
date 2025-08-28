@@ -20,6 +20,7 @@ client_scripts {
   'clipping/client-*.lua',
   'clipping/lookout/client-*.lua',
   'clipping/signal/client-*.lua',
+  'clipping/vessel/client-*.lua',
   'screenshot/client-main.lua',
 }
 
