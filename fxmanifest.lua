@@ -18,6 +18,7 @@ client_scripts {
   'gameVein/ore/client-cfx-id.lua',
   'clipping/client-*.lua',
   'clipping/lookout/client-*.lua',
+  'clipping/signal/client-*.lua',
   'screenshot/client-main.lua',
   'lib/client-*.lua',
 }
