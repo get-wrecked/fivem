@@ -5,6 +5,16 @@ Medal = Medal or {}
 Medal.AC = Medal.AC or {}
 Medal.AC.Lookout = Medal.AC.Lookout or {}
 
+local eventId = 'player_kill'
+
 function Medal.AC.Lookout.handlePlayerKill()
-    print('Local player killed another player')
+    local details = Medal.AC.readEventConfig(eventId)
+
+    if details.enabled then
+        Medal.AC.vesselDepart({
+            eventId = eventId,
+            eventName = details.title,
+            tags = { 'Kills' }
+        })
+    end
 end

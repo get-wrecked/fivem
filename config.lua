@@ -7,7 +7,7 @@ Config.Keybind = 'pageup'
 
 Config.ClippingEvents = {
     {
-        id = 'player_killed',
+        id = 'player_kill',
         title = 'Player Killed',
         desc = 'Triggers when you kill another player',
         enabled = true
