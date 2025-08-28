@@ -33,6 +33,8 @@ function settings:initialize()
     self.clipLength = GetResourceKvpInt('medal:clip-length') == 0 and 30 or GetResourceKvpInt('medal:clip-length')
     self.clippingEnabled = GetResourceKvpInt('medal:clip-enabled') == 1
 
+    self.eventToggles = {}
+
     for _, event in ipairs(Config.ClippingEvents) do
         self.eventToggles[event.id] = GetResourceKvpInt(('medal:event:%s'):format(event.id)) == 1
     end
