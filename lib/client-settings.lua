@@ -14,9 +14,14 @@ function settings:new()
     return instance
 end
 
+---Save current user settings to resource KVP
 function settings:save()
     SetResourceKvpInt('medal:clip-length', self.clipLength)
     SetResourceKvpInt('medal:clip-enabled', self.clippingEnabled and 1 or 0)
+
+    for eventId, enabled in pairs(self.eventToggles) do
+        SetResourceKvpInt(('medal:event:%s'):format(eventId), enabled and 1 or 0)
+    end
 end
 
 ---Initialize the settings instance and set settings values
@@ -25,6 +30,10 @@ end
 function settings:initialize()
     self.clipLength = GetResourceKvpInt('medal:clip-length') == 0 and 30 or GetResourceKvpInt('medal:clip-length')
     self.clippingEnabled = GetResourceKvpInt('medal:clip-enabled') == 1
+
+    for _, event in ipairs(Config.ClippingEvents) do
+        self.eventToggles[event.id] = GetResourceKvpInt(('medal:event:%s'):format(event.id)) == 1
+    end
 
     return self
 end
