@@ -47,6 +47,23 @@ function Medal.AC.registerCommand()
     end
 end
 
+---Setup the Auto Clipping UI with server details and enabled events
+function Medal.AC.buildClippingUi()
+    SendNUIMessage({
+        action = 'ac:details',
+        payload = Medal.GV.Ore.assay('cfxId')
+    })
+
+    for _, event in ipairs(Config.ClippingEvents) do
+        if event.enabled then
+            SendNUIMessage({
+                action = 'ac:event:register',
+                payload = event
+            })
+        end
+    end
+end
+
 --//=-- Send the server Cfx Id to client NUI to retrieve server details, shortly after this resource starts
 AddEventHandler('onClientResourceStart', function (resourceName)
     if resourceName ~= GetCurrentResourceName() then return end
@@ -55,11 +72,7 @@ AddEventHandler('onClientResourceStart', function (resourceName)
         Wait(100)
 
         Medal.AC.registerCommand()
-
-        SendNUIMessage({
-            action = 'ac:details',
-            payload = Medal.GV.Ore.assay('cfxId')
-        })
+        Medal.AC.buildClippingUi()
     end)
 end)
 

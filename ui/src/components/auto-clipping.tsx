@@ -1,11 +1,21 @@
+import { useNuiEvent } from '@tsfx/hooks';
 import type React from 'react';
 import { useState } from 'react';
-import { Event } from './event';
+import { Event, type EventData } from './event';
 import { ScrollArea } from './ui/scroll-area';
 import { Switch } from './ui/switch';
 
 export const AutoClipping: React.FC = () => {
+    const [events, setEvents] = useState<EventData[]>([]);
     const [enabled, setEnabled] = useState<boolean>(false);
+
+    useNuiEvent<EventData>('ac:event:register', {
+        handler: (event) => {
+            const currentEvents = events;
+            currentEvents.push(event);
+            setEvents(currentEvents);
+        },
+    });
 
     return (
         <div className='w-full grow flex flex-col gap-2 font-medium'>
@@ -24,9 +34,9 @@ export const AutoClipping: React.FC = () => {
             <div className='w-full grow' style={{ containerType: 'size' }}>
                 <ScrollArea style={{ height: '100cqh' }}>
                     <div className='size-full flex flex-col gap-2'>
-                        <Event title='Player Killed' hint='Triggered when you die' />
-                        <Event title='Player Died' hint='Triggered when you die' />
-                        <Event title='Fall Out of Vehicle' hint='Triggered when you die' />
+                        {events.map((event) => (
+                            <Event key={event.id} event={event} />
+                        ))}
                     </div>
                 </ScrollArea>
             </div>

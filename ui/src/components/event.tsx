@@ -3,7 +3,13 @@ import { useState } from 'react';
 import { Checkbox } from './ui/checkbox';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
-export const Event: React.FC<{ title: string; hint?: string }> = ({ title, hint }) => {
+export interface EventData {
+    id: string;
+    title: string;
+    desc?: string;
+}
+
+export const Event: React.FC<{ event: EventData }> = ({ event }) => {
     const [enabled, setEnabled] = useState<boolean>(true);
 
     return (
@@ -13,9 +19,9 @@ export const Event: React.FC<{ title: string; hint?: string }> = ({ title, hint 
                 onCheckedChange={(checked: boolean) => setEnabled(checked)}
             />
 
-            <p className='text-base'>{title}</p>
+            <p className='text-base'>{event.title}</p>
 
-            {hint && (
+            {event.desc && (
                 <Tooltip>
                     <TooltipTrigger>
                         <svg
@@ -35,7 +41,7 @@ export const Event: React.FC<{ title: string; hint?: string }> = ({ title, hint 
                         </svg>
                     </TooltipTrigger>
 
-                    <TooltipContent>Test</TooltipContent>
+                    <TooltipContent>{event.desc}</TooltipContent>
                 </Tooltip>
             )}
         </div>
