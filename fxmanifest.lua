@@ -17,6 +17,7 @@ client_scripts {
   'gameVein/ore/client-heartbeat.lua',
   'gameVein/ore/client-cfx-id.lua',
   'clipping/client-*.lua',
+  'clipping/lookout/client-*.lua',
   'screenshot/client-main.lua',
   'lib/client-*.lua',
 }
@@ -25,7 +26,6 @@ server_scripts {
   'gameVein/server-main.lua',
   'gameVein/assayer/server-assayer.lua',
   'gameVein/ore/server-cfx-id.lua',
-  'clipping/server-*.lua' ,
   'lib/server-*.lua',
 }
 
