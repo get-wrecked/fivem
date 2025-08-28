@@ -29,7 +29,7 @@ AddEventHandler('onClientResourceStart', function (resourceName)
         Wait(100)
 
         SendNUIMessage({
-            action = 'wt:details',
+            action = 'ac:details',
             payload = Medal.GV.Ore.assay('cfxId')
         })
     end)

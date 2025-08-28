@@ -21,7 +21,7 @@ export const ServerDetailsProvider: React.FC<PropsWithChildren<ServerDetailsProv
     const [name, setName] = useState<string>(initialName);
     const [iconUrl, setIconUrl] = useState<string>(initialIconUrl);
 
-    useNuiEvent<string>('clipping:details', {
+    useNuiEvent<string>('ac:details', {
         handler: async (id) => {
             const response = await fetch(
                 `https://servers-frontend.fivem.net/api/servers/single/${id}`,
