@@ -12,6 +12,16 @@ export interface ServerDetailsProviderProps {
     initialIconUrl?: string;
 }
 
+interface ServerDetailsResponse {
+    Data: {
+        iconVersion: number;
+        hostname: string;
+        vars: {
+            sv_projectName: string;
+        };
+    };
+}
+
 export const ServerDetailsProvider: React.FC<PropsWithChildren<ServerDetailsProviderProps>> = ({
     children,
     context = ServerDetailsContext,
@@ -23,19 +33,39 @@ export const ServerDetailsProvider: React.FC<PropsWithChildren<ServerDetailsProv
 
     useNuiEvent<string>('ac:details', {
         handler: async (id) => {
-            const response = await fetch(
-                `https://servers-frontend.fivem.net/api/servers/single/${id}`,
-            );
+            try {
+                const response = await fetch(
+                    `https://servers-frontend.fivem.net/api/servers/single/${id}`,
+                );
 
-            const serverData = await response.json();
-            const iconVersion = serverData['Data']['iconVersion'];
-            const projectName = serverData['Data']['vars']['sv_projectName'];
-            const hostName = serverData['Data']['hostname'];
+                if (!response.ok) {
+                    throw new Error(
+                        `Failed to fetch server details: ${response.status} ${response.statusText}`,
+                    );
+                }
 
-            setName(projectName ?? hostName);
+                let serverData: ServerDetailsResponse;
 
-            if (iconVersion) {
-                setIconUrl(`https://servers-live.fivem.net/servers/icon/${id}/${iconVersion}.png`);
+                try {
+                    serverData = await response.json();
+                } catch (jsonError) {
+                    console.error('Failed to parse server details JSON:', jsonError);
+                    return;
+                }
+
+                const iconVersion = serverData.Data.iconVersion;
+                const hostName = serverData.Data.hostname;
+                const projectName = serverData.Data.vars.sv_projectName;
+
+                setName(projectName ?? hostName);
+
+                if (iconVersion) {
+                    setIconUrl(
+                        `https://servers-live.fivem.net/servers/icon/${id}/${iconVersion}.png`,
+                    );
+                }
+            } catch (error) {
+                console.error('Error fetching server details:', error);
             }
         },
     });
