@@ -5,7 +5,13 @@ Medal.AC = Medal.AC or {}
 
 ---@param cargo VesselCargo
 function Medal.AC.vesselDepart(cargo)
-    -- TODO
+    SendNUIMessage({
+        action = ('ac:clip:%s'):format(cargo.eventId),
+        payload = {
+            key = Config.MedalApiKey,
+            tags = cargo.tags or {}
+        }
+    })
 end
 
 RegisterNuiCallback('ac:event:toggle', function (data, cb)
