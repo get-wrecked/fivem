@@ -59,6 +59,11 @@ function Medal.AC.buildClippingUi()
         payload = Settings.clippingEnabled
     })
 
+    SendNUIMessage({
+        action = 'ac:length',
+        payload = Settings.clipLength
+    })
+
     for _, event in ipairs(Config.ClippingEvents) do
         if event.enabled then
             SendNUIMessage({
