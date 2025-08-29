@@ -19,12 +19,23 @@ export interface ClipData {
 }
 
 export const triggerClip = async (key: string, data: ClipData): Promise<void> => {
-    const response = await fetch('http://localhost:12665/api/v1/event/invoke', {
-        method: 'POST',
-        headers: {
-            publicKey: key,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    });
+    try {
+        const response = await fetch('http://localhost:12665/api/v1/event/invoke', {
+            method: 'POST',
+            headers: {
+                publicKey: key,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+                `Failed to trigger clip: ${response.status} ${response.statusText} - ${errorText}`,
+            );
+        }
+    } catch (error) {
+        console.error('Network error while triggering clip:', error);
+    }
 };
