@@ -49,7 +49,7 @@ export const Event: React.FC<{ event: EventData }> = ({ event }) => {
         fetchNui<boolean>('ac:event:enable', { payload: event.id }).then((result) => {
             setEnabled(result);
         });
-    }, []);
+    }, [event.id]);
 
     return (
         <div className='w-full h-7 p-1 flex items-center gap-1.5'>
