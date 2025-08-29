@@ -23,7 +23,7 @@ export const AutoClipping: React.FC = () => {
 
     useNuiEvent<EventData>('ac:event:register', {
         handler: (event) => {
-            setEvents(prevEvents => [...prevEvents, event]);
+            setEvents((prevEvents) => [...prevEvents, event]);
         },
     });
 
