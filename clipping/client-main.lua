@@ -88,6 +88,13 @@ RegisterNuiCallback('ac:toggle', function (toggle, cb)
     cb(true)
 end)
 
+RegisterNuiCallback('ac:length', function (length, cb)
+    Settings.clipLength = tonumber(length)
+    Settings:save()
+
+    cb(true)
+end)
+
 RegisterNuiCallback('hide', function (_, cb)
     SetNuiFocus(false, false)
     cb('ok')
