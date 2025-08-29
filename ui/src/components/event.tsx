@@ -38,6 +38,7 @@ export const Event: React.FC<{ event: EventData }> = ({ event }) => {
                     triggerActions: ['SaveClip'],
                     clipOptions: {
                         duration: Number(length) ?? 30,
+                        captureDelayMs: 1000
                     },
                 });
             }
