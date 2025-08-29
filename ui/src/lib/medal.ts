@@ -1,12 +1,12 @@
 interface ClipOptions {
     duration?: number;
-    captureDelayMs?: 1000,
-    alertType?: 'Default' | 'Disabled' | 'SoundOnly' | 'OverlayOnly'
+    captureDelayMs?: 1000;
+    alertType?: 'Default' | 'Disabled' | 'SoundOnly' | 'OverlayOnly';
 }
 
 interface OtherPlayers {
     playerId: string;
-    playerName: string
+    playerName: string;
 }
 
 export interface ClipData {
@@ -15,16 +15,16 @@ export interface ClipData {
     otherPlayers?: OtherPlayers[];
     contextTags?: { [key: string]: string };
     triggerActions?: ('SaveClip' | 'SaveScreenshot')[];
-    clipOptions?: ClipOptions
+    clipOptions?: ClipOptions;
 }
 
 export const triggerClip = async (key: string, data: ClipData): Promise<void> => {
     const response = await fetch('http://localhost:12665/api/v1/event/invoke', {
         method: 'POST',
         headers: {
-            'publicKey': key,
-            'Content-Type': 'application/json'
+            publicKey: key,
+            'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data)
-    })
-}
+        body: JSON.stringify(data),
+    });
+};
