@@ -13,7 +13,6 @@ function Medal.AC.Lookout.handlePlayerDeath()
     if details.enabled and Settings.eventToggles[eventId] then
         Medal.AC.vesselDepart({
             eventId = eventId,
-            eventName = details.title,
             tags = { 'Death' }
         })
     end
