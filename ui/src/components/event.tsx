@@ -1,7 +1,9 @@
 import type { CheckedState } from '@radix-ui/react-checkbox';
-import { fetchNui } from '@tsfx/hooks';
+import { fetchNui, useNuiEvent } from '@tsfx/hooks';
 import type React from 'react';
 import { useEffect, useState } from 'react';
+import { useClipLength } from '@/hooks/use-clip-length';
+import { triggerClip } from '@/lib/medal';
 import { Checkbox } from './ui/checkbox';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
@@ -11,7 +13,13 @@ export interface EventData {
     desc?: string;
 }
 
+interface ClipEventProps {
+    key: string;
+    tags?: string[];
+}
+
 export const Event: React.FC<{ event: EventData }> = ({ event }) => {
+    const { length } = useClipLength();
     const [enabled, setEnabled] = useState<boolean>(true);
 
     const updateEnabled = (checked: CheckedState): void => {
@@ -20,6 +28,21 @@ export const Event: React.FC<{ event: EventData }> = ({ event }) => {
         setEnabled(toggle);
         fetchNui('ac:event:toggle', { payload: { toggle, id: event.id } });
     };
+
+    useNuiEvent<ClipEventProps>(`ac:clip:${event.id}`, {
+        handler: (data) => {
+            if (enabled) {
+                triggerClip(data.key, {
+                    eventId: event.id,
+                    eventName: event.title,
+                    triggerActions: ['SaveClip'],
+                    clipOptions: {
+                        duration: Number(length) ?? 30,
+                    },
+                });
+            }
+        },
+    });
 
     useEffect(() => {
         fetchNui<boolean>('ac:event:enable', { payload: event.id }).then((result) => {
