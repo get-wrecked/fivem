@@ -1,6 +1,7 @@
 import { NuiProvider, NuiVisibilityProvider } from '@tsfx/hooks';
 import type { PropsWithChildren } from 'react';
 import NuiHandlers from './handlers/nui-handlers';
+import { ClipLengthProvider } from './providers/clip-length-provider';
 import { ServerDetailsProvider } from './providers/server-details-provider';
 
 /**
@@ -19,9 +20,11 @@ const Providers: React.FC<PropsWithChildren<{ debug?: boolean }>> = ({
         <NuiProvider debug={debug}>
             <NuiVisibilityProvider debug={debug}>
                 <ServerDetailsProvider>
-                    {/*//=-- Registers listeners for messages from Lua/CFX */}
-                    <NuiHandlers />
-                    {children}
+                    <ClipLengthProvider>
+                        {/*//=-- Registers listeners for messages from Lua/CFX */}
+                        <NuiHandlers />
+                        {children}
+                    </ClipLengthProvider>
                 </ServerDetailsProvider>
             </NuiVisibilityProvider>
         </NuiProvider>

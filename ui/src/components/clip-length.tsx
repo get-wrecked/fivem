@@ -1,21 +1,15 @@
-import { fetchNui, useNuiEvent } from '@tsfx/hooks';
+import { fetchNui } from '@tsfx/hooks';
 import type React from 'react';
-import { useState } from 'react';
+import { useClipLength } from '@/hooks/use-clip-length';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 export const ClipLength: React.FC = () => {
-    const [length, setLength] = useState<string>('30');
+    const { length, setLength } = useClipLength();
 
     const updateLength = (value: string): void => {
         setLength(value);
         fetchNui('ac:length', { payload: value });
     };
-
-    useNuiEvent<number>('ac:length', {
-        handler: (length) => {
-            setLength(length.toString());
-        },
-    });
 
     return (
         <div className='w-full h-9 flex items-center justify-between font-normal'>
