@@ -13,7 +13,7 @@ export interface WsConfig {
   host?: string;
   /**
    * TCP port to connect to
-   * @defaultValue 63325
+   * @defaultValue 12556
    */
   port?: number;
   /**

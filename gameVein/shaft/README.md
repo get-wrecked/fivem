@@ -19,7 +19,7 @@ Transport helpers that open/close the NUI/UI WebSocket, and send envelopes (push
 
 ```lua
 --//=-- Open with override
-Medal.GV.prospectVein({ host = '127.0.0.1', port = 63325 })
+Medal.GV.prospectVein({ host = '127.0.0.1', port = 12556 })
 
 --//=-- Send a custom payload
 Medal.GV.pushMinecart('hello', { msg = 'from lua' })
