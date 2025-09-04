@@ -44,7 +44,13 @@ end
 ---@param key string
 ---@return boolean
 function cache:has(key)
-    return rawget(self, key) ~= nil
+  return rawget(self, key) ~= nil
+end
+
+---Get the cached player ped, with fallback to PlayerPedId()
+---@return number
+function cache:GetCachedPed()
+  return (type(self) == 'table' and self.ped) or PlayerPedId()
 end
 
 ---Initialize the cache instance and start background thread
