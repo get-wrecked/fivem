@@ -31,7 +31,7 @@ export const NuiHandlers: React.FC = () => {
     });
 
     //=-- WebSocket controls from LUA to UI
-    //=-- Connect with optional config (host/port/protocol/path). Defaults to ws://127.0.0.1:63325
+    //=-- Connect with optional config (host/port/protocol/path). Defaults to ws://127.0.0.1:12556
     useNuiEvent<WsConfig | undefined>('ws:connect', {
         handler: (cfg) => {
             wsClient.connect(cfg ?? {});

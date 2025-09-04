@@ -23,9 +23,9 @@ Config.ClippingEvents = {
 }
 
 Config.GameVein = {
-    WebSocket = {
-        host = "127.0.0.1",
-        port = 63325,
-        protocol = "ws",
-    }
+  WebSocket = {
+    host = "127.0.0.1",
+    port = 12556,
+    protocol = "ws",
+  }
 }

@@ -42,6 +42,22 @@ function Medal.GV.Ore.assay(req)
     return Medal.GV.Ore.cfxId()
   end
 
+  if oreType == 'job' then
+    return Medal.GV.Ore.job()
+  end
+
+  if oreType == 'entityMatrix' then
+    return Medal.GV.Ore.entityMatrix()
+  end
+
+  if oreType == 'cameraMatrix' then
+    return Medal.GV.Ore.cameraMatrix()
+  end
+
+  if oreType == 'vehicle' then
+    return Medal.GV.Ore.vehicle()
+  end
+
   --//=-- Unknown ore type
   return nil
 end

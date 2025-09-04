@@ -23,7 +23,7 @@ import wsClient from '@/ws/websocket';
 wsClient.configureReconnect({ intervalMs: 5000, maxAttempts: 12 });
 
 //=-- Connect
-wsClient.connect({ host: '127.0.0.1', port: 63325, protocol: 'ws' });
+wsClient.connect({ host: '127.0.0.1', port: 12556, protocol: 'ws' });
 
 //=-- Listen for, and respond to, WebSocket messages
 const off = wsClient.onMessage((env) => {

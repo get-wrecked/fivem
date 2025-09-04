@@ -4,7 +4,7 @@
 
 --- @class WsConfigLua
 --- @field host? string          # WebSocket host (default 127.0.0.1)
---- @field port? integer         # WebSocket port (default 63325)
+--- @field port? integer         # WebSocket port (default 12556)
 --- @field protocol? WsProtocol  # WebSocket scheme (default 'ws')
 --- @field path? string          # Optional path, ex: `/socket`
 

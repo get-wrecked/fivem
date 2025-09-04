@@ -10,7 +10,7 @@ import type { WsConfig } from './types';
  */
 export const DEFAULTS: Required<Pick<WsConfig, 'host' | 'port' | 'protocol'>> & Pick<WsConfig, 'path'> = {
   host: '127.0.0.1',
-  port: 63325,
+  port: 12556,
   protocol: 'ws',
   path: undefined,
 };
