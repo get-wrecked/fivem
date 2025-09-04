@@ -38,6 +38,10 @@ function Medal.GV.Ore.assay(req)
     return Medal.GV.Ore.heartbeat()
   end
 
+  if oreType == 'cfxId' then
+    return Medal.GV.Ore.cfxId()
+  end
+
   if oreType == 'job' then
     return Medal.GV.Ore.job()
   end
