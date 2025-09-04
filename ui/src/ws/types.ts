@@ -66,6 +66,17 @@ export interface VehicleInfo {
 }
 
 /**
+ * Response from the vehicle ore, containing in-vehicle status and vehicle info.
+ *
+ * @property inVehicle - True if the player is currently in a vehicle.
+ * @property vehicleInfo - Vehicle information payload.
+ */
+export interface VehicleOreResponse {
+  inVehicle: boolean;
+  vehicleInfo: VehicleInfo;
+}
+
+/**
  * Handler invoked when a message is received
  * @param data - Parsed JSON envelope with a `type` required, and an optional `data`
  * @param raw - The original browser `MessageEvent`
