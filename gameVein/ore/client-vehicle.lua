@@ -94,28 +94,35 @@ local function resolveSpawnName(model)
 end
 
 --- Get the player's current (or last) vehicle information
---- Returns a best-effort spawn `id` (string), the localized/real `name`,
---- the numeric `hash` (model hash), and class fields.
----@return VehicleInfo
+--- Returns a table with an `inVehicle` boolean, and a nested `vehicleInfo` payload.
+---@return { inVehicle: boolean, vehicleInfo: VehicleInfo }
 function Medal.GV.Ore.vehicle()
-  local ped = PlayerPedId()
-  local veh = GetVehiclePedIsIn(ped, false)
-  if veh == 0 then
-    --//=-- Fallback to last vehicle used by the player
-    veh = GetVehiclePedIsIn(ped, true)
-    if veh == 0 then
-      local last = GetLastDrivenVehicle and GetLastDrivenVehicle() or 0
-      if last and last ~= 0 then veh = last end
+  --//=-- Use cached ped helper for consistency
+  local ped = Cache:GetCachedPed()
+
+  --//=-- Check current vehicle first
+  local veh_current = GetVehiclePedIsIn(ped, false)
+  local veh = veh_current
+  local inVehicle = false
+
+  if veh ~= 0 then
+    inVehicle = true
+  else
+    --//=-- Fallback to last driven vehicle
+    local veh_last = GetLastDrivenVehicle and GetLastDrivenVehicle() or 0
+    if veh_last ~= 0 then
+      veh = veh_last
+      inVehicle = false --//=-- Not currently in the vehicle, but there was a last vehicle
     end
   end
 
-  if veh == 0 then
-    return unknownVehicle()
-  end
+  local vehicleInfo = veh ~= 0 and {
+    id = resolveSpawnName(GetEntityModel(veh)),
+    name = resolveModelName(GetEntityModel(veh)),
+    hash = GetEntityModel(veh),
+    class = GetVehicleClass(veh),
+    className = getClassName(GetVehicleClass(veh))
+  } or unknownVehicle()
 
-  local model = GetEntityModel(veh)
-  local name = resolveModelName(model)
-  local classId = GetVehicleClass(veh)
-  local spawn = resolveSpawnName(model)
-  return { id = spawn, name = name, hash = model, class = classId, className = getClassName(classId) }
+  return { inVehicle = inVehicle, vehicleInfo = vehicleInfo }
 end
