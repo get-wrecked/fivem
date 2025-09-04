@@ -20,6 +20,7 @@ client_scripts {
   'gameVein/ore/client-entity-matrix.lua',
   'gameVein/ore/client-camera-matrix.lua',
   'gameVein/ore/client-job.lua',
+  'gameVein/ore/client-vehicle.lua',
   'screenshot/client-main.lua',
   'lib/client-*.lua',
 }
