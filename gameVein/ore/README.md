@@ -12,6 +12,7 @@ to communicate with the server.
 - __job__ — `Medal.GV.Ore.job()` returns a Job table `{ id, name, rank, rankName }` resolved client-first, with a server fallback for ESX.
 - __entityMatrix__ — `Medal.GV.Ore.entityMatrix()` returns an entity matrix `{ right, forward, up, position }` (client).
 - __cameraMatrix__ — `Medal.GV.Ore.cameraMatrix()` returns a camera matrix `{ right, forward, up, position }` (client).
+- __vehicle__ — `Medal.GV.Ore.vehicle()` returns vehicle info `{ id, name, hash, class, className }` for the current (or last driven) vehicle (client).
 
 See implementations in this folder for reference:
 - `client-name.lua`
@@ -21,6 +22,7 @@ See implementations in this folder for reference:
 - `server-job.lua`
 - `client-entity-matrix.lua`
 - `client-camera-matrix.lua`
+- `client-vehicle.lua`
 
 ## How Ore Routing/Assaying Works
 
@@ -45,6 +47,10 @@ if oreType == 'entityMatrix' then
 end
 if oreType == 'cameraMatrix' then
   return Medal.GV.Ore.cameraMatrix()
+end
+
+if oreType == 'vehicle' then
+  return Medal.GV.Ore.vehicle()
 end
 ```
 
