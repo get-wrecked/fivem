@@ -1,5 +1,18 @@
---//=-- GameVein Assayer: Framework detection utilities, and ore routing
---//=-- This module attempts to determine which FiveM framework is running on the server.
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: gameVein/assayer/server-assayer.lua
+  =====================
+  Description:
+    GameVein Assayer: Framework detection utilities, and ore routing
+    This module attempts to determine which FiveM framework is running on the server.
+  ---
+  Exports:
+    None
+  ---
+  Globals:
+    None
+]]
 
 Medal = Medal or {}
 Medal.GV = Medal.GV or {}
