@@ -1,5 +1,18 @@
---//=-- GameVein Ore: Player Name
---//=-- Retrieves the player's name, differing depending on the server's framework
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: gameVein/ore/client-name.lua
+  =====================
+  Description:
+    GameVein Ore: Player Name
+    Retrieves the player's name, differing depending on the server's framework
+  ---
+  Exports:
+    None
+  ---
+  Globals:
+    - Medal.GV.Ore.name : Get the current client's player name
+]]
 
 Medal = Medal or {}
 Medal.GV = Medal.GV or {}
