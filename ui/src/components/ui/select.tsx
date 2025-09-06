@@ -1,3 +1,27 @@
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/components/ui/select.tsx
+  =====================
+  Description:
+    The select component for the UI
+  ---
+  Exports & Exported Components:
+    - Select : The select component
+    - SelectContent : The select component's content component
+    - SelectGroup : The select component's group component
+    - SelectItem : The select component's item component
+    - SelectLabel : The select component's label component
+    - SelectScrollDownButton : The select component's scroll down button component
+    - SelectScrollUpButton : The select component's scroll up button component
+    - SelectSeparator : The select component's separator component
+    - SelectTrigger : The select component's trigger component
+    - SelectValue : The select component's value component
+  ---
+  Globals:
+    None
+*/
+
 import * as SelectPrimitive from '@radix-ui/react-select';
 import type * as React from 'react';
 
