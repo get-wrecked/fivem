@@ -1,4 +1,17 @@
---//=-- Centralized type aliases for GameVein
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: gameVein/__types.lua
+  =====================
+  Description:
+    Centralized type aliases for GameVein
+  ---
+  Exports:
+    None
+  ---
+  Globals:
+    None
+]]
 
 ---@meta
 
