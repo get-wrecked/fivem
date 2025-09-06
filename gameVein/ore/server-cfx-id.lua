@@ -1,4 +1,18 @@
----GameVein Ore: Cfx Id (server)
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: gameVein/ore/server-cfx-id.lua
+  =====================
+  Description:
+    GameVein Ore: Cfx Id (server)
+    Retrieves the server's Cfx Id from the web_baseUrl convar
+  ---
+  Exports:
+    None
+  ---
+  Globals:
+    None
+]]
 
 local serverId = nil
 
