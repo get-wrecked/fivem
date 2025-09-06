@@ -1,3 +1,18 @@
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/providers/clip-length-provider.tsx
+  =====================
+  Description:
+    The provider for clip length context
+  ---
+  Exports & Exported Components:
+    - ClipLengthProvider : The provider for clip length context
+  ---
+  Globals:
+    None
+*/
+
 import { useNuiEvent } from '@tsfx/hooks';
 import type { PropsWithChildren } from 'react';
 import { useState } from 'react';
