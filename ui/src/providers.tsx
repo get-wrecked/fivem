@@ -1,3 +1,18 @@
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/providers.tsx
+  =====================
+  Description:
+    The React app's providers helper
+  ---
+  Exports & Exported Components:
+    - Providers : The providers component
+  ---
+  Globals:
+    None
+*/
+
 import { NuiProvider, NuiVisibilityProvider } from '@tsfx/hooks';
 import type { PropsWithChildren } from 'react';
 import NuiHandlers from './handlers/nui-handlers';
