@@ -1,3 +1,18 @@
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/hooks/use-server-details.ts
+  =====================
+  Description:
+    The hook for server details context
+  ---
+  Exports & Exported Components:
+    - useServerDetails : The hook for server details context
+  ---
+  Globals:
+    None
+*/
+
 import { useContext } from 'react';
 import {
     ServerDetailsContext,
