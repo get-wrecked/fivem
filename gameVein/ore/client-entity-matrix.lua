@@ -1,6 +1,18 @@
---//=-- GameVein Ore: Entity Matrix (client)
---//=--   A helper function to retrieve an entity's world matrix vectors via 
---//=--   the `GET_ENTITY_MATRIX` native.
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: gameVein/ore/client-entity-matrix.lua
+  =====================
+  Description:
+    GameVein Ore: Entity Matrix (client)
+    A helper function to retrieve an entity's world matrix vectors via the GET_ENTITY_MATRIX native.
+  ---
+  Exports:
+    None
+  ---
+  Globals:
+    - Medal.GV.Ore.entityMatrix : Get an entity's world-space matrix, defaulting to the player's ped if none is provided
+]]
 
 Medal = Medal or {}
 Medal.GV = Medal.GV or {}
