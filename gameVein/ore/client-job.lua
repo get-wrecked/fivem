@@ -64,7 +64,6 @@ end
 ---@param key 'qb'|'qbx'
 ---@return Job
 local function getQbJobClient(key)
-  --//=-- key: 'qb' | 'qbx'
   local core = nil
   if key == 'qbx' then
     core = safeExport('qbx_core', 'GetCoreObject') or rawget(_G, 'QBCore')
