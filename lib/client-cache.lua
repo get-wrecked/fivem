@@ -4,6 +4,9 @@
 ---@field ped number The current player ped entity (changes when spawning/respawning)
 local cache = {}
 
+--- Cache update interval in milliseconds
+local CACHE_UPDATE_INTERVAL = 100
+
 ---@protected
 cache.__index = function (self, key)
     local value = rawget(self, key)
@@ -41,7 +44,13 @@ end
 ---@param key string
 ---@return boolean
 function cache:has(key)
-    return rawget(self, key) ~= nil
+  return rawget(self, key) ~= nil
+end
+
+---Get the cached player ped, with fallback to PlayerPedId()
+---@return number
+function cache:GetCachedPed()
+  return (type(self) == 'table' and self.ped) or PlayerPedId()
 end
 
 ---Initialize the cache instance and start background thread
@@ -53,7 +62,7 @@ function cache:initialize()
 
     Citizen.CreateThread(function ()
         while true do
-            Citizen.Wait(100)
+            Citizen.Wait(CACHE_UPDATE_INTERVAL)
 
             local ped = PlayerPedId()
 

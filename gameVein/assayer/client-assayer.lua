@@ -38,6 +38,10 @@ function Medal.GV.Ore.assay(req)
     return Medal.GV.Ore.heartbeat()
   end
 
+  if oreType == 'cfxId' then
+    return Medal.GV.Ore.cfxId()
+  end
+
   if oreType == 'job' then
     return Medal.GV.Ore.job()
   end
@@ -48,6 +52,10 @@ function Medal.GV.Ore.assay(req)
 
   if oreType == 'cameraMatrix' then
     return Medal.GV.Ore.cameraMatrix()
+  end
+
+  if oreType == 'vehicle' then
+    return Medal.GV.Ore.vehicle()
   end
 
   --//=-- Unknown ore type

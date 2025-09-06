@@ -9,25 +9,30 @@ shared_scripts {
 }
 
 client_scripts {
-  'clipping/client-main.lua',
+  'lib/client-*.lua',
   'gameVein/client-main.lua',
   'gameVein/shaft/client-overseer.lua',
   'gameVein/shaft/client-minecart.lua',
   'gameVein/assayer/client-assayer.lua',
   'gameVein/ore/client-name.lua',
-  'gameVein/ore/client-community-name.lua',
   'gameVein/ore/client-heartbeat.lua',
+  'gameVein/ore/client-cfx-id.lua',
   'gameVein/ore/client-entity-matrix.lua',
   'gameVein/ore/client-camera-matrix.lua',
   'gameVein/ore/client-job.lua',
+  'gameVein/ore/client-vehicle.lua',
+  'clipping/client-*.lua',
+  'clipping/lookout/client-*.lua',
+  'clipping/signal/client-*.lua',
+  'clipping/vessel/client-*.lua',
   'superSoaker/client-main.lua',
-  'lib/client-*.lua',
 }
 
 server_scripts {
-  'clipping/server-main.lua' ,
+  'lib/server-*.lua',
   'gameVein/server-main.lua',
   'gameVein/assayer/server-assayer.lua',
+  'gameVein/ore/server-cfx-id.lua',
   'gameVein/ore/server-community-name.lua',
   'gameVein/ore/server-job.lua',
   'superSoaker/server-main.lua',
