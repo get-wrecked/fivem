@@ -1,5 +1,17 @@
---//=-- Auto Clipping Lookout: Player Death
---//=-- Handles the Player Death Signal
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: clipping/lookout/client-player-death.lua
+  =====================
+  Description:
+    Handles player death events for auto clipping
+  ---
+  Exports:
+    None
+  ---
+  Globals:
+    - Medal.AC.Lookout.handlePlayerDeath : Handles player death events for auto clipping
+]]
 
 Medal = Medal or {}
 Medal.AC = Medal.AC or {}
