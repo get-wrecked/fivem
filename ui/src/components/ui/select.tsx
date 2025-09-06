@@ -7,16 +7,16 @@
     The select component for the UI
   ---
   Exports & Exported Components:
-    - Select : The select component
-    - SelectContent : The select component's content component
-    - SelectGroup : The select component's group component
-    - SelectItem : The select component's item component
-    - SelectLabel : The select component's label component
-    - SelectScrollDownButton : The select component's scroll down button component
-    - SelectScrollUpButton : The select component's scroll up button component
-    - SelectSeparator : The select component's separator component
-    - SelectTrigger : The select component's trigger component
-    - SelectValue : The select component's value component
+    - Select : Root container for the select dropdown component
+    - SelectContent : Container for select dropdown options
+    - SelectGroup : Groups related select items together
+    - SelectItem : Represents an individual selectable option
+    - SelectLabel : Label for a group of select items
+    - SelectScrollDownButton : Button to scroll down through options
+    - SelectScrollUpButton : Button to scroll up through options
+    - SelectSeparator : Visual separator between select items or groups
+    - SelectTrigger : Clickable element that opens the select dropdown
+    - SelectValue : Displays the currently selected value
   ---
   Globals:
     None
