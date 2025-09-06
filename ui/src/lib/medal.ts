@@ -15,7 +15,7 @@
 
 interface ClipOptions {
     duration?: number;
-    captureDelayMs?: 1000;
+    captureDelayMs?: number;
     alertType?: 'Default' | 'Disabled' | 'SoundOnly' | 'OverlayOnly';
 }
 
