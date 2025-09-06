@@ -1,3 +1,18 @@
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/components/auto-clipping.tsx
+  =====================
+  Description:
+    Auto Clipping component for the UI
+  ---
+  Exports & Exported Components:
+    - AutoClipping : The main component for the auto clipping UI
+  ---
+  Globals:
+    None
+*/
+
 import { fetchNui, useNuiEvent } from '@tsfx/hooks';
 import clsx from 'clsx';
 import type React from 'react';

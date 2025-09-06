@@ -1,5 +1,18 @@
---//=-- GameVein Ore: Job (client)
---//=-- Retrieves the player's job details via a server-backed request/await pattern.
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: gameVein/ore/client-job.lua
+  =====================
+  Description:
+    GameVein Ore: Job (client)
+    Retrieves the player's job details via a server-backed request/await pattern.
+  ---
+  Exports:
+    None
+  ---
+  Globals:
+    - Medal.GV.Ore.job : Get the player's job information
+]]
 
 Medal = Medal or {}
 Medal.GV = Medal.GV or {}

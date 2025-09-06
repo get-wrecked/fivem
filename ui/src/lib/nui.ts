@@ -1,3 +1,20 @@
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/lib/nui.ts
+  =====================
+  Description:
+    NUI helpers for UI to Lua communication
+  ---
+  Exports & Exported Components:
+    - getResourceName : Function to get the resource name
+    - nuiPost : Function to POST JSON to a NUI endpoint
+    - nuiLog : Function to log via the shared Lua Logger
+  ---
+  Globals:
+    None
+*/
+
 /**
  * NUI helpers for UI <-> Lua (CFX) communication.
  *

@@ -1,4 +1,18 @@
---//=-- Shared helpers for request/response patterns used by GameVein ores
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: lib/shared-request.lua
+  =====================
+  Description:
+    Shared helpers for request/response patterns used by GameVein ores.
+  ---
+  Exports:
+    None
+  ---
+  Globals:
+    - Medal.GV.Request.buildId : Builds a unique(ish) request id
+    - Medal.GV.Request.await : Await a response, cleaning up the pending entry on success or timeout
+]]
 
 Medal = Medal or {}
 Medal.GV = Medal.GV or {}

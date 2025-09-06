@@ -1,3 +1,18 @@
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: lib/shared-logger.lua
+  =====================
+  Description:
+    Shared logger module
+  ---
+  Exports:
+    None
+  ---
+  Globals:
+    - Logger: The Logger module table
+]]
+
 local levels = {
     error = 1,
     warning = 2,
@@ -39,7 +54,7 @@ end
 
 ---#### Global Logger Module
 ---Provides logging functionality with different severity levels.
----All functions accept varaible arguments and forward them to the underlying log function.
+---All functions accept variable arguments and forward them to the underlying log function.
 Logger = {
     ---#### Log an error message
     ---Logs messages at the ERROR level, typically used for serious issues

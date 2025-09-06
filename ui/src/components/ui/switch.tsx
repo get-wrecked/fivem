@@ -1,3 +1,18 @@
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/components/ui/switch.tsx
+  =====================
+  Description:
+    The switch component for the UI
+  ---
+  Exports & Exported Components:
+    - Switch : The switch component
+  ---
+  Globals:
+    None
+*/
+
 import * as SwitchPrimitive from '@radix-ui/react-switch';
 import type * as React from 'react';
 

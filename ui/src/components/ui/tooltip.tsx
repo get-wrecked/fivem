@@ -1,3 +1,21 @@
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/components/ui/tooltip.tsx
+  =====================
+  Description:
+    The tooltip component for the UI
+  ---
+  Exports & Exported Components:
+    - Tooltip : The tooltip component
+    - TooltipTrigger : The tooltip component's trigger component
+    - TooltipContent : The tooltip component's content component
+    - TooltipProvider : The tooltip component's provider component
+  ---
+  Globals:
+    None
+*/
+
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import type * as React from 'react';
 

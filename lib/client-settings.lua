@@ -1,3 +1,18 @@
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: lib/client-settings.lua
+  =====================
+  Description:
+    Client settings management, saving and loading from KVP.
+  ---
+  Exports:
+    None
+  ---
+  Globals:
+    - Settings: The Settings instance table
+]]
+
 ---@class Settings
 ---@field clipLength number
 ---@field clippingEnabled boolean

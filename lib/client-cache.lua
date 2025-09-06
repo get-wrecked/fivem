@@ -1,3 +1,18 @@
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: lib/client-cache.lua
+  =====================
+  Description:
+    Client-sided cache management
+  ---
+  Exports:
+    None
+  ---
+  Globals:
+    - Cache: Cache instance/table
+]]
+
 ---@class Cache
 ---@field player number The local player index
 ---@field playerSrc number The player server id

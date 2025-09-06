@@ -1,6 +1,19 @@
---//=-- GameVein Ore: Vehicle (client)
---//=-- Provides the current (or last) player's vehicle identifier suitable for spawning,
---//=-- including the model hash and a human-readable name with class metadata.
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: gameVein/ore/client-vehicle.lua
+  =====================
+  Description:
+    GameVein Ore: Vehicle (client)
+    Provides the current (or last) player's vehicle identifier suitable for spawning,
+    including the model hash and a human-readable name with class metadata.
+  ---
+  Exports:
+    None
+  ---
+  Globals:
+    - Medal.GV.Ore.vehicle : Get the player's current (or last) vehicle information
+]]
 
 Medal = Medal or {}
 Medal.GV = Medal.GV or {}

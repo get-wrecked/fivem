@@ -1,3 +1,18 @@
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/components/clip-length.tsx
+  =====================
+  Description:
+    Clip length component for the UI
+  ---
+  Exports & Exported Components:
+    - ClipLength: The clip length component
+  ---
+  Globals:
+    None
+*/
+
 import { fetchNui } from '@tsfx/hooks';
 import type React from 'react';
 import { useClipLength } from '@/hooks/use-clip-length';

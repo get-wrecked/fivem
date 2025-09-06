@@ -1,3 +1,18 @@
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/providers/server-details-provider.tsx
+  =====================
+  Description:
+    The provider for server details context
+  ---
+  Exports & Exported Components:
+    - ServerDetailsProvider : The provider for server details context
+  ---
+  Globals:
+    None
+*/
+
 import { useNuiEvent } from '@tsfx/hooks';
 import type React from 'react';
 import { type PropsWithChildren, useState } from 'react';

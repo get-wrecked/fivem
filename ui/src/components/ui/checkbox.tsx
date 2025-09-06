@@ -1,3 +1,18 @@
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/components/ui/checkbox.tsx
+  =====================
+  Description:
+    A checkbox component for the UI
+  ---
+  Exports & Exported Components:
+    - Checkbox : The checkbox component
+  ---
+  Globals:
+    None
+*/
+
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import type * as React from 'react';
 

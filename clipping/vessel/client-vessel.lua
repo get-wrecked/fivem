@@ -1,4 +1,19 @@
---//=-- Auto Clipping Vessel: Sends normalized JSON payloads to NUI recorder connection
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: clipping/vessel/client-vessel.lua
+  =====================
+  Description:
+    Sends normalized JSON payloads to NUI recorder connection
+  ---
+  Exports:
+    NUI Callbacks:
+      - ac:event:toggle : Toggles an event's clipping state
+      - ac:event:enable : Checks if an event is enabled
+  ---
+  Globals:
+    - Medal.AC.vesselDepart : Sends normalized JSON payloads to NUI Medal recorder connection
+]]
 
 Medal = Medal or {}
 Medal.AC = Medal.AC or {}

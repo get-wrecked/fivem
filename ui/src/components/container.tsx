@@ -1,3 +1,18 @@
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/components/container.tsx
+  =====================
+  Description:
+    The container component for the UI
+  ---
+  Exports & Exported Components:
+    - Container : The container component
+  ---
+  Globals:
+    None
+*/
+
 import { useNuiVisibility } from '@tsfx/hooks';
 import type React from 'react';
 import type { PropsWithChildren } from 'react';

@@ -1,5 +1,18 @@
---//=-- GameVein Ore: Heartbeat
---//=-- Data for round-trip diagnostics
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: gameVein/ore/client-heartbeat.lua
+  =====================
+  Description:
+    GameVein Ore: Heartbeat
+    Provides data for round-trip diagnostics
+  ---
+  Exports:
+    None
+  ---
+  Globals:
+    - Medal.GV.Ore.heartbeat : Returns a heartbeat payload
+]]
 
 Medal = Medal or {}
 Medal.GV = Medal.GV or {}

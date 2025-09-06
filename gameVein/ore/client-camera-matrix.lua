@@ -1,5 +1,18 @@
---//=-- GameVein Ore: Camera Matrix (client)
---//=--   A helper function to retrieve a camera's world matrix vectors via GET_CAM_MATRIX.
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: gameVein/ore/client-camera-matrix.lua
+  =====================
+  Description:
+    GameVein Ore: Camera Matrix (client)
+    A helper function to retrieve a camera's world matrix vectors via GET_CAM_MATRIX.
+  ---
+  Exports:
+    None
+  ---
+  Globals:
+    - Medal.GV.Ore.cameraMatrix : Returns a camera's world-space matrix: right, forward, up, and position vectors
+]]
 
 Medal = Medal or {}
 Medal.GV = Medal.GV or {}

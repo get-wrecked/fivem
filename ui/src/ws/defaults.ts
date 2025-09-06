@@ -1,3 +1,18 @@
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/ws/defaults.ts
+  =====================
+  Description:
+    The default WebSocket configuration
+  ---
+  Exports & Exported Components:
+    - DEFAULTS : The default WebSocket configuration
+  ---
+  Globals:
+    None
+*/
+
 import type { WsConfig } from './types';
 
 /**

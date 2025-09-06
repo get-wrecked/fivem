@@ -1,3 +1,27 @@
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/components/ui/select.tsx
+  =====================
+  Description:
+    The select component for the UI
+  ---
+  Exports & Exported Components:
+    - Select : Root container for the select dropdown component
+    - SelectContent : Container for select dropdown options
+    - SelectGroup : Groups related select items together
+    - SelectItem : Represents an individual selectable option
+    - SelectLabel : Label for a group of select items
+    - SelectScrollDownButton : Button to scroll down through options
+    - SelectScrollUpButton : Button to scroll up through options
+    - SelectSeparator : Visual separator between select items or groups
+    - SelectTrigger : Clickable element that opens the select dropdown
+    - SelectValue : Displays the currently selected value
+  ---
+  Globals:
+    None
+*/
+
 import * as SelectPrimitive from '@radix-ui/react-select';
 import type * as React from 'react';
 
