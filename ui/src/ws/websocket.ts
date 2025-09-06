@@ -1,3 +1,18 @@
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/ws/websocket.ts
+  =====================
+  Description:
+    WebSocket client implementation
+  ---
+  Exports & Exported Components:
+    - wsClient : The WebSocket client instance
+  ---
+  Globals:
+    None
+*/
+
 //=-- WebSocket client public module: types + implementation
 import { WsConfig, WsEvent, MessageHandler, OpenHandler, ErrorHandler, CloseHandler, WsEnvelope } from './types';
 import { DEFAULTS } from './defaults';
@@ -36,6 +51,7 @@ class WsClient {
   private reconnectIntervalMs = 30_000;
   private reconnectTimer: number | null = null;
   private intentionalClose = false;
+  private reconnectAttempts = 0;
 
   /**
    * Connect or reconnect the client.
