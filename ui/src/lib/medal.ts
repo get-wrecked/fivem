@@ -1,3 +1,18 @@
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/lib/medal.ts
+  =====================
+  Description:
+    Medal.tv Recorder client API functions for the UI/NUI
+  ---
+  Exports & Exported Components:
+    - triggerClip : a function to trigger a clip with the Medal.tv Recorder client
+  ---
+  Globals:
+    None
+*/
+
 interface ClipOptions {
     duration?: number;
     captureDelayMs?: 1000;
