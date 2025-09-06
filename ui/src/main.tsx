@@ -1,3 +1,18 @@
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/main.tsx
+  =====================
+  Description:
+    Root application component for the UI
+  ---
+  Exports & Exported Components:
+    - App : The root application component
+  ---
+  Globals:
+    None
+*/
+
 import type React from 'react';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
