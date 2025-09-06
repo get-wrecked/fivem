@@ -1,3 +1,18 @@
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/handlers/nui-handlers.tsx
+  =====================
+  Description:
+    The NUI message handlers component
+  ---
+  Exports & Exported Components:
+    - NuiHandlers : The NUI message handlers component
+  ---
+  Globals:
+    None
+*/
+
 import React, { useEffect } from 'react';
 import { useNuiEvent, useNuiVisibility } from '@tsfx/hooks';
 import wsClient from '../ws/websocket';
