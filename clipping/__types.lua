@@ -1,4 +1,17 @@
---//=-- Centralized type aliases for Auto Clipping
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: clipping/__types.lua
+  =====================
+  Description:
+    Centralized type aliases for Auto Clipping
+  ---
+  Exports:
+    None
+  ---
+  Globals:
+    None
+]]
 
 ---@meta
 
