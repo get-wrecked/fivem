@@ -1,3 +1,19 @@
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/components/ui/scroll-area.tsx
+  =====================
+  Description:
+    Scrolling related components for the UI
+  ---
+  Exports & Exported Components:
+    - ScrollArea : The scroll area component
+    - ScrollBar : The scrollbar component
+  ---
+  Globals:
+    None
+*/
+
 import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area';
 import type React from 'react';
 
