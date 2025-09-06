@@ -1,4 +1,17 @@
---//=-- The client-sided `Lib` entrypoint
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: lib/client-main.lua
+  =====================
+  Description:
+    Client-sided library entrypoint
+  ---
+  Exports:
+    None
+  ---
+  Globals:
+    - GetEntityServerId : Gets the server ID of an entity if it's a player
+]]
 
 ---Get the supplied entity player server id if entity is a player
 ---@param entity number A client entity id
