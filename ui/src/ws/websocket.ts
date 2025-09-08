@@ -109,7 +109,6 @@ class WsClient {
                 }
                 this.reconnectTimer = null;
             }
-            this.reconnectAttempts = 0; //=-- Reset attempts on a successful connection
             try {
                 void nuiLog(`[ws] connected: ${url}`, 'info');
             } catch {
