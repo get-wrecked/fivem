@@ -14,14 +14,12 @@
     None
 ]]
 
+  
+
 Medal = Medal or {}
 Medal.GV = Medal.GV or {}
 Medal.GV.Ore = Medal.GV.Ore or {}
-
---- Client-side Assayer API
----@class GameVeinAssayerClient
----@field getFrameworkKey fun(timeoutMs?: integer): FrameworkKey
----@type GameVeinAssayerClient
+--//=-- Client-side Assayer routes ore requests only (framework detection moved to services)
 Medal.GV.Assayer = Medal.GV.Assayer or {}
 
 --- Assay a requested ore, and return the relevant data
@@ -73,24 +71,4 @@ function Medal.GV.Ore.assay(req)
 
   --//=-- Unknown ore type
   return nil
-end
-
---//=-- In-flight results, keyed by request id
-local pendingResults = {}
-
-RegisterNetEvent('medal:gv:assayer:resFrameworkKey', function(reqId, key)
-  pendingResults[reqId] = key
-end)
-
---- Request the server framework key and wait for a response
---- @param timeoutMs? integer Optional timeout in milliseconds (default 5000)
---- @return FrameworkKey key The detected framework key, or 'unknown' on timeout
-function Medal.GV.Assayer.getFrameworkKey(timeoutMs)
-  --// TODO: Create a thread here ??? 
-  local reqId = Medal.GV.Request.buildId()
-  --//=-- Send request to server
-  TriggerServerEvent('medal:gv:assayer:reqFrameworkKey', reqId)
-
-  --//=-- Await response with timeout
-  return Medal.GV.Request.await(pendingResults, reqId, timeoutMs or 5000, 'unknown')
 end
