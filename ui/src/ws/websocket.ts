@@ -60,7 +60,6 @@ class WsClient {
     private reconnectIntervalMs = 30_000;
     private reconnectTimer: number | null = null;
     private intentionalClose = false;
-    private reconnectAttempts = 0;
 
     /**
      * Connect or reconnect the client.
