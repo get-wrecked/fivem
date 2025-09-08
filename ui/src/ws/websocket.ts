@@ -121,11 +121,7 @@ class WsClient {
             let env: WsEnvelope;
             try {
                 const parsed = JSON.parse(String(ev.data));
-                if (
-                    parsed &&
-                    typeof parsed === 'object' &&
-                    typeof (parsed as any).type === 'string'
-                ) {
+                if (parsed && typeof parsed === 'object' && typeof parsed.type === 'string') {
                     env = parsed as WsEnvelope;
                 } else {
                     //=-- Fallback: Wrap non-envelope JSON into a raw envelope
@@ -248,7 +244,7 @@ class WsClient {
             } catch {
                 //=-- Last resort: send a minimal, descriptive envelope
                 const fallback = JSON.stringify({
-                    type: (env as any).type ?? 'raw',
+                    type: env.type ?? 'raw',
                     data: '[Unserializable payload]',
                 });
                 this.ws.send(fallback);
