@@ -35,8 +35,10 @@
  * console.log(resource);
  */
 export function getResourceName(): string {
-  const w = window as any;
-  return typeof w.GetParentResourceName === 'function' ? w.GetParentResourceName() : 'medal--fivem-resource';
+    const w = window as any;
+    return typeof w.GetParentResourceName === 'function'
+        ? w.GetParentResourceName()
+        : 'medal--fivem-resource';
 }
 
 /**
@@ -58,18 +60,19 @@ export type NuiLogLevel = 'info' | 'error' | 'warning' | 'debug';
  * }
  */
 export async function nuiPost<T = unknown>(endpoint: string, body?: unknown): Promise<T | null> {
-  const resource = getResourceName();
-  try {
-    const res = await fetch(`https://${resource}/${endpoint}`, { // TODO: Swap to fetchNui?
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-      body: JSON.stringify(body ?? {}),
-    });
-    //=-- Maybe not every NUI endpoint returns JSON; kill off the errors
-    return (await res.json().catch(() => null)) as T | null;
-  } catch {
-    return null;
-  }
+    const resource = getResourceName();
+    try {
+        const res = await fetch(`https://${resource}/${endpoint}`, {
+            // TODO: Swap to fetchNui?
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+            body: JSON.stringify(body ?? {}),
+        });
+        //=-- Maybe not every NUI endpoint returns JSON; kill off the errors
+        return (await res.json().catch(() => null)) as T | null;
+    } catch {
+        return null;
+    }
 }
 
 /**
@@ -83,18 +86,26 @@ export async function nuiPost<T = unknown>(endpoint: string, body?: unknown): Pr
  * await nuiLog({ payload: 123 }, 'debug');
  */
 export async function nuiLog(data: unknown, level: NuiLogLevel = 'info'): Promise<unknown> {
-  const args = Array.isArray(data) ? data : [data];
-  const payload = { level, args } as Record<string, unknown>;
-  try {
-    const res = await nuiPost('ws:log', payload);
-    //=-- Fallback to console when NUI endpoint returns no JSON / not available
-    if (res === null) {
-      try { console.log('[ws:log]', level, ...(args as unknown[])); } catch { /*//=-- ignore */ }
+    const args = Array.isArray(data) ? data : [data];
+    const payload = { level, args } as Record<string, unknown>;
+    try {
+        const res = await nuiPost('ws:log', payload);
+        //=-- Fallback to console when NUI endpoint returns no JSON / not available
+        if (res === null) {
+            try {
+                console.log('[ws:log]', level, ...(args as unknown[]));
+            } catch {
+                /*//=-- ignore */
+            }
+        }
+        return res as unknown;
+    } catch {
+        //=-- Fallback to console logging if NUI request fails
+        try {
+            console.log('[ws:log]', level, ...(args as unknown[]));
+        } catch {
+            /*//=-- ignore */
+        }
+        return null as unknown;
     }
-    return res as unknown;
-  } catch {
-    //=-- Fallback to console logging if NUI request fails
-    try { console.log('[ws:log]', level, ...(args as unknown[])); } catch { /*//=-- ignore */ }
-    return null as unknown;
-  }
 }

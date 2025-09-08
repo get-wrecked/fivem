@@ -13,11 +13,12 @@
     None
 */
 
-import React, { useEffect } from 'react';
 import { useNuiEvent, useNuiVisibility } from '@tsfx/hooks';
-import wsClient from '../ws/websocket';
-import type { WsConfig, WsEnvelope } from '../ws/types';
+import type React from 'react';
+import { useEffect } from 'react';
 import { nuiLog, nuiPost } from '../lib/nui';
+import type { WsConfig, WsEnvelope } from '../ws/types';
+import wsClient from '../ws/websocket';
 /**
  * NUI message handlers component.
  *
@@ -65,7 +66,12 @@ export const NuiHandlers: React.FC = () => {
                 }
 
                 //=-- Object: With `{ type }` is considered an envelope already
-                if (value && typeof value === 'object' && 'type' in (value as any) && typeof (value as any).type === 'string') {
+                if (
+                    value &&
+                    typeof value === 'object' &&
+                    'type' in (value as any) &&
+                    typeof (value as any).type === 'string'
+                ) {
                     wsClient.send(value as WsEnvelope);
                     return;
                 }
@@ -82,8 +88,9 @@ export const NuiHandlers: React.FC = () => {
     //=-- Close the socket, optionally with code/reason
     useNuiEvent<{ code?: number; reason?: string } | void>('ws:close', {
         handler: (v) => {
-            const code = (v && typeof v === 'object' && 'code' in v) ? (v as any).code : undefined;
-            const reason = (v && typeof v === 'object' && 'reason' in v) ? (v as any).reason : undefined;
+            const code = v && typeof v === 'object' && 'code' in v ? (v as any).code : undefined;
+            const reason =
+                v && typeof v === 'object' && 'reason' in v ? (v as any).reason : undefined;
             wsClient.close(code, reason);
         },
     });
@@ -101,7 +108,9 @@ export const NuiHandlers: React.FC = () => {
                     (async () => {
                         try {
                             await nuiPost('ws:minecart', { type: 'heartbeat' });
-                        } catch { /*//=-- ignore */ }
+                        } catch {
+                            /*//=-- ignore */
+                        }
                     })();
                 }
             }
@@ -117,7 +126,11 @@ export const NuiHandlers: React.FC = () => {
                 if (wasMounted) {
                     void nuiLog({ event: 'ws:onMessage:off-failed', err }, 'warning');
                 } else {
-                    try { console.warn('[ws:onMessage:off-failed]', err); } catch { /*//=-- ignore */ }
+                    try {
+                        console.warn('[ws:onMessage:off-failed]', err);
+                    } catch {
+                        /*//=-- ignore */
+                    }
                 }
             }
         };
