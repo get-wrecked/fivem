@@ -14,10 +14,10 @@
     None
 ]]
 
----Shared helper alias: use Assayer.safeExport
+---Shared helper alias: use Framework service safeExport
 ---@param ... any
 ---@return any|nil
-local safeExport = (Medal and Medal.GV and Medal.GV.Assayer and Medal.GV.Assayer.safeExport) or function(...)
+local safeExport = (Medal and Medal.Services and Medal.Services.Framework and Medal.Services.Framework.safeExport) or function(...)
   return nil
 end
 
@@ -64,7 +64,7 @@ local function handleReqJob(requestId)
   --//=-- Server is authoritative only for ESX; other frameworks should be resolved client-side
   
   ---@type FrameworkKey
-  local key = Medal.GV and Medal.GV.Assayer and Medal.GV.Assayer.detectFramework and Medal.GV.Assayer.detectFramework(false) or 'unknown'
+  local key = Medal.Services and Medal.Services.Framework and Medal.Services.Framework.detectFramework and Medal.Services.Framework.detectFramework(false) or 'unknown'
 
   ---@type Job
   local data = unknownJob()
