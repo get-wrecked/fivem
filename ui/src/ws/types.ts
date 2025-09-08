@@ -28,6 +28,7 @@ export interface WsConfig {
 }
 
 export type WsEvent = 'open' | 'message' | 'error' | 'close';
+export type WsHandler = OpenHandler | MessageHandler | ErrorHandler | CloseHandler;
 
 /**
  * A JSON envelope for our WebSocket messages

@@ -24,6 +24,7 @@ import type {
     WsConfig,
     WsEnvelope,
     WsEvent,
+    WsHandler,
 } from './types';
 
 export * from './types';
@@ -288,10 +289,7 @@ class WsClient {
 
     //=-- Internal emitter/add helpers
     private emit = (event: WsEvent, ev: any) => {
-        const map: Record<
-            WsEvent,
-            Set<OpenHandler | MessageHandler | ErrorHandler | CloseHandler>
-        > = {
+        const map: Record<WsEvent, Set<WsHandler>> = {
             open: this.onOpenHandlers,
             message: this.onMessageHandlers,
             error: this.onErrorHandlers,
@@ -307,15 +305,13 @@ class WsClient {
         }
     };
 
-    private add = (event: Exclude<WsEvent, 'message'>, handler: any) => {
-        const map: Record<
-            Exclude<WsEvent, 'message'>,
-            Set<OpenHandler | ErrorHandler | CloseHandler>
-        > = {
+    private add = (event: Exclude<WsEvent, 'message'>, handler: WsHandler) => {
+        const map: Record<Exclude<WsEvent, 'message'>, Set<WsHandler>> = {
             open: this.onOpenHandlers,
             error: this.onErrorHandlers,
             close: this.onCloseHandlers,
         };
+
         map[event].add(handler);
         return () => map[event].delete(handler);
     };
