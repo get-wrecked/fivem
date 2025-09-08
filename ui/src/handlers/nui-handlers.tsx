@@ -31,21 +31,6 @@ import wsClient from '../ws/websocket';
  * - inbound `heartbeat` with optional `request` echo via minecart
  */
 export const NuiHandlers: React.FC = () => {
-    const { setVisible } = useNuiVisibility();
-
-    //=-- Visibility controls
-    useNuiEvent<boolean>('ui:setVisible', {
-        handler: (v) => setVisible(Boolean(v)),
-    });
-
-    useNuiEvent<void>('ui:open', {
-        handler: () => setVisible(true),
-    });
-
-    useNuiEvent<void>('ui:close', {
-        handler: () => setVisible(false),
-    });
-
     //=-- WebSocket controls from LUA to UI
     //=-- Connect with optional config (host/port/protocol/path). Defaults to ws://127.0.0.1:12556
     useNuiEvent<WsConfig | undefined>('ws:connect', {
