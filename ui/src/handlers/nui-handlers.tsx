@@ -54,8 +54,8 @@ export const NuiHandlers: React.FC = () => {
                 if (
                     value &&
                     typeof value === 'object' &&
-                    'type' in (value as any) &&
-                    typeof (value as any).type === 'string'
+                    'type' in value &&
+                    typeof value.type === 'string'
                 ) {
                     wsClient.send(value as WsEnvelope);
                     return;
@@ -73,9 +73,8 @@ export const NuiHandlers: React.FC = () => {
     //=-- Close the socket, optionally with code/reason
     useNuiEvent<{ code?: number; reason?: string } | undefined>('ws:close', {
         handler: (v) => {
-            const code = v && typeof v === 'object' && 'code' in v ? (v as any).code : undefined;
-            const reason =
-                v && typeof v === 'object' && 'reason' in v ? (v as any).reason : undefined;
+            const code = v && typeof v === 'object' && 'code' in v ? v.code : undefined;
+            const reason = v && typeof v === 'object' && 'reason' in v ? v.reason : undefined;
             wsClient.close(code, reason);
         },
     });
