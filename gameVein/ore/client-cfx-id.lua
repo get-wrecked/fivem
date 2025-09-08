@@ -1,4 +1,18 @@
---//=-- GameVein Ore: Cfx Id (client)
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: gameVein/ore/client-cfx-id.lua
+  =====================
+  Description:
+    GameVein Ore: Cfx Id (client)
+    Get the server's Cfx Id
+  ---
+  Exports:
+    None
+  ---
+  Globals:
+    - Medal.GV.Ore.cfxId : Get the server's Cfx Id
+]]
 
 Medal = Medal or {}
 Medal.GV = Medal.GV or {}

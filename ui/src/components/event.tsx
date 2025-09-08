@@ -1,3 +1,18 @@
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/components/event.tsx
+  =====================
+  Description:
+    Event component for the auto clipping UI
+  ---
+  Exports & Exported Components:
+    - Event: Main event component
+  ---
+  Globals:
+    None
+*/
+
 import type { CheckedState } from '@radix-ui/react-checkbox';
 import { fetchNui, useNuiEvent } from '@tsfx/hooks';
 import type React from 'react';

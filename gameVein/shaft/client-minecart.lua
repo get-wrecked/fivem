@@ -1,4 +1,18 @@
---//=-- GameVein Minecart: sending JSON payloads via the NUI WebSocket client
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: gameVein/shaft/client-minecart.lua
+  =====================
+  Description:
+    GameVein Minecart: sending JSON payloads via the NUI WebSocket client
+  ---
+  Exports:
+    NUI Callbacks:
+      - `ws:minecart`: Assays an ore and sends it in a minecart to NUI, via `ws:send`
+  ---
+  Globals:
+    - Medal.GV.pushMinecart : Sends a payload over the NUI WebSocket client's connection
+]]
 
 Medal = Medal or {}
 Medal.GV = Medal.GV or {} --//=-- Just in case

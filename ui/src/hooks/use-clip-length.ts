@@ -1,3 +1,18 @@
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/hooks/use-clip-length.ts
+  =====================
+  Description:
+    The hook for clip length context
+  ---
+  Exports & Exported Components:
+    - useClipLength : The hook for clip length context
+  ---
+  Globals:
+    None
+*/
+
 import { useContext } from 'react';
 import { ClipLengthContext, type ClipLengthContextValue } from '@/contexts/clip-length-context';
 

@@ -1,3 +1,18 @@
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/components/ui/label.tsx
+  =====================
+  Description:
+    The label component for the UI
+  ---
+  Exports & Exported Components:
+    - Label : The label component
+  ---
+  Globals:
+    None
+*/
+
 import * as LabelPrimitive from '@radix-ui/react-label';
 import type * as React from 'react';
 

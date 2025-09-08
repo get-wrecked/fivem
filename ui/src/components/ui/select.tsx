@@ -1,3 +1,27 @@
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/components/ui/select.tsx
+  =====================
+  Description:
+    The select component for the UI
+  ---
+  Exports & Exported Components:
+    - Select : Root container for the select dropdown component
+    - SelectContent : Container for select dropdown options
+    - SelectGroup : Groups related select items together
+    - SelectItem : Represents an individual selectable option
+    - SelectLabel : Label for a group of select items
+    - SelectScrollDownButton : Button to scroll down through options
+    - SelectScrollUpButton : Button to scroll up through options
+    - SelectSeparator : Visual separator between select items or groups
+    - SelectTrigger : Clickable element that opens the select dropdown
+    - SelectValue : Displays the currently selected value
+  ---
+  Globals:
+    None
+*/
+
 import * as SelectPrimitive from '@radix-ui/react-select';
 import type * as React from 'react';
 
@@ -125,6 +149,8 @@ function SelectItem({
                         viewBox='0 0 24 24'
                         fill='none'
                         xmlns='http://www.w3.org/2000/svg'
+                        role='img'
+                        aria-label='selected'
                     >
                         <path
                             d='M7.75 12L10.58 14.83L16.25 9.17004M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z'
@@ -171,6 +197,8 @@ function SelectScrollUpButton({
                 fill='none'
                 xmlns='http://www.w3.org/2000/svg'
                 className='rotate-180'
+                role='img'
+                aria-label='scroll up'
             >
                 <path
                     d='M12 16.8C11.3 16.8 10.6 16.53 10.07 16L3.55002 9.48001C3.26002 9.19001 3.26002 8.71001 3.55002 8.42001C3.84002 8.13001 4.32002 8.13001 4.61002 8.42001L11.13 14.94C11.61 15.42 12.39 15.42 12.87 14.94L19.39 8.42001C19.68 8.13001 20.16 8.13001 20.45 8.42001C20.74 8.71001 20.74 9.19001 20.45 9.48001L13.93 16C13.4 16.53 12.7 16.8 12 16.8Z'
@@ -197,6 +225,8 @@ function SelectScrollDownButton({
                 viewBox='0 0 24 24'
                 fill='none'
                 xmlns='http://www.w3.org/2000/svg'
+                role='img'
+                aria-label='scroll down'
             >
                 <path
                     d='M12 16.8C11.3 16.8 10.6 16.53 10.07 16L3.55002 9.48001C3.26002 9.19001 3.26002 8.71001 3.55002 8.42001C3.84002 8.13001 4.32002 8.13001 4.61002 8.42001L11.13 14.94C11.61 15.42 12.39 15.42 12.87 14.94L19.39 8.42001C19.68 8.13001 20.16 8.13001 20.45 8.42001C20.74 8.71001 20.74 9.19001 20.45 9.48001L13.93 16C13.4 16.53 12.7 16.8 12 16.8Z'

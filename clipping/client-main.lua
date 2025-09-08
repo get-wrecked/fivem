@@ -1,4 +1,23 @@
--- Auto Clipping client
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: clipping/client-main.lua
+  =====================
+  Description:
+    Auto Clipping client entry point, registering the commands and keybinds for the Medal Auto Clipping UI
+    as well as creating the UI and sending server details to it.
+  ---
+  Exports:
+    NUI Callbacks:
+      - ac:toggle : Toggles the Auto Clipping UI
+      - ac:length : Sets the Auto Clipping length
+      - hide : "Hides" the UI via removing focus and cursor control
+  ---
+  Globals:
+    - Medal.AC.readEventConfig : Safely reads a specific event config from the shared `Config` table
+    - Medal.AC.registerCommand : Register user-facing Medal UI command and keybinding
+    - Medal.AC.buildClippingUi : Setup the Auto Clipping UI with server details and enabled events
+]]
 
 Medal = Medal or {}
 Medal.AC = Medal.AC or {} --//=-- The namespace for the client Auto Clipping functions

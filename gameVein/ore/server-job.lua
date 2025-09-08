@@ -1,5 +1,18 @@
---//=-- GameVein Ore: Job (server)
---//=-- Framework-aware job resolver with safe fallbacks
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: gameVein/ore/server-job.lua
+  =====================
+  Description:
+    GameVein Ore: Job (server)
+    A framework-aware job retriever/resolver, with safe fallbacks
+  ---
+  Exports:
+    None
+  ---
+  Globals:
+    None
+]]
 
 ---Shared helper alias: use Assayer.safeExport
 ---@param ... any

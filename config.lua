@@ -1,3 +1,18 @@
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: config.lua
+  =====================
+  Description:
+    Configuration settings for the resource
+  ---
+  Exports:
+    None
+  ---
+  Globals:
+    - Config : Configuration table
+]]
+
 Config = {}
 
 Config.Debug = true

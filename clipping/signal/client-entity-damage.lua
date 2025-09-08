@@ -1,5 +1,17 @@
---//=-- Auto Clipping Signal: Network Entity Damage
---//=-- Listens for the `CEventNetworkEntityDamage` game event
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: clipping/signal/client-entity-damage.lua
+  =====================
+  Description:
+    Listens for network entity damage events for auto clipping
+  ---
+  Exports:
+    None
+  ---
+  Globals:
+    None
+]]
 
 Medal = Medal or {}
 Medal.AC = Medal.AC or {}

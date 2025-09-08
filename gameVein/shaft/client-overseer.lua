@@ -1,4 +1,18 @@
---//=-- GameVein Overseer: open/re-open and close the WebSocket connection via NUI
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: gameVein/shaft/client-overseer.lua
+  =====================
+  Description:
+    GameVein Overseer: open/re-open and close the WebSocket connection via NUI
+  ---
+  Exports:
+    None
+  ---
+  Globals:
+    - Medal.GV.prospectVein : Open or reopen the WebSocket connection via NUI
+    - Medal.GV.sealShaft : Close the WebSocket connection via NUI
+]]
 
 Medal = Medal or {}
 Medal.GV = Medal.GV or {} --//=-- Just in case

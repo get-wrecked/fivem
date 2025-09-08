@@ -1,8 +1,24 @@
-import React, { useEffect } from 'react';
-import { useNuiEvent, useNuiVisibility } from '@tsfx/hooks';
-import wsClient from '../ws/websocket';
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/handlers/nui-handlers.tsx
+  =====================
+  Description:
+    The NUI message handlers component
+  ---
+  Exports & Exported Components:
+    - NuiHandlers : The NUI message handlers component
+  ---
+  Globals:
+    None
+*/
+
+import { fetchNui, useNuiEvent } from '@tsfx/hooks';
+import type React from 'react';
+import { useEffect } from 'react';
+import { nuiLog } from '../lib/nui';
 import type { WsConfig, WsEnvelope } from '../ws/types';
-import { nuiLog, nuiPost } from '../lib/nui';
+import wsClient from '../ws/websocket';
 /**
  * NUI message handlers component.
  *
@@ -15,21 +31,6 @@ import { nuiLog, nuiPost } from '../lib/nui';
  * - inbound `heartbeat` with optional `request` echo via minecart
  */
 export const NuiHandlers: React.FC = () => {
-    const { setVisible } = useNuiVisibility();
-
-    //=-- Visibility controls
-    useNuiEvent<boolean>('ui:setVisible', {
-        handler: (v) => setVisible(Boolean(v)),
-    });
-
-    useNuiEvent<void>('ui:open', {
-        handler: () => setVisible(true),
-    });
-
-    useNuiEvent<void>('ui:close', {
-        handler: () => setVisible(false),
-    });
-
     //=-- WebSocket controls from LUA to UI
     //=-- Connect with optional config (host/port/protocol/path). Defaults to ws://127.0.0.1:12556
     useNuiEvent<WsConfig | undefined>('ws:connect', {
@@ -50,7 +51,12 @@ export const NuiHandlers: React.FC = () => {
                 }
 
                 //=-- Object: With `{ type }` is considered an envelope already
-                if (value && typeof value === 'object' && 'type' in (value as any) && typeof (value as any).type === 'string') {
+                if (
+                    value &&
+                    typeof value === 'object' &&
+                    'type' in value &&
+                    typeof value.type === 'string'
+                ) {
                     wsClient.send(value as WsEnvelope);
                     return;
                 }
@@ -65,10 +71,10 @@ export const NuiHandlers: React.FC = () => {
     });
 
     //=-- Close the socket, optionally with code/reason
-    useNuiEvent<{ code?: number; reason?: string } | void>('ws:close', {
+    useNuiEvent<{ code?: number; reason?: string } | undefined>('ws:close', {
         handler: (v) => {
-            const code = (v && typeof v === 'object' && 'code' in v) ? (v as any).code : undefined;
-            const reason = (v && typeof v === 'object' && 'reason' in v) ? (v as any).reason : undefined;
+            const code = v && typeof v === 'object' && 'code' in v ? v.code : undefined;
+            const reason = v && typeof v === 'object' && 'reason' in v ? v.reason : undefined;
             wsClient.close(code, reason);
         },
     });
@@ -85,8 +91,10 @@ export const NuiHandlers: React.FC = () => {
                 if ((env as WsEnvelope).data === 'request') {
                     (async () => {
                         try {
-                            await nuiPost('ws:minecart', { type: 'heartbeat' });
-                        } catch { /*//=-- ignore */ }
+                            await fetchNui('ws:minecart', { payload: { type: 'heartbeat' } });
+                        } catch {
+                            /*//=-- ignore */
+                        }
                     })();
                 }
             }
@@ -102,7 +110,11 @@ export const NuiHandlers: React.FC = () => {
                 if (wasMounted) {
                     void nuiLog({ event: 'ws:onMessage:off-failed', err }, 'warning');
                 } else {
-                    try { console.warn('[ws:onMessage:off-failed]', err); } catch { /*//=-- ignore */ }
+                    try {
+                        console.warn('[ws:onMessage:off-failed]', err);
+                    } catch {
+                        /*//=-- ignore */
+                    }
                 }
             }
         };
