@@ -13,10 +13,10 @@
     None
 */
 
-import { useNuiEvent, useNuiVisibility } from '@tsfx/hooks';
+import { fetchNui, useNuiEvent } from '@tsfx/hooks';
 import type React from 'react';
 import { useEffect } from 'react';
-import { nuiLog, nuiPost } from '../lib/nui';
+import { nuiLog } from '../lib/nui';
 import type { WsConfig, WsEnvelope } from '../ws/types';
 import wsClient from '../ws/websocket';
 /**
@@ -107,7 +107,7 @@ export const NuiHandlers: React.FC = () => {
                 if ((env as WsEnvelope).data === 'request') {
                     (async () => {
                         try {
-                            await nuiPost('ws:minecart', { type: 'heartbeat' });
+                            await fetchNui('ws:minecart', { payload: { type: 'heartbeat' } });
                         } catch {
                             /*//=-- ignore */
                         }
