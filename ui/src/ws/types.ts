@@ -6,38 +6,39 @@
 export type WsProtocol = 'ws' | 'wss';
 
 export interface WsConfig {
-  /**
-   * Hostname or IP address
-   * @defaultValue "127.0.0.1"
-   */
-  host?: string;
-  /**
-   * TCP port to connect to
-   * @defaultValue 12556
-   */
-  port?: number;
-  /**
-   * WebSocket protocol scheme
-   * @defaultValue "ws"
-   */
-  protocol?: WsProtocol;
-  /**
-   * Optional path suffix appended to the URL (e.g. "/socket")
-   */
-  path?: string;
+    /**
+     * Hostname or IP address
+     * @defaultValue "127.0.0.1"
+     */
+    host?: string;
+    /**
+     * TCP port to connect to
+     * @defaultValue 12556
+     */
+    port?: number;
+    /**
+     * WebSocket protocol scheme
+     * @defaultValue "ws"
+     */
+    protocol?: WsProtocol;
+    /**
+     * Optional path suffix appended to the URL (e.g. "/socket")
+     */
+    path?: string;
 }
 
 export type WsEvent = 'open' | 'message' | 'error' | 'close';
+export type WsHandler = OpenHandler | MessageHandler | ErrorHandler | CloseHandler;
 
 /**
  * A JSON envelope for our WebSocket messages
  * Always includes a required `type` string, but has an optional `data` payload
  */
 export interface WsEnvelope {
-  /** Message kind discriminator */
-  type: string;
-  /** Optional payload */
-  data?: unknown;
+    /** Message kind discriminator */
+    type: string;
+    /** Optional payload */
+    data?: unknown;
 }
 
 /**
@@ -53,16 +54,16 @@ export interface WsEnvelope {
  * @property className - Friendly vehicle class label (e.g., "Sports", "Super").
  */
 export interface VehicleInfo {
-  /** Spawn name string that hashes to `hash` (best-effort) */
-  id: string;
-  /** Human-readable display name or localized label */
-  name: string;
-  /** GTA model hash of the vehicle (use with CreateVehicle, etc.) */
-  hash: number;
-  /** GTA numeric vehicle class id */
-  class: number;
-  /** Friendly vehicle class label (e.g., "Sports", "Super") */
-  className: string;
+    /** Spawn name string that hashes to `hash` (best-effort) */
+    id: string;
+    /** Human-readable display name or localized label */
+    name: string;
+    /** GTA model hash of the vehicle (use with CreateVehicle, etc.) */
+    hash: number;
+    /** GTA numeric vehicle class id */
+    class: number;
+    /** Friendly vehicle class label (e.g., "Sports", "Super") */
+    className: string;
 }
 
 /**
@@ -72,8 +73,8 @@ export interface VehicleInfo {
  * @property vehicleInfo - Vehicle information payload.
  */
 export interface VehicleOreResponse {
-  inVehicle: boolean;
-  vehicleInfo: VehicleInfo;
+    inVehicle: boolean;
+    vehicleInfo: VehicleInfo;
 }
 
 /**
