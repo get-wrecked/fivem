@@ -11,7 +11,7 @@
     None
   ---
   Globals:
-    None
+    - Medal.GV.Ore.assay : Assay a requested ore, returning it
 ]]
 
   
