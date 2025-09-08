@@ -288,7 +288,12 @@ class WsClient {
     onClose = (handler: CloseHandler) => this.add('close', handler);
 
     //=-- Internal emitter/add helpers
-    private emit = (event: WsEvent, ev: any) => {
+    private emit(event: 'open', ev: Event): void;
+    private emit(event: 'message', ev: WsEnvelope): void;
+    private emit(event: 'error', ev: Event): void;
+    private emit(event: 'close', ev: CloseEvent): void;
+    // biome-ignore lint/suspicious/noExplicitAny: function overload
+    private emit(event: WsEvent, ev: any): void {
         const map: Record<WsEvent, Set<WsHandler>> = {
             open: this.onOpenHandlers,
             message: this.onMessageHandlers,
@@ -298,12 +303,12 @@ class WsClient {
 
         for (const h of map[event]) {
             try {
-                (h as any)(ev);
+                h(ev, undefined);
             } catch {
                 /*//=-- ignore listener error */
             }
         }
-    };
+    }
 
     private add = (event: Exclude<WsEvent, 'message'>, handler: WsHandler) => {
         const map: Record<Exclude<WsEvent, 'message'>, Set<WsHandler>> = {
