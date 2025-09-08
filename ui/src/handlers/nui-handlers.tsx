@@ -86,7 +86,7 @@ export const NuiHandlers: React.FC = () => {
     });
 
     //=-- Close the socket, optionally with code/reason
-    useNuiEvent<{ code?: number; reason?: string } | void>('ws:close', {
+    useNuiEvent<{ code?: number; reason?: string } | undefined>('ws:close', {
         handler: (v) => {
             const code = v && typeof v === 'object' && 'code' in v ? (v as any).code : undefined;
             const reason =
