@@ -84,7 +84,7 @@ end
         quality = opts.quality,
         headers = opts.headers,
         correlation = registerCorrelation(realCb),
-        resultURL = ('http://%s/soaker_waterCreated'):format(GetCurrentResourceName()),
+        resultURL = ('https://%s/soaker_waterCreated'):format(GetCurrentResourceName()),
         targetURL = nil,
         targetField = nil,
     }
@@ -116,7 +116,7 @@ end
         quality = opts.quality,
         headers = opts.headers or {},
         correlation = registerCorrelation(realCb),
-        resultURL = ('http://%s/soaker_waterCreated'):format(GetCurrentResourceName()),
+        resultURL = ('https://%s/soaker_waterCreated'):format(GetCurrentResourceName()),
         targetURL = url,
         targetField = field or 'file',
     }
@@ -135,7 +135,7 @@ end
       encoding = options.encoding or 'jpg',
       quality  = options.quality,
       headers  = options.headers,
-      resultURL = ('http://%s/soaker_waterCreated'):format(GetCurrentResourceName()),
+      resultURL = ('https://%s/soaker_waterCreated'):format(GetCurrentResourceName()),
       targetURL = nil,
       targetField = nil,
       correlation = registerCorrelation(function(data)
