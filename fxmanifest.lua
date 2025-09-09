@@ -45,3 +45,5 @@ files {
 }
 
 ui_page 'ui/dist/index.html'
+
+provide 'screenshot-basic'
