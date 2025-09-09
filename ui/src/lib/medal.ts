@@ -33,6 +33,10 @@ export interface ClipData {
     clipOptions?: ClipOptions;
 }
 
+export interface ScreenshotData {
+    mimeType: string;
+}
+
 export interface ScreenshotResponse {
     status: string;
     imageBase64: string;
@@ -41,7 +45,7 @@ export interface ScreenshotResponse {
 
 const MEDAL_KEY = 'pub_82qkpMKV77AkpqLSgWsxLlDyfzpPI7Vw';
 
-const buildHeaders = (method: string = 'GET', body?: ClipData): RequestInit => {
+const buildHeaders = (method: string = 'GET', body?: ClipData | ScreenshotData): RequestInit => {
     return {
         method,
         headers: {
@@ -80,11 +84,11 @@ export const hasMedal = async (): Promise<boolean> => {
     }
 };
 
-export const screenshot = async (): Promise<string> => {
+export const screenshot = async (mimeType: string): Promise<string> => {
     try {
         const response = await fetch(
             'http://localhost:12665/api/v1/screenshot/base64',
-            buildHeaders(),
+            buildHeaders('GET', { mimeType }),
         );
 
         if (!response.ok) {

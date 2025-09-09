@@ -224,9 +224,19 @@ class SoakerUI {
      */
     private async handleRequest(request: SoakerRequest) {
         let imageURL = '';
+        let type = 'image/png';
+
+        switch (request.encoding) {
+            case 'jpg':
+                type = 'image/jpeg';
+                break;
+            case 'webp':
+                type = 'image/webp';
+                break;
+        }
 
         if (this.hasMedal) {
-            imageURL = await screenshot();
+            imageURL = await screenshot(type);
             imageURL = `data:image/png;base64,${imageURL}`;
         } else if (this.available && this.renderer && this.rtTexture) {
             const read = new Uint8Array(window.innerWidth * window.innerHeight * 4);
@@ -247,18 +257,6 @@ class SoakerUI {
             const cxt = canvas.getContext('2d');
             cxt.putImageData(new ImageData(d, window.innerWidth, window.innerHeight), 0, 0);
 
-            let type = 'image/png';
-            switch (request.encoding) {
-                case 'jpg':
-                    type = 'image/jpeg';
-                    break;
-                case 'png':
-                    type = 'image/png';
-                    break;
-                case 'webp':
-                    type = 'image/webp';
-                    break;
-            }
             const q = request.quality ?? 0.92;
             imageURL = canvas.toDataURL(type, q);
         } else {
