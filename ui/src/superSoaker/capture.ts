@@ -41,10 +41,15 @@ function dataURItoBlob(dataURI: string) {
 
 /** Manages Three/WebGL capture and NUI messaging for SuperSoaker. */
 class SoakerUI {
+    // biome-ignore lint/suspicious/noExplicitAny: @citizenfx/three lacks types
     private renderer: any | null = null;
+    // biome-ignore lint/suspicious/noExplicitAny: @citizenfx/three lacks types
     private rtTexture: any | null = null;
+    // biome-ignore lint/suspicious/noExplicitAny: @citizenfx/three lacks types
     private sceneRTT: any | null = null;
+    // biome-ignore lint/suspicious/noExplicitAny: @citizenfx/three lacks types
     private cameraRTT: any | null = null;
+    // biome-ignore lint/suspicious/noExplicitAny: @citizenfx/three lacks types
     private material: any | null = null;
     private pending: SoakerRequest | null = null;
     private available = false;
@@ -68,7 +73,7 @@ class SoakerUI {
                 WebGLRenderer,
             } = three;
 
-            const cameraRTT: any = new OrthographicCamera(
+            const cameraRTT = new OrthographicCamera(
                 window.innerWidth / -2,
                 window.innerWidth / 2,
                 window.innerHeight / 2,
@@ -78,7 +83,7 @@ class SoakerUI {
             );
             cameraRTT.position.z = 100;
 
-            const sceneRTT: any = new Scene();
+            const sceneRTT = new Scene();
 
             const rtTexture = new WebGLRenderTarget(window.innerWidth, window.innerHeight, {
                 minFilter: LinearFilter,
@@ -87,7 +92,7 @@ class SoakerUI {
                 type: UnsignedByteType,
             });
 
-            const gameTexture: any = new CfxTexture();
+            const gameTexture = new CfxTexture();
             gameTexture.needsUpdate = true;
 
             const material = new ShaderMaterial({
@@ -111,7 +116,7 @@ class SoakerUI {
             this.material = material;
 
             const plane = new PlaneBufferGeometry(window.innerWidth, window.innerHeight);
-            const quad: any = new Mesh(plane, material);
+            const quad = new Mesh(plane, material);
             quad.position.z = -100;
             sceneRTT.add(quad);
 
@@ -156,6 +161,7 @@ class SoakerUI {
      * Rebuilds render targets and scene geometry on window resize.
      * @param three CitizenFX three binding.
      */
+    // biome-ignore lint/suspicious/noExplicitAny: @citizenfx/three lacks types
     private resize(three: any) {
         if (!this.available || !this.renderer || !this.material) return;
 
@@ -171,7 +177,7 @@ class SoakerUI {
             UnsignedByteType,
         } = three;
 
-        const cameraRTT: any = new OrthographicCamera(
+        const cameraRTT = new OrthographicCamera(
             window.innerWidth / -2,
             window.innerWidth / 2,
             window.innerHeight / 2,
@@ -182,9 +188,9 @@ class SoakerUI {
         cameraRTT.position.z = 100;
         this.cameraRTT = cameraRTT;
 
-        const sceneRTT: any = new Scene();
+        const sceneRTT = new Scene();
         const plane = new PlaneBufferGeometry(window.innerWidth, window.innerHeight);
-        const quad: any = new Mesh(plane, this.material);
+        const quad = new Mesh(plane, this.material);
         quad.position.z = -100;
         sceneRTT.add(quad);
         this.sceneRTT = sceneRTT;
@@ -203,6 +209,7 @@ class SoakerUI {
      * Starts the render loop and handles pending capture requests.
      * @param three CitizenFX three binding.
      */
+    // biome-ignore lint/suspicious/noExplicitAny: @citizenfx/three lacks types
     private animate(three: any) {
         if (!this.renderer || !this.sceneRTT || !this.cameraRTT || !this.rtTexture) return;
 
@@ -229,6 +236,7 @@ class SoakerUI {
      * @param three CitizenFX three binding.
      * @param request The capture or upload request.
      */
+    // biome-ignore lint/suspicious/noExplicitAny: @citizenfx/three lacks types
     private async handleRequest(_three: any, request: SoakerRequest) {
         let imageURL = '';
 
@@ -248,7 +256,7 @@ class SoakerUI {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             const d = new Uint8ClampedArray(read.buffer);
-            const cxt = canvas.getContext('2d')!;
+            const cxt = canvas.getContext('2d');
             cxt.putImageData(new ImageData(d, window.innerWidth, window.innerHeight), 0, 0);
 
             let type = 'image/png';
