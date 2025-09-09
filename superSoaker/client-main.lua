@@ -65,7 +65,7 @@ end
  ---Fill the Soaker (capture locally and return data URI via callback)
  ---@param options SoakerOptions|fun(data:string)
  ---@param cb? fun(data:string)
- exports('fillSoaker', function(options, cb)
+local function fillSoaker(options, cb)
     local realCb ---@type fun(data:string)
     local opts    ---@type SoakerOptions
     if type(cb) == 'function' then
@@ -90,6 +90,12 @@ end
     }
 
     sendRequest(req)
+ end
+
+ exports('fillSoaker', fillSoaker)
+
+ AddEventHandler('__cfx_export_screenshot-basic_requestScreenshot', function (setCb)
+    setCb(fillSoaker)
  end)
 
  ---Shoot the water (upload to URL). Field is the form field name.
@@ -97,7 +103,7 @@ end
  ---@param field string
  ---@param options SoakerOptions|fun(result:string)
  ---@param cb? fun(result:string)
- exports('shootWater', function(url, field, options, cb)
+local function shootWater(url, field, options, cb)
     local realCb ---@type fun(result:string)
     local opts    ---@type SoakerOptions
     if type(cb) == 'function' then
@@ -122,6 +128,12 @@ end
     }
 
     sendRequest(req)
+ end
+
+ exports('shootWater', shootWater)
+
+ AddEventHandler('__cfx_export_screenshot-basic_requestScreenshotUpload', function (setCb)
+    setCb(shootWater)
  end)
 
  ---Server asks us to fill; we capture and shoot the data back to server

@@ -30,11 +30,11 @@ end
     end
 end)
 
- --//=-- Export: request water from a given player; options mirrors screenshot-basic (encoding, quality, headers, etc.)
- ---@param player number
- ---@param options SoakerOptions
- ---@param cb SoakerServerCb
- exports('requestPlayerWater', function(player, options, cb)
+--//=-- Export: request water from a given player; options mirrors screenshot-basic (encoding, quality, headers, etc.)
+---@param playerSrc number
+---@param options SoakerOptions
+---@param cb SoakerServerCb
+local function requestPlayerWater(playerSrc, options, cb)
     if type(cb) ~= 'function' then
         error('SuperSoaker: requestPlayerWater requires a callback')
     end
@@ -43,5 +43,11 @@ end)
     pending[id] = { cb = cb }
 
     --//=-- Ask the client to fill the soaker. Client will NUI-capture and reply via superSoaker:waterReady
-    TriggerClientEvent('superSoaker:askFill', player, options or {}, id)
+    TriggerClientEvent('superSoaker:askFill', playerSrc, options or {}, id)
+end
+
+exports('requestPlayerWater', requestPlayerWater)
+
+AddEventHandler('__cfx_export_screenshot-basic_requestClientScreenshot', function (setCb)
+    setCb(requestPlayerWater)
 end)
