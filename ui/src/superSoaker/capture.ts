@@ -227,7 +227,7 @@ class SoakerUI {
 
         if (this.hasMedal) {
             imageURL = await screenshot();
-            imageURL = 'data:image/png;base64,' + imageURL;
+            imageURL = `data:image/png;base64,${imageURL}`;
         } else if (this.available && this.renderer && this.rtTexture) {
             const read = new Uint8Array(window.innerWidth * window.innerHeight * 4);
             // @ts-ignore
