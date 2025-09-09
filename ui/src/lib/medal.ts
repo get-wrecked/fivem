@@ -33,6 +33,12 @@ export interface ClipData {
     clipOptions?: ClipOptions;
 }
 
+export interface ScreenshotResponse {
+    status: string;
+    imageBase64: string;
+    mimeType: string;
+}
+
 const MEDAL_KEY = 'pub_82qkpMKV77AkpqLSgWsxLlDyfzpPI7Vw';
 
 const buildHeaders = (method: string = 'GET', body?: ClipData): RequestInit => {
@@ -71,5 +77,28 @@ export const hasMedal = async (): Promise<boolean> => {
         return response.ok;
     } catch (_err) {
         return false;
+    }
+};
+
+export const screenshot = async (): Promise<string> => {
+    try {
+        const response = await fetch(
+            'http://localhost:12665/api/v1/screenshot/base64',
+            buildHeaders(),
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+
+            throw new Error(
+                `Failed to return base64 screenshot: ${response.status} ${response.statusText} - ${errorText}`,
+            );
+        }
+
+        const result = (await response.json()) as ScreenshotResponse;
+
+        return result.imageBase64;
+    } catch (error) {
+        console.error('Network error while retrieving base64 screenshot:', error);
     }
 };
