@@ -1,6 +1,19 @@
 //=-- SuperSoaker NUI capture: turns game frame into water and handles fill/shoot flows.
 
-import * as three from '@citizenfx/three';
+import {
+    CfxTexture,
+    LinearFilter,
+    Mesh,
+    NearestFilter,
+    OrthographicCamera,
+    PlaneBufferGeometry,
+    RGBAFormat,
+    Scene,
+    ShaderMaterial,
+    UnsignedByteType,
+    WebGLRenderer,
+    WebGLRenderTarget,
+} from '@citizenfx/three';
 
 /** Output encoding type for screenshots. */
 type Encoding = 'jpg' | 'png' | 'webp';
@@ -58,21 +71,6 @@ class SoakerUI {
     initialize() {
         //=-- Try to acquire the special Three binding from Cfx
         try {
-            const {
-                OrthographicCamera,
-                Scene,
-                WebGLRenderTarget,
-                LinearFilter,
-                NearestFilter,
-                RGBAFormat,
-                UnsignedByteType,
-                CfxTexture,
-                ShaderMaterial,
-                PlaneBufferGeometry,
-                Mesh,
-                WebGLRenderer,
-            } = three;
-
             const cameraRTT = new OrthographicCamera(
                 window.innerWidth / -2,
                 window.innerWidth / 2,
@@ -140,10 +138,10 @@ class SoakerUI {
             this.sceneRTT = sceneRTT;
             this.cameraRTT = cameraRTT;
 
-            window.addEventListener('resize', () => this.resize(three));
+            window.addEventListener('resize', () => this.resize());
 
             this.available = true;
-            this.animate(three);
+            this.animate();
         } catch (_e) {
             //=-- Fallback: not available; we'll return a 1x1 transparent image
             this.available = false;
@@ -159,23 +157,9 @@ class SoakerUI {
 
     /**
      * Rebuilds render targets and scene geometry on window resize.
-     * @param three CitizenFX three binding.
      */
-    // biome-ignore lint/suspicious/noExplicitAny: @citizenfx/three lacks types
-    private resize(three: any) {
+    private resize() {
         if (!this.available || !this.renderer || !this.material) return;
-
-        const {
-            OrthographicCamera,
-            Scene,
-            PlaneBufferGeometry,
-            Mesh,
-            WebGLRenderTarget,
-            LinearFilter,
-            NearestFilter,
-            RGBAFormat,
-            UnsignedByteType,
-        } = three;
 
         const cameraRTT = new OrthographicCamera(
             window.innerWidth / -2,
@@ -207,10 +191,8 @@ class SoakerUI {
 
     /**
      * Starts the render loop and handles pending capture requests.
-     * @param three CitizenFX three binding.
      */
-    // biome-ignore lint/suspicious/noExplicitAny: @citizenfx/three lacks types
-    private animate(three: any) {
+    private animate() {
         if (!this.renderer || !this.sceneRTT || !this.cameraRTT || !this.rtTexture) return;
 
         const loop = () => {
@@ -222,7 +204,7 @@ class SoakerUI {
             if (this.pending) {
                 const req = this.pending;
                 this.pending = null;
-                this.handleRequest(three, req);
+                this.handleRequest(req);
             }
         };
         requestAnimationFrame(loop);
@@ -236,8 +218,7 @@ class SoakerUI {
      * @param three CitizenFX three binding.
      * @param request The capture or upload request.
      */
-    // biome-ignore lint/suspicious/noExplicitAny: @citizenfx/three lacks types
-    private async handleRequest(_three: any, request: SoakerRequest) {
+    private async handleRequest(request: SoakerRequest) {
         let imageURL = '';
 
         if (this.available && this.renderer && this.rtTexture) {
