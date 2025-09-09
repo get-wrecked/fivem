@@ -8,6 +8,9 @@ export default defineConfig({
         react()
     ],
     base: './',
+    build: {
+        chunkSizeWarningLimit: 1000
+    },
     resolve: {
         alias: {
             '@': resolve(__dirname, './src')
