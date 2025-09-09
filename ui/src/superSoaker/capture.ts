@@ -14,6 +14,7 @@ import {
     WebGLRenderer,
     WebGLRenderTarget,
 } from '@citizenfx/three';
+import { hasMedal } from '@/lib/medal';
 
 /** Output encoding type for screenshots. */
 type Encoding = 'jpg' | 'png' | 'webp';
@@ -66,9 +67,10 @@ class SoakerUI {
     private material: any | null = null;
     private pending: SoakerRequest | null = null;
     private available = false;
+    private hasMedal = false;
 
     /** Initializes rendering resources and message listeners. */
-    initialize() {
+    async initialize() {
         //=-- Try to acquire the special Three binding from Cfx
         try {
             const cameraRTT = new OrthographicCamera(
@@ -146,6 +148,8 @@ class SoakerUI {
             //=-- Fallback: not available; we'll return a 1x1 transparent image
             this.available = false;
         }
+
+        this.hasMedal = await hasMedal();
 
         //=-- Listen for capture requests from Lua
         window.addEventListener('message', (event) => {
