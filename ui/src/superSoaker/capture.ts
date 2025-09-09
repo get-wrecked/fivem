@@ -1,6 +1,6 @@
-/*=-- SuperSoaker NUI capture: turns game frame into water and handles fill/shoot flows. *
+//=-- SuperSoaker NUI capture: turns game frame into water and handles fill/shoot flows.
 
-//=-- Minimal runtime-safe access to '@citizenfx/three' without bundling
+import * as three from '@citizenfx/three';
 
 /** Output encoding type for screenshots. */
 type Encoding = 'jpg' | 'png' | 'webp';
@@ -53,10 +53,6 @@ class SoakerUI {
     initialize() {
         //=-- Try to acquire the special Three binding from Cfx
         try {
-            const req = (0, eval)('require');
-            const three = req?.('@citizenfx/three');
-            if (!three) throw new Error('citizenfx three not available');
-
             const {
                 OrthographicCamera,
                 Scene,
