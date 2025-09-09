@@ -63,3 +63,13 @@ export const triggerClip = async (data: ClipData): Promise<void> => {
         console.error('Network error while triggering clip:', error);
     }
 };
+
+export const hasMedal = async (): Promise<boolean> => {
+    try {
+        const response = await fetch('http://localhost:12665/api/v1/user/profile', buildHeaders());
+
+        return response.ok;
+    } catch (_err) {
+        return false;
+    }
+};

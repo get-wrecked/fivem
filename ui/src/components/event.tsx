@@ -40,7 +40,7 @@ export const Event: React.FC<{ event: EventData }> = ({ event }) => {
     };
 
     useNuiEvent<string[]>(`ac:clip:${event.id}`, {
-        handler: (tags) => {
+        handler: (_tags) => {
             if (enabled) {
                 triggerClip({
                     eventId: event.id,
