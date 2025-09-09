@@ -33,16 +33,25 @@ export interface ClipData {
     clipOptions?: ClipOptions;
 }
 
-export const triggerClip = async (key: string, data: ClipData): Promise<void> => {
+const MEDAL_KEY = 'pub_82qkpMKV77AkpqLSgWsxLlDyfzpPI7Vw';
+
+const buildHeaders = (method: string = 'GET', body?: ClipData): RequestInit => {
+    return {
+        method,
+        headers: {
+            publicKey: MEDAL_KEY,
+            'Content-Type': 'application/json',
+        },
+        body: body ? JSON.stringify(body) : undefined,
+    };
+};
+
+export const triggerClip = async (data: ClipData): Promise<void> => {
     try {
-        const response = await fetch('http://localhost:12665/api/v1/event/invoke', {
-            method: 'POST',
-            headers: {
-                publicKey: key,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
+        const response = await fetch(
+            'http://localhost:12665/api/v1/event/invoke',
+            buildHeaders('POST', data),
+        );
 
         if (!response.ok) {
             const errorText = await response.text();

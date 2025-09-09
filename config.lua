@@ -20,8 +20,6 @@ Config.Debug = true
 Config.Command = 'medal'
 Config.Keybind = 'pageup'
 
-Config.MedalApiKey = ''
-
 Config.ClippingEvents = {
     {
         id = 'player_kill',
