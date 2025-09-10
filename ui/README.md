@@ -20,7 +20,7 @@ It communicates with the LUA side, via NUI callbacks, and a WebSocket bridge.
 
 ## NUI Integration
 
-- POST helper: `ui/src/lib/nui.ts` exports `nuiPost` and `nuiLog`.
+- NUI utilities: `ui/src/lib/nui.ts` exports `nuiLog`. For POSTing to Lua NUI endpoints, use `fetchNui` from `@tsfx/hooks`.
 - WebSocket client: `ui/src/ws/websocket.ts` exports `wsClient`.
 - Handlers: `ui/src/handlers/nui-handlers.tsx` reacts to NUI messages (e.g., `ws:connect`, `ws:send`, `ws:close`).
 

@@ -43,8 +43,8 @@ From the UI, request the ore like this (the payload will arrive over the WebSock
 
 ```ts
 // ui
-import { nuiPost } from '@/lib/nui';
-await nuiPost('ws:minecart', { type: 'yourType' });
+import { fetchNui } from '@tsfx/hooks';
+await fetchNui('ws:minecart', { payload: { type: 'yourOreType' } });
 // The POST returns an ACK; the actual object (`{ type: 'yourType', data }`), is forwarded via WebSocket.
 ```
 

@@ -4,12 +4,11 @@
   File: ui/src/lib/nui.ts
   =====================
   Description:
-    NUI helpers for UI to Lua communication
+    NUI helpers for UI to Lua communication.
+    Provides a logger bridge; use `fetchNui` from `@tsfx/hooks` for POSTing to Lua NUI endpoints.
   ---
   Exports & Exported Components:
-    - getResourceName : Function to get the resource name
-    - nuiPost : Function to POST JSON to a NUI endpoint
-    - nuiLog : Function to log via the shared Lua Logger
+    - nuiLog : Function to log via the shared Lua Logger (bridges to callback `ws:log`)
   ---
   Globals:
     None
