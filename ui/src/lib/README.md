@@ -3,8 +3,6 @@
 Utilities for NUI communication, and UI helpers.
 
 - `nui.ts`
-  - `getResourceName()` — Resolves the FiveM resource name.
-  - `nuiPost<T>(endpoint, body?)` — POSTs JSON to a NUI endpoint.
   - `nuiLog(data, level?)` — Logs via Lua Logger bridge (`ws:log`).
 - `utils.ts`
   - `cn(...classes)` — Tailwind-friendly class name merge.
@@ -12,8 +10,9 @@ Utilities for NUI communication, and UI helpers.
 ## Example
 
 ```ts
-import { nuiPost, nuiLog } from '@/lib/nui';
+import { nuiLog } from '@/lib/nui';
+import { fetchNui } from '@tsfx/hooks';
 
 await nuiLog('Hello from UI');
-const res = await nuiPost('ws:minecart', { type: 'heartbeat' });
+const res = await fetchNui('ws:minecart', { payload: { type: 'heartbeat' } });
 ```
