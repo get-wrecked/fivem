@@ -1,18 +1,18 @@
 # gameVein/assayer
 
-The Assayer handles framework detection (mainly on the server side), and ore routing (client-sided to NUI/UI).
+The Assayer handles ore routing (client-sided to NUI/UI).
+Framework detection has been moved to the shared `services/` framework detection service.
 
 ## Files
 
-- `server-assayer.lua`
-  - Detects which framework is running using resource state checks.
-    - API: `Medal.GV.Assayer.detectFramework(forceRefresh?: boolean): FrameworkKey`
-    - Search order (first match wins): ESX -> QB -> QBX -> ND -> OX -> TMC.
 - `client-assayer.lua`
   - Routes ore requests to the correct ore type.
     - API: `Medal.GV.Ore.assay(req: string|table): any`
     - Accepts `'type'` (string) or `{ type = string, ... }` (object).
-  - Client helper: `Medal.GV.Assayer.getFrameworkKey(timeoutMs?: number): FrameworkKey` (request/await pattern).
+
+For framework detection, use the service APIs instead:
+- Client: `Medal.Services.Framework.getKey(timeoutMs?: number): FrameworkKey`
+- Server: `Medal.Services.Framework.detectFramework(forceRefresh?: boolean): FrameworkKey`
 
 ## Request Helpers
 

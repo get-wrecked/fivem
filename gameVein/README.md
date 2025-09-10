@@ -5,9 +5,9 @@ GameVein is the in-resource data pipeline that extracts (mines) small, typed chu
 - __ore/__
   - Functions that return specific pieces of data (ex: `name`, `communityName`, `heartbeat`).
 - __assayer/__
-  - Detection and routing helpers. 
+  - Routing helpers only. 
     - Maps ore type strings to the correct `Medal.GV.Ore.*()` producer.
-    - Detects which framework is active on the server.
+    - Framework detection has moved to `services/`.
 - __shaft/__
   - Transport helpers. Opens/closes the UI WebSocket, and sends the resulting envelopes ("minecarts").
 - `client-main.lua`
@@ -67,7 +67,7 @@ end
 ```
 
 ```lua
---//=-- server side (`gameVein/assayer/server-assayer.lua` or a dedicated server file)
+--//=-- server side (`services/server-framework-detection.lua` or a dedicated server file)
 RegisterNetEvent('medal:gv:ore:reqJob', function(requestId)
   local src = source
   --//=-- Collect Job data from the frameworks here
@@ -90,6 +90,6 @@ const ore = await nuiPost('ws:minecart', { type: 'job' })
 - `lib/shared-request.lua` has:
   - `Medal.GV.Request.buildId()` - to build unique request ids.
   - `Medal.GV.Request.await(pending, requestId, timeoutMs?, defaultValue)` - to wait for a response.
-- `gameVein/assayer/server-assayer.lua` - detects the framework via `Medal.GV.Assayer.detectFramework()`.
+- `services/server-framework-detection.lua` - detects the framework via `Medal.Services.Framework.detectFramework()`.
 - `gameVein/shaft/client-minecart.lua` - exposes a NUI callback `ws:minecart`, and `Medal.GV.pushMinecart()`.
 - `gameVein/shaft/client-overseer.lua` - contains `Medal.GV.prospectVein()` and `Medal.GV.sealShaft()`, to open and close the WebSocket.

@@ -10,6 +10,7 @@ shared_scripts {
 
 client_scripts {
   'lib/client-*.lua',
+  'services/client-framework-detection.lua',
   'gameVein/client-main.lua',
   'gameVein/shaft/client-overseer.lua',
   'gameVein/shaft/client-minecart.lua',
@@ -30,8 +31,8 @@ client_scripts {
 
 server_scripts {
   'lib/server-*.lua',
+  'services/server-framework-detection.lua',
   'gameVein/server-main.lua',
-  'gameVein/assayer/server-assayer.lua',
   'gameVein/ore/server-cfx-id.lua',
   'gameVein/ore/server-community-name.lua',
   'gameVein/ore/server-job.lua',
