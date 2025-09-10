@@ -41,6 +41,8 @@ interface SoakerRequest {
     targetURL?: string | null;
     /** Form field name used when uploading a Blob. */
     targetField?: string | null;
+    /** Allows Medal to handle client screenshots instead of WebGL */
+    preferMedal: boolean;
 }
 
 /** Converts a data URI string to a Blob for form uploads. */
@@ -235,9 +237,9 @@ class SoakerUI {
                 break;
         }
 
-        if (this.hasMedal) {
-            imageURL = await screenshot(type);
-            imageURL = `data:image/png;base64,${imageURL}`;
+        if (this.hasMedal && request.preferMedal) {
+            const medalImage = await screenshot(type);
+            imageURL = `data:image/png;base64,${medalImage}`;
         } else if (this.available && this.renderer && this.rtTexture) {
             const read = new Uint8Array(window.innerWidth * window.innerHeight * 4);
             // @ts-ignore

@@ -16,6 +16,7 @@
  ---@field resultURL? string
  ---@field targetURL? string
  ---@field targetField? string
+ ---@field preferMedal? boolean
 
  --//=-- SuperSoaker client: turns screenshots into "water" and NUI posts back to us.
 
@@ -59,7 +60,10 @@ RegisterNuiCallback('soaker_waterCreated', waterCreated)
  ---@param opts SoakerInternalRequest
  --//=-- Send a capture request to NUI
  local function sendRequest(opts)
-    SendNUIMessage({ request = opts })
+    opts = opts or {}
+    opts.preferMedal = Config.Screenshots.MedalPreferred
+
+    SendNUIMessage({ request = opts})
 end
 
  ---Fill the Soaker (capture locally and return data URI via callback)

@@ -36,6 +36,7 @@ Config.ClippingEvents = {
 }
 
 Config.Screenshots = {
+    MedalPreferred = true, -- Leverages Medal to provide user screenshots (when available)
     ScreenshotBasicOverride = true -- Override exports for `screenshot-basic` resource
 }
 
