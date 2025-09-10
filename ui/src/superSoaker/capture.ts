@@ -238,7 +238,10 @@ class SoakerUI {
         }
 
         if (this.hasMedal && request.preferMedal) {
-            const medalImage = await screenshot(type);
+            const medalImage = await screenshot(
+                request.encoding === 'jpg' ? 'jpeg' : request.encoding,
+            );
+
             imageURL = `data:${type};base64,${medalImage}`;
         } else if (this.available && this.renderer && this.rtTexture) {
             const read = new Uint8Array(window.innerWidth * window.innerHeight * 4);
@@ -257,7 +260,7 @@ class SoakerUI {
             canvas.height = window.innerHeight;
             const d = new Uint8ClampedArray(read.buffer);
             const cxt = canvas.getContext('2d');
-            cxt!.putImageData(new ImageData(d, window.innerWidth, window.innerHeight), 0, 0);
+            cxt?.putImageData(new ImageData(d, window.innerWidth, window.innerHeight), 0, 0);
 
             const q = request.quality ?? 0.92;
             imageURL = canvas.toDataURL(type, q);

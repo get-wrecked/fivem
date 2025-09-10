@@ -86,9 +86,10 @@ export const hasMedal = async (): Promise<boolean> => {
 
 export const screenshot = async (mimeType: string): Promise<string> => {
     try {
+        const params = new URLSearchParams({ format: mimeType });
         const response = await fetch(
-            'http://localhost:12665/api/v1/screenshot/base64',
-            buildHeaders('GET', { mimeType }),
+            `http://localhost:12665/api/v1/screenshot/base64?${params}`,
+            buildHeaders(),
         );
 
         if (!response.ok) {
@@ -104,6 +105,6 @@ export const screenshot = async (mimeType: string): Promise<string> => {
         return result.imageBase64;
     } catch (error) {
         console.error('Network error while retrieving base64 screenshot:', error);
-        return "";
+        return '';
     }
 };
