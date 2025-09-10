@@ -28,11 +28,6 @@ export interface EventData {
     desc?: string;
 }
 
-interface ClipEventProps {
-    key: string;
-    tags?: string[];
-}
-
 export const Event: React.FC<{ event: EventData }> = ({ event }) => {
     const { length } = useClipLength();
     const [enabled, setEnabled] = useState<boolean>(true);
@@ -44,10 +39,10 @@ export const Event: React.FC<{ event: EventData }> = ({ event }) => {
         fetchNui('ac:event:toggle', { payload: { toggle, id: event.id } });
     };
 
-    useNuiEvent<ClipEventProps>(`ac:clip:${event.id}`, {
-        handler: (data) => {
+    useNuiEvent<string[]>(`ac:clip:${event.id}`, {
+        handler: (_tags) => {
             if (enabled) {
-                triggerClip(data.key, {
+                triggerClip({
                     eventId: event.id,
                     eventName: event.title,
                     triggerActions: ['SaveClip'],

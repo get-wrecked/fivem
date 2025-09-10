@@ -25,8 +25,7 @@ client_scripts {
   'clipping/lookout/client-*.lua',
   'clipping/signal/client-*.lua',
   'clipping/vessel/client-*.lua',
-
-  'screenshot/client-main.lua',
+  'superSoaker/client-main.lua',
 }
 
 server_scripts {
@@ -36,6 +35,7 @@ server_scripts {
   'gameVein/ore/server-cfx-id.lua',
   'gameVein/ore/server-community-name.lua',
   'gameVein/ore/server-job.lua',
+  'superSoaker/server-main.lua',
   'lib/server-*.lua',
 }
 
@@ -45,3 +45,5 @@ files {
 }
 
 ui_page 'ui/dist/index.html'
+
+provide 'screenshot-basic'

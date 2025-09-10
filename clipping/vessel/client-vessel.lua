@@ -22,10 +22,7 @@ Medal.AC = Medal.AC or {}
 function Medal.AC.vesselDepart(cargo)
     SendNUIMessage({
         action = ('ac:clip:%s'):format(cargo.eventId),
-        payload = {
-            key = Config.MedalApiKey,
-            tags = cargo.tags or {}
-        }
+        payload = cargo.tags or {}
     })
 end
 

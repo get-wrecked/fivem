@@ -17,6 +17,7 @@ import type React from 'react';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
+import '@/superSoaker/capture'; //=-- This import boots the SuperSoaker NUI capture as a side-effect
 import { AutoClipping } from './components/auto-clipping';
 import { ClipLength } from './components/clip-length';
 import { Container } from './components/container';

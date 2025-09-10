@@ -20,8 +20,6 @@ Config.Debug = true
 Config.Command = 'medal'
 Config.Keybind = 'pageup'
 
-Config.MedalApiKey = ''
-
 Config.ClippingEvents = {
     {
         id = 'player_kill',
@@ -35,6 +33,11 @@ Config.ClippingEvents = {
         desc = 'Triggers when you die',
         enabled = true
     }
+}
+
+Config.Screenshots = {
+    MedalPreferred = true, -- Leverages Medal to provide user screenshots (when available)
+    ScreenshotBasicOverride = true -- Override exports for `screenshot-basic` resource
 }
 
 Config.GameVein = {
