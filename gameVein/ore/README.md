@@ -115,9 +115,9 @@ end)
 
 ```ts
 // NUI/UI
-import { nuiPost } from '@/lib/nui';
+import { fetchNui } from '@tsfx/hooks';
 
-const ore = await nuiPost('ws:minecart', { type: 'job' });
+const ore = await fetchNui('ws:minecart', { payload: { type: 'job' } });
 ```
 
 ## Conventions
