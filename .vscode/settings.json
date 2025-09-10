@@ -4,6 +4,7 @@
     "Convar",
     "fivem",
     "fxmanifest",
+    "fxserver",
     "gamevein",
     "headshots",
     "imthatguyhere",
@@ -19,6 +20,7 @@
     "respawning",
     "Shadcn",
     "statebag",
+    "tostring",
     "tsfx"
   ]
 }
