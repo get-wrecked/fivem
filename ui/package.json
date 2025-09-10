@@ -23,19 +23,19 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "tailwind-merge": "^3.3.1",
-    "tailwindcss": "^4.1.12"
+    "tailwindcss": "^4.1.13"
   },
   "devDependencies": {
     "@biomejs/biome": "2.1.4",
-    "@tailwindcss/postcss": "^4.1.12",
-    "@types/node": "^24.3.0",
+    "@tailwindcss/postcss": "^4.1.13",
+    "@types/node": "^24.3.1",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^4.7.0",
     "postcss": "^8.5.6",
     "postcss-color-converter": "^1.2.1",
     "postcss-preset-env": "^10.3.1",
-    "tw-animate-css": "^1.3.7",
+    "tw-animate-css": "^1.3.8",
     "typescript": "~5.8.3",
     "vite": "^7.1.5"
   },
