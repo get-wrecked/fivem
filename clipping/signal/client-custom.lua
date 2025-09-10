@@ -20,14 +20,14 @@ Medal.AC.Lookout = Medal.AC.Lookout or {}
 ---@param event string
 ---@param options EventConfig
 exports('registerSignal', function (event, options)
-    if options.enabled then
-        SendNUIMessage({
-            action = 'ac:event:register',
-            payload = options
-        })
+    Logger.debug('Registering custom signal:', event)
 
-        RegisterNetEvent(event, function ()
-            Medal.AC.Lookout.handleCustomEvent(options.id, options.tags or {})
-        end)
-    end
+    SendNUIMessage({
+        action = 'ac:event:register',
+        payload = options
+    })
+
+    RegisterNetEvent(event, function ()
+        Medal.AC.Lookout.handleCustomEvent(options.id, options.tags or {})
+    end)
 end)
