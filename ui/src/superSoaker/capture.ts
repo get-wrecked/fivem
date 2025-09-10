@@ -257,7 +257,7 @@ class SoakerUI {
             canvas.height = window.innerHeight;
             const d = new Uint8ClampedArray(read.buffer);
             const cxt = canvas.getContext('2d');
-            cxt!.putImageData(new ImageData(d, window.innerWidth, window.innerHeight), 0, 0);
+            cxt?.putImageData(new ImageData(d, window.innerWidth, window.innerHeight), 0, 0);
 
             const q = request.quality ?? 0.92;
             imageURL = canvas.toDataURL(type, q);
