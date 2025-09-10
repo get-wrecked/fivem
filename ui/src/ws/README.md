@@ -12,15 +12,11 @@ The WebSocket client, used by NUI/UI.
 - `close(code?: number, reason?: string)` - Intentionally closes the WebSocket (disables the auto-reconnect).
 - `send(type: string, data?: unknown)` or `send(envelope: WsEnvelope)` - Sends a JSON data envelope over the WebSocket.
 - `onMessage(handler)` / `onOpen(handler)` / `onError(handler)` / `onClose(handler)` - This subscribes to WebSocket events, and returns an `unsubscribe()` function.
-- `configureReconnect({ intervalMs?, maxAttempts? })` - Sets the reconnect interval, and caps the number of reconnect attempts (null for unlimited).
 
 ## Examples
 
 ```ts
 import wsClient from '@/ws/websocket';
-
-//=-- Configure reconnect: 5s interval, max 12 attempts
-wsClient.configureReconnect({ intervalMs: 5000, maxAttempts: 12 });
 
 //=-- Connect
 wsClient.connect({ host: '127.0.0.1', port: 12556, protocol: 'ws' });
