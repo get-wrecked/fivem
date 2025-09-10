@@ -104,5 +104,6 @@ export const screenshot = async (mimeType: string): Promise<string> => {
         return result.imageBase64;
     } catch (error) {
         console.error('Network error while retrieving base64 screenshot:', error);
+        return "";
     }
 };
