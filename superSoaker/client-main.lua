@@ -24,7 +24,7 @@
  ---@field cb fun(data:string)
  ---@type table<string, SoakerResultEntry>
  local results = {}
- 
+
  ---@type integer
  local correlation = 0
 
@@ -54,7 +54,6 @@ local function waterCreated(body, cb)
 end
 
 RegisterNuiCallback('soaker_waterCreated', waterCreated)
-
 
  ---Send a capture request to the NUI capture runtime
  ---@param opts SoakerInternalRequest
