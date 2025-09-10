@@ -35,6 +35,10 @@ Config.ClippingEvents = {
     }
 }
 
+Config.Screenshots = {
+    ScreenshotBasicOverride = true -- Override exports for `screenshot-basic` resource
+}
+
 Config.GameVein = {
   WebSocket = {
     host = "127.0.0.1",

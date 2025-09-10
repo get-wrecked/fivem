@@ -48,6 +48,8 @@ end
 
 exports('requestPlayerWater', requestPlayerWater)
 
-AddEventHandler('__cfx_export_screenshot-basic_requestClientScreenshot', function (setCb)
-    setCb(requestPlayerWater)
-end)
+if Config.Screenshots.ScreenshotBasicOverride then
+    AddEventHandler('__cfx_export_screenshot-basic_requestClientScreenshot', function (setCb)
+        setCb(requestPlayerWater)
+    end)
+end

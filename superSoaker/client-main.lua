@@ -94,9 +94,11 @@ local function fillSoaker(options, cb)
 
  exports('fillSoaker', fillSoaker)
 
- AddEventHandler('__cfx_export_screenshot-basic_requestScreenshot', function (setCb)
-    setCb(fillSoaker)
- end)
+ if Config.Screenshots.ScreenshotBasicOverride then
+    AddEventHandler('__cfx_export_screenshot-basic_requestScreenshot', function (setCb)
+       setCb(fillSoaker)
+    end)
+ end
 
  ---Shoot the water (upload to URL). Field is the form field name.
  ---@param url string
@@ -132,9 +134,11 @@ local function shootWater(url, field, options, cb)
 
  exports('shootWater', shootWater)
 
- AddEventHandler('__cfx_export_screenshot-basic_requestScreenshotUpload', function (setCb)
-    setCb(shootWater)
- end)
+ if Config.Screenshots.ScreenshotBasicOverride then
+    AddEventHandler('__cfx_export_screenshot-basic_requestScreenshotUpload', function (setCb)
+       setCb(shootWater)
+    end)
+ end
 
  ---Server asks us to fill; we capture and shoot the data back to server
  ---@param options SoakerOptions
