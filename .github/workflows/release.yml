@@ -1,0 +1,71 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install zip
+        run: sudo apt install zip
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.15.1
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.repository.default_branch }}
+
+      - name: Bump manifest version
+        run: node .github/actions/bump-manifest-version.js
+        env:
+          TGT_RELEASE_VERSION: ${{ github.ref_name }}
+
+      - name: Push version bump change
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: '["fxmanifest.lua"]'
+          push: true
+          default_author: github_actions
+          message: 'chore: bump version to ${{ github.ref_name }}'
+
+      - name: Install ui dependencies
+        run: pnpm install
+        working-directory: ui
+
+      - name: Run ui build script
+        run: pnpm build
+        working-directory: ui
+
+      - name: Bundle files
+        run: |
+          mkdir -p ./temp/medal/ui
+          cp ./{fxmanifest.lua,config.lua,README.md} ./temp/medal
+          cp -r ./{clipping,gameVein,lib,services,superSoaker} ./temp/medal
+          cp -r ./ui/dist ./temp/medal/ui/
+          cd ./temp && zip -r ../medal.zip ./medal
+
+      - name: Create release
+        uses: 'marvinpinto/action-automatic-releases@v1.2.1'
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: false
+          files: medal.zip
+
+      - name: Update tag
+        uses: EndBug/latest-tag@v1
+        with:
+          ref: ${{ github.ref_name }}
