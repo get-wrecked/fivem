@@ -23,7 +23,7 @@ local framework = 'none'
 --- Get the current client's player name
 --- @return string name The player's name or "unknown"
 local function getFivemName()
-  local name = GetPlayerName(-1) --//=-- The current player's name
+  local name = GetPlayerName(PlayerId()) --//=-- The current player's name
   if type(name) == 'string' and #name > 0 then
     return name
   else
