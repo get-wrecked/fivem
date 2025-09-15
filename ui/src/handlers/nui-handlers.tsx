@@ -28,7 +28,8 @@ import wsClient from '../ws/websocket';
  * Handled actions:
  * - `ui:setVisible`, `ui:open`, `ui:close`
  * - `ws:connect`, `ws:send`, `ws:close`
- * - inbound `heartbeat` with optional `request` echo via minecart
+ * - inbound WebSocket messages: routes any message with a `type` to ore assay system
+ * - messages without `type` are logged to console for debugging
  */
 export const NuiHandlers: React.FC = () => {
     //=-- WebSocket controls from LUA to UI
@@ -79,24 +80,26 @@ export const NuiHandlers: React.FC = () => {
         },
     });
 
-    //=-- WebSocket inbound message handling (e.g., heartbeat, name, communityName, etc)
+    //=-- WebSocket inbound message handling: routes any message with `type` to ore assay, logs others
     useEffect(() => {
         let mounted = true;
         const off = wsClient.onMessage((env) => {
-            if (env?.type === 'heartbeat') {
+            if (env?.type && typeof env.type === 'string') {
                 //=-- Print the data via shared Lua logger
                 void nuiLog(env.data, 'info');
 
-                //=-- Replies over WebSocket when requested: Use the minecart to send the ore from Lua to NUI
-                if ((env as WsEnvelope).data === 'request') {
-                    (async () => {
-                        try {
-                            await fetchNui('ws:minecart', { payload: { type: 'heartbeat' } });
-                        } catch {
-                            /*//=-- ignore */
-                        }
-                    })();
-                }
+                //=-- Route any message with a type to the ore assay system
+                (async () => {
+                    try {
+                        await fetchNui('ws:minecart', { payload: { type: env.type } });
+                    } catch {
+                        //=-- Return that the ore doesn't exist
+                        wsClient.send(env.type, { error: 'ore-unavailable' });
+                    }
+                })();
+            } else {
+                //=-- No type property: log the exact payload to console
+                console.log('[ws] Message received with no type:', env);
             }
         });
         return () => {
