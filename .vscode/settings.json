@@ -22,5 +22,6 @@
     "statebag",
     "tostring",
     "tsfx"
-  ]
+  ],
+  "stylua.targetReleaseVersion": "latest"
 }
