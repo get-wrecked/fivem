@@ -34,6 +34,7 @@ client_scripts {
 server_scripts {
   'lib/server-*.lua',
   'services/server-framework-detection.lua',
+  'services/server-version.lua',
   'gameVein/server-main.lua',
   'gameVein/ore/server-cfx-id.lua',
   'gameVein/ore/server-community-name.lua',
