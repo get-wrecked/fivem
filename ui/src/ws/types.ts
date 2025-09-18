@@ -50,8 +50,11 @@ export type WsHandler = OpenHandler | MessageHandler | ErrorHandler | CloseHandl
  * Always includes a required `type` string, but has an optional `data` payload
  */
 export interface WsEnvelope {
-    /** Message kind discriminator */
-    type: string;
+    /**
+     * Message discriminator.
+     * Can be a single type string (e.g., 'name') or an array of type strings (e.g., ['name','vehicle']).
+     */
+    type: string | string[];
     /** Optional payload */
     data?: unknown;
 }

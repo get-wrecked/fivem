@@ -73,7 +73,7 @@ function Medal.GV.Ore.assay(req)
     --//=-- Handle bundle requests, which assay multiple ore types at once
   if oreType == 'bundle' and type(req.types) == 'table' then
     local results = {}
-    for _, subType in ipairs(req.types) do
+    for _, subType in pairs(req.types) do
       local result = Medal.GV.Ore.assay(subType)
       if result ~= nil then
         results[subType] = result

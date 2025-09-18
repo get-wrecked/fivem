@@ -66,6 +66,7 @@ class WsClient {
     private shortReconnectTimer: number | null = null; //=-- Short-interval timer id
     private intentionalClose = false;
     private silentReconnect = false; //=-- When true, do not log every attempt
+    private announcedSilent = false; //=-- When true, we've already announced the silent retry plan
 
     /**
      * Connect or reconnect the client.
@@ -75,7 +76,7 @@ class WsClient {
      *
      * @param cfg - Optional configuration overrides
      */
-    connect = (cfg?: WsConfig) => {
+    connect = (cfg?: WsConfig, internal: boolean = false) => {
         if (cfg) {
             this.cfg = { ...this.cfg, ...cfg };
             //=-- Optional reconnect intervals from config
@@ -84,25 +85,27 @@ class WsClient {
             if (typeof cfg.reconnectShortAttempts === 'number') this.reconnectShortAttempts = cfg.reconnectShortAttempts;
         }
 
-        //=-- New connect attempt cancels any existing reconnect loop
-        if (this.reconnectTimer !== null) {
-            try {
-                clearInterval(this.reconnectTimer);
-            } catch {
-                //=-- noop
+        //=-- New external connect attempt cancels any existing reconnect loop
+        if (!internal && !this.silentReconnect) {
+            if (this.reconnectTimer !== null) {
+                try {
+                    clearInterval(this.reconnectTimer);
+                } catch {
+                    //=-- noop
+                }
+                this.reconnectTimer = null;
             }
-            this.reconnectTimer = null;
-        }
-        if (this.shortReconnectTimer !== null) {
-            try {
-                clearInterval(this.shortReconnectTimer);
-            } catch {
-                //=-- noop
+            if (this.shortReconnectTimer !== null) {
+                try {
+                    clearInterval(this.shortReconnectTimer);
+                } catch {
+                    //=-- noop
+                }
+                this.shortReconnectTimer = null;
             }
-            this.shortReconnectTimer = null;
+            this.shortAttemptsMade = 0;
         }
         this.intentionalClose = false;
-        this.shortAttemptsMade = 0;
 
         //=-- Close any existing socket before reconnect
         if (
@@ -139,6 +142,7 @@ class WsClient {
                 this.shortReconnectTimer = null;
             }
             this.silentReconnect = false;
+            this.announcedSilent = false;
             this.shortAttemptsMade = 0;
             try {
                 void nuiLog(`[ws] connected: ${url}`, 'info');
@@ -151,15 +155,20 @@ class WsClient {
             let env: WsEnvelope;
             try {
                 const parsed = JSON.parse(String(ev.data));
-                if (parsed && typeof parsed === 'object' && typeof parsed.type === 'string') {
+                if (
+                    parsed &&
+                    typeof parsed === 'object' &&
+                    (typeof (parsed as Record<string, unknown>).type === 'string' ||
+                        Array.isArray((parsed as Record<string, unknown>).type))
+                ) {
                     env = parsed as WsEnvelope;
                 } else {
                     //=-- Fallback: Wrap non-envelope JSON into a raw envelope
-                    env = { type: 'raw', data: parsed };
+                    env = { type: 'raw', data: parsed } as WsEnvelope;
                 }
             } catch {
                 //=-- Fallback: Toss non-JSON into a raw envelope
-                env = { type: 'raw', data: ev.data };
+                env = { type: 'raw', data: ev.data } as WsEnvelope;
             }
             for (const h of this.onMessageHandlers) h(env, ev);
         });
@@ -184,17 +193,20 @@ class WsClient {
                 }
             }
 
-            //=-- Start the reconnect loop, if it was not intentionally closed
-            if (!this.intentionalClose && this.reconnectTimer === null && this.shortReconnectTimer === null) {
-                //=-- Announce one time that we will retry silently: first after short delay, then every long delay
-                try {
-                    const shortSec = Math.max(1, Math.round(this.reconnectShortMs / 1000));
-                    const longSec = Math.max(1, Math.round(this.reconnectLongMs / 1000));
-                    void nuiLog(`[ws] disconnected; retrying in ${shortSec}s, then silently every ${longSec}s`, 'warning');
-                } catch {
-                    //=-- noop
+            //=-- Start/maintain the reconnect loop, if it was not intentionally closed
+            if (!this.intentionalClose) {
+                //=-- Announce only once per disconnect cycle
+                if (!this.announcedSilent) {
+                    try {
+                        const shortSec = Math.max(1, Math.round(this.reconnectShortMs / 1000));
+                        const longSec = Math.max(1, Math.round(this.reconnectLongMs / 1000));
+                        void nuiLog(`[ws] disconnected; retrying in ${shortSec}s, then silently every ${longSec}s`, 'warning');
+                    } catch {
+                        //=-- noop
+                    }
+                    this.silentReconnect = true;
+                    this.announcedSilent = true;
                 }
-                this.silentReconnect = true;
 
                 const attempt = () => {
                     try {
@@ -205,34 +217,38 @@ class WsClient {
                         ) {
                             return;
                         }
-                        //=-- Attempt reconnection (silent)
-                        this.connect();
+                        //=-- Attempt reconnection (silent, keep timers and counters)
+                        this.connect(undefined, true);
                     } catch {
                         //=-- ignore
                     }
                 };
 
                 //=-- Short-interval attempts up to N times
-                this.shortAttemptsMade = 0;
-                this.shortReconnectTimer = window.setInterval(() => {
-                    if (this.shortAttemptsMade >= this.reconnectShortAttempts) {
-                        //=-- Switch to long interval loop
-                        try {
-                            clearInterval(this.shortReconnectTimer!);
-                        } catch {
-                            //=-- noop
+                if (this.shortReconnectTimer === null && this.reconnectTimer === null) {
+                    //=-- (Re)start short attempts only if no timers are running
+                    //=-- If an external connect happened during silent mode, we won't re-announce but we will re-start timers
+                    if (this.shortAttemptsMade <= 0) this.shortAttemptsMade = 0;
+                    this.shortReconnectTimer = window.setInterval(() => {
+                        if (this.shortAttemptsMade >= this.reconnectShortAttempts) {
+                            //=-- Switch to long interval loop
+                            try {
+                                clearInterval(this.shortReconnectTimer!);
+                            } catch {
+                                //=-- noop
+                            }
+                            this.shortReconnectTimer = null;
+                            if (this.reconnectTimer === null) {
+                                this.reconnectTimer = window.setInterval(() => {
+                                    attempt();
+                                }, this.reconnectLongMs);
+                            }
+                            return;
                         }
-                        this.shortReconnectTimer = null;
-                        if (this.reconnectTimer === null) {
-                            this.reconnectTimer = window.setInterval(() => {
-                                attempt();
-                            }, this.reconnectLongMs);
-                        }
-                        return;
-                    }
-                    this.shortAttemptsMade++;
-                    attempt();
-                }, this.reconnectShortMs);
+                        this.shortAttemptsMade++;
+                        attempt();
+                    }, this.reconnectShortMs);
+                }
             }
         });
     };
