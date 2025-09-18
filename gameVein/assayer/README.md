@@ -7,8 +7,10 @@ Framework detection has been moved to the shared `services/` framework detection
 
 - `client-assayer.lua`
   - Routes ore requests to the correct ore type.
+  - Supports bundling multiple ore requests into a single call.
     - API: `Medal.GV.Ore.assay(req: string|table): any`
     - Accepts `'type'` (string) or `{ type = string, ... }` (object).
+    - Also accepts `{ type = 'bundle', types = { 'name', 'job' } }` to request multiple ores at once.
 
 For framework detection, use the service APIs instead:
 - Client: `Medal.Services.Framework.getKey(timeoutMs?: number): FrameworkKey`
@@ -28,6 +30,18 @@ To add a new ore type, include another branch in `Medal.GV.Ore.assay()`:
 --//=-- gameVein/assayer/client-assayer.lua
 if oreType == 'yourType' then
   return Medal.GV.Ore.yourType()
+end
+
+--//=-- For bundled requests
+if oreType == 'bundle' and type(req.types) == 'table' then
+  local results = {}
+  for _, subType in ipairs(req.types) do
+    local result = Medal.GV.Ore.assay(subType)
+    if result ~= nil then
+      results[subType] = result
+    end
+  end
+  return results
 end
 ```
 

@@ -26,8 +26,9 @@ Medal.GV.Assayer = Medal.GV.Assayer or {}
 --- Accepted forms:
 ---  - string: Treated as the `type` (e.g., 'name')
 ---  - table: { type = 'name', ... }
+---  - table: { type = 'bundle', types = { 'name', 'job' } }
 --- @param req string|table
---- @return any result The data for the requested ore, or nil if unknown
+--- @return any|table|nil The data for the requested ore, a table of results for a bundle, or nil if unknown
 function Medal.GV.Ore.assay(req)
   local oreType = nil
 
@@ -67,6 +68,18 @@ function Medal.GV.Ore.assay(req)
 
   if oreType == 'vehicle' then
     return Medal.GV.Ore.vehicle()
+  end
+
+    --//=-- Handle bundle requests, which assay multiple ore types at once
+  if oreType == 'bundle' and type(req.types) == 'table' then
+    local results = {}
+    for _, subType in ipairs(req.types) do
+      local result = Medal.GV.Ore.assay(subType)
+      if result ~= nil then
+        results[subType] = result
+      end
+    end
+    return results
   end
 
   --//=-- Unknown ore type
