@@ -16,6 +16,11 @@
 ]]
 
 RegisterNUICallback('ws:log', function(data, cb)
+  --//=-- Accept both shapes: { level, args } and { payload = { level, args } }
+  if type(data) == 'table' and type(data.payload) == 'table' then
+    data = data.payload
+  end
+
   local level = (type(data) == 'table' and type(data.level) == 'string') and data.level or 'info'
   local args = (type(data) == 'table' and type(data.args) == 'table') and data.args or { data }
 
