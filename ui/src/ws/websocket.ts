@@ -391,6 +391,15 @@ class WsClient {
         map[event].add(handler);
         return () => map[event].delete(handler);
     };
+
+    //=-- Return whether the WebSocket is currently open
+    isConnected = (): boolean => {
+        try {
+            return !!this.ws && this.ws.readyState === WebSocket.OPEN;
+        } catch {
+            return false;
+        }
+    };
 }
 
 /** Shared instance of the WebSocket client */
