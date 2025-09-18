@@ -15,6 +15,10 @@
 
 Config = {}
 
+--//=-- Time unit constants
+local MS = 1
+local S = 1000 * MS
+
 Config.Debug = true
 
 Config.Command = 'medal'
@@ -45,5 +49,12 @@ Config.GameVein = {
     host = "127.0.0.1",
     port = 12556,
     protocol = "ws",
+    --//=-- Reconnect behavior (UI WebSocket client)
+    --//=-- Number of short attempts before switching to the long interval
+    reconnectShortAttempts = 5,
+    --//=-- Short retry interval (ms)
+    reconnectShortMs = 30 * S,
+    --//=-- Longer, silent retry interval (ms)
+    reconnectLongMs = 120 * S,
   }
 }

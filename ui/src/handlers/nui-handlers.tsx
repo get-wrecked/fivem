@@ -116,7 +116,7 @@ export const NuiHandlers: React.FC = () => {
                     try {
                         console.warn('[ws:onMessage:off-failed]', err);
                     } catch {
-                        /*//=-- ignore */
+                        //=-- ignore
                     }
                 }
             }

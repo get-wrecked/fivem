@@ -25,6 +25,21 @@ export interface WsConfig {
      * Optional path suffix appended to the URL (e.g. "/socket")
      */
     path?: string;
+    /**
+     * Initial reconnect delay in milliseconds for the first background attempt after a disconnect.
+     * If omitted, defaults to 30000 ms.
+     */
+    reconnectShortMs?: number;
+    /**
+     * Subsequent silent reconnect delay in milliseconds for ongoing background attempts.
+     * If omitted, defaults to 120000 ms.
+     */
+    reconnectLongMs?: number;
+    /**
+     * Number of short-interval attempts before switching to the long interval.
+     * If omitted, defaults to 5 attempts.
+     */
+    reconnectShortAttempts?: number;
 }
 
 export type WsEvent = 'open' | 'message' | 'error' | 'close';
