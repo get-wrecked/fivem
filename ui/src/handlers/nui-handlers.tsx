@@ -92,7 +92,7 @@ export const NuiHandlers: React.FC = () => {
         const off = wsClient.onMessage((env) => {
             if (env?.type && (typeof env.type === 'string' || Array.isArray(env.type))) {
                 //=-- Print the data via shared Lua logger
-                void nuiLog(env.data, 'info');
+                void nuiLog(env.data, 'debug');
 
                 //=-- Route any message with a type to the ore assay system
                 (async () => {
