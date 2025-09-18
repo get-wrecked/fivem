@@ -18,15 +18,15 @@ import type React from 'react';
 import type { PropsWithChildren } from 'react';
 import { cn } from '@/lib/utils';
 import logo from '../assets/logo.svg';
-import { useApiStatus } from '@/hooks/use-api-status';
-import { useWebSocketStatus } from '@/hooks/use-websocket-status';
-import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
-import { Camera, CameraOff, Wifi, WifiOff } from 'lucide-react';
+////=-- Indicators extracted to standalone components
+import { ApiIndicator } from '@/components/api-indicator';
+////=-- WebSocket indicator extracted to its own component
+import { WebSocketIndicator } from '@/components/websocket-indicator';
+////=-- Tooltips handled within indicator components
 
 const Header: React.FC = () => {
     const { setVisible } = useNuiVisibility();
-    const { isAvailable } = useApiStatus();
-    const { isConnected } = useWebSocketStatus();
+    ////=-- Status handled by <ApiIndicator /> and <WebSocketIndicator />
 
     return (
         <div className='w-full h-14 bg-second-layer flex items-center justify-between'>
@@ -36,42 +36,10 @@ const Header: React.FC = () => {
 
             <div className='flex items-center gap-1 pr-2'>
                 {/*//=-- Autoclipping API availability indicator */}
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <span
-                            className='size-14 flex items-center justify-center hover:bg-accent-secondary rounded-md cursor-default'
-                            aria-label={`Autoclipping API: ${isAvailable ? 'Available' : 'Unavailable'}`}
-                            role='img'
-                        >
-                            {isAvailable ? (
-                                <Camera size={16} className='text-green-500' />
-                            ) : (
-                                <CameraOff size={16} className='text-foreground-300' />
-                            )}
-                        </span>
-                    </TooltipTrigger>
-                    <TooltipContent sideOffset={6}>
-                        Autoclipping API: {isAvailable ? 'Available' : 'Unavailable'}
-                    </TooltipContent>
-                </Tooltip>
+                <ApiIndicator />
 
                 {/*//=-- WebSocket connection indicator */}
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <span
-                            className='size-14 flex items-center justify-center hover:bg-accent-secondary rounded-md cursor-default'
-                            aria-label={`WebSocket: ${isConnected ? 'Connected' : 'Disconnected'}`}
-                            role='img'
-                        >
-                            {isConnected ? (
-                                <Wifi size={16} className='text-green-500' />
-                            ) : (
-                                <WifiOff size={16} className='text-foreground-300' />
-                            )}
-                        </span>
-                    </TooltipTrigger>
-                    <TooltipContent sideOffset={6}>WebSocket: {isConnected ? 'Connected' : 'Disconnected'}</TooltipContent>
-                </Tooltip>
+                <WebSocketIndicator />
 
                 {/*//=-- Close button */}
                 <button
