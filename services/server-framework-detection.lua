@@ -5,14 +5,14 @@
   =====================
   Description:
     Framework detection service (server)
-    Provides detection of the active framework and safe export invocation.
+    Provides detection of the active framework.
+    (Safe export invocation is provided by `services/shared-framework-detection.lua` now).
   ---
   Exports:
     None
   ---
   Globals:
     - Medal.Services.Framework.detectFramework : Detects which framework is active
-    - Medal.Services.Framework.safeExport : Safely calls an export if available
 ]]
 
 
@@ -21,7 +21,6 @@ Medal.Services = Medal.Services or {}
 
 ---@class FrameworkService
 ---@field detectFramework fun(forceRefresh?: boolean): FrameworkKey
----@field safeExport fun(resource: string, method: string|string[], ...): any|nil
 Medal.Services.Framework = Medal.Services.Framework or {}
 
 --- Internal: check if a resource is in the 'started' state
@@ -32,29 +31,7 @@ local function hasStarted(resource)
   return GetResourceState(resource) == 'started'
 end
 
---- Internal: safe export fetcher/invoker (won't error if resource/exports are missing)
----@param resource string
----@param method string|string[]
----@param ... any
----@return any|nil
-function Medal.Services.Framework.safeExport(resource, method, ...)
-  if not resource or not hasStarted(resource) then return nil end
-  local methods = type(method) == 'table' and method or { method }
-  local args = { ... }
-  for _, name in ipairs(methods) do
-    local ok, result = pcall(function()
-      local ex = exports and exports[resource]
-      local fn = ex and ex[name]
-      if type(fn) == 'function' then
-        --//=-- Call with explicit self to support ':' style exports
-        return fn(ex, table.unpack(args))
-      end
-      return nil
-    end)
-    if ok and result ~= nil then return result end
-  end
-  return nil
-end
+--//=-- Safe export is provided in shared helpers (client + server)
 
 --//=-- Individual framework detectors
 

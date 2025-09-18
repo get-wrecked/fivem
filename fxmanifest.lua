@@ -8,6 +8,7 @@ version '0.0.0'
 shared_scripts {
   'config.lua',
   'lib/shared-*.lua',
+  'services/shared-*.lua',
 }
 
 client_scripts {

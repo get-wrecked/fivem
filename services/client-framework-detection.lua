@@ -6,6 +6,7 @@
   Description:
     Framework detection service (client)
     Exposes an API to request and await the server-detected framework key.
+    (Safe export invocation is provided by `services/shared-framework-detection.lua` now).
   ---
   Exports:
     None
