@@ -61,7 +61,7 @@ end
 
 --- Get the current client's character name
 --- @return string The player's character name or the fivem name
-local function getCharacterName() 
+local function getCharacterName()
   local name = 'unknown' --//=-- Default for character when not found
 
   do
