@@ -46,6 +46,10 @@ local function getEsxJob(src)
         local name = j.label or j.name or 'unknown'
         local rank = tonumber(j.grade) or -1
         local rankName = j.grade_name or j.grade_label or 'unknown'
+        --//=-- Debug: log mapped ESX job
+        if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+          pcall(Logger.debug, '[GV.Ore.server-job]', { src = src, framework = 'esx', mapped = { id = id, name = name, rank = rank, rankName = rankName }, raw = j })
+        end
         return { id = tostring(id), name = tostring(name), rank = rank, rankName = tostring(rankName) }
       end
     end
@@ -69,6 +73,11 @@ local function handleReqJob(requestId)
     data = getEsxJob(src)
   else
     data = unknownJob()
+  end
+
+  --//=-- Debug: final server response
+  if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+    pcall(Logger.debug, '[GV.Ore.server-job:response]', { src = src, framework = key, job = data })
   end
 
   TriggerClientEvent('medal:gv:ore:resJob', src, requestId, data)

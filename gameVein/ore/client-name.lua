@@ -134,6 +134,9 @@ local function getCharacterName()
     --//=-- ESX is resolved server-side to avoid client-side API differences; request and await
     name = requestServerEsxName(5000)
     logDebug('esx: derived name (server)', name)
+    if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+      pcall(Logger.debug, '[GV.Ore.name]', { framework = 'esx', name = name })
+    end
   
 elseif (frameworkKey == 'qb' or frameworkKey == 'qbx') then
     --//=-- Use safe export to get PlayerData directly from framework export
@@ -196,6 +199,9 @@ elseif (frameworkKey == 'qb' or frameworkKey == 'qbx') then
       end
     end
     logDebug('qb/qbx: derived name', name)
+    if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+      pcall(Logger.debug, '[GV.Ore.name]', { framework = frameworkKey, name = name })
+    end
   elseif frameworkKey == 'tmc' then
     --//=-- TMC: derive full name directly from the player's statebag
     local lp = rawget(_G, 'LocalPlayer')
@@ -219,6 +225,9 @@ elseif (frameworkKey == 'qb' or frameworkKey == 'qbx') then
     end
 
     logDebug('tmc: derived name', name)
+    if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+      pcall(Logger.debug, '[GV.Ore.name]', { framework = 'tmc', name = name })
+    end
   elseif frameworkKey == 'nd' then
     local src = nil
     pcall(function() src = GetPlayerServerId(PlayerId()) end)
@@ -240,6 +249,9 @@ elseif (frameworkKey == 'qb' or frameworkKey == 'qbx') then
       end
     end
     logDebug('nd: derived name', name)
+    if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+      pcall(Logger.debug, '[GV.Ore.name]', { framework = 'nd', name = name })
+    end
   elseif frameworkKey == 'ox' then
     local pd = Medal.Services.Framework.safeExport('ox_core', { 'GetPlayerData', 'GetPlayer' })
     logDebug('ox: player data object type', type(pd))
@@ -255,6 +267,9 @@ elseif (frameworkKey == 'qb' or frameworkKey == 'qbx') then
       end
     end
     logDebug('ox: derived name', name)
+    if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+      pcall(Logger.debug, '[GV.Ore.name]', { framework = 'ox', name = name })
+    end
   end
 
   logDebug('final character name', name)

@@ -36,6 +36,10 @@ local function getEsxName(src)
       local full = nil
       pcall(function() full = xp.getName() end)
       if type(full) == 'string' and #full > 0 then
+        --//=-- Debug: log mapped ESX name
+        if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+          pcall(Logger.debug, '[GV.Ore.server-name]', { src = src, framework = 'esx', name = full })
+        end
         return full
       end
     end
@@ -55,6 +59,11 @@ local function handleReqName(requestId)
   local result = 'unknown'
   if key == 'esx' then
     result = getEsxName(src)
+  end
+
+  --//=-- Debug: final server response
+  if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+    pcall(Logger.debug, '[GV.Ore.server-name:response]', { src = src, framework = key, name = result })
   end
 
   TriggerClientEvent('medal:gv:ore:resName', src, requestId, result)

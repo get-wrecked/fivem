@@ -202,26 +202,63 @@ end
 ---Get the player's job information
 ---@return Job
 function Medal.GV.Ore.job()
+  --//=-- On ESX, resolve on the server to avoid client-side API/shape differences
+  do
+    local key = Medal and Medal.Services and Medal.Services.Framework and Medal.Services.Framework.getKey and Medal.Services.Framework.getKey() or 'unknown'
+    if key == 'esx' then
+      local j = requestServerJob(5000)
+      if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+        Logger.debug('[GV.Ore.job]', { framework = 'esx', job = j })
+      end
+      return j
+    end
+  end
+
   --//=-- Resolution order (client-first): TMC -> QB -> QBX -> ND -> OX -> server fallback (ESX)
   do
     local j = getTmcJobClient()
-    if j and j.id ~= 'unknown' and j.name ~= 'unknown' then return j end
+    if j and j.id ~= 'unknown' and j.name ~= 'unknown' then
+      if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+        Logger.debug('[GV.Ore.job]', { framework = 'tmc', job = j })
+      end
+      return j
+    end
   end
   do
     local j = getQbJobClient('qb')
-    if j and j.id ~= 'unknown' and j.name ~= 'unknown' then return j end
+    if j and j.id ~= 'unknown' and j.name ~= 'unknown' then
+      if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+        Logger.debug('[GV.Ore.job]', { framework = 'qb', job = j })
+      end
+      return j
+    end
   end
   do
     local j = getQbJobClient('qbx')
-    if j and j.id ~= 'unknown' and j.name ~= 'unknown' then return j end
+    if j and j.id ~= 'unknown' and j.name ~= 'unknown' then
+      if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+        Logger.debug('[GV.Ore.job]', { framework = 'qbx', job = j })
+      end
+      return j
+    end
   end
   do
     local j = getNdJobClient()
-    if j and j.id ~= 'unknown' and j.name ~= 'unknown' then return j end
+    if j and j.id ~= 'unknown' and j.name ~= 'unknown' then
+      if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+        Logger.debug('[GV.Ore.job]', { framework = 'nd', job = j })
+      end
+      return j
+    end
   end
   do
     local j = getOxJobClient()
-    if j and j.id ~= 'unknown' and j.name ~= 'unknown' then return j end
+    if j and j.id ~= 'unknown' and j.name ~= 'unknown' then
+      if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+        Logger.debug('[GV.Ore.job]', { framework = 'ox', job = j })
+      end
+      return j
+    end
   end
 
   return requestServerJob(5000)
