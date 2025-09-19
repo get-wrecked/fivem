@@ -116,30 +116,27 @@ local function getCharacterName()
     end
     logDebug('qb/qbx: derived name', name)
   elseif frameworkKey == 'tmc' then
-    --//=-- Resolve TMC core from known providers (supports exports.core:getCoreObject())
-    local TMC = Medal.Services.Framework.safeExport('core', 'getCoreObject')
-    if not TMC then
-      local ok, res = pcall(function()
-        return exports and exports.core and exports.core.getCoreObject and exports.core:getCoreObject()
-      end)
-      if ok then TMC = res end
-    end
+    --//=-- TMC: derive full name directly from the player's statebag
+    local lp = rawget(_G, 'LocalPlayer')
+    local st = lp and lp.state or nil
+    logDebug('tmc: LocalPlayer/state present', lp ~= nil, st ~= nil)
 
-    logDebug('tmc: core object resolved', TMC ~= nil, 'type', type(TMC))
-
-    if TMC and TMC.Functions and type(TMC.Functions.GetFullName) == 'function' then
+    if st and st.playerLoaded and st.charinfo then
       local full = nil
-      local ok, err = pcall(function()
-        full = TMC.Functions.GetFullName()
-      end)
-      logDebug('tmc: GetFullName() ok?', ok, 'result', full, 'err', ok and 'nil' or tostring(err))
+      if st.charinfo.overrideFullName and type(st.charinfo.overrideFullName) == 'string' and #st.charinfo.overrideFullName > 0 then
+        full = st.charinfo.overrideFullName
+        logDebug('tmc: fullname via overrideFullName', full)
+      elseif type(st.charinfo.firstname) == 'string' and type(st.charinfo.lastname) == 'string' then
+        full = ('%s %s'):format(st.charinfo.firstname, st.charinfo.lastname)
+        logDebug('tmc: fullname via firstname/lastname', full)
+      end
+
       if type(full) == 'string' and #full > 0 then
         name = full
         logDebug('tmc: using full name', name)
       end
-    else
-      logDebug('tmc: GetFullName() not available on TMC.Functions')
     end
+
     logDebug('tmc: derived name', name)
   elseif frameworkKey == 'nd' then
     local src = nil
