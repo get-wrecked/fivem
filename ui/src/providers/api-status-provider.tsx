@@ -9,10 +9,10 @@
  * @exports ApiStatusProvider - The API status provider.
  */
 
-import { ApiStatusContext } from '@/contexts/api-status-context';
 import { useNuiEvent, useNuiVisibility } from '@tsfx/hooks';
 import type { PropsWithChildren } from 'react';
 import { useEffect, useState } from 'react';
+import { ApiStatusContext } from '@/contexts/api-status-context';
 import { hasMedal } from '@/lib/medal';
 
 /**
@@ -42,16 +42,20 @@ export const ApiStatusProvider: React.FC<PropsWithChildren> = ({ children }) => 
 
         //=-- Run immediately on visibility change and then on an interval
         void check();
-        const id = window.setInterval(() => { void check(); }, 3000);
+        const id = window.setInterval(() => {
+            void check();
+        }, 3000);
         return () => {
             cancelled = true;
-            try { clearInterval(id); } catch { /*//=-- ignore */ }
+            try {
+                clearInterval(id);
+            } catch {
+                //=-- ignore
+            }
         };
     }, [visible]);
 
     return (
-        <ApiStatusContext.Provider value={{ isAvailable }}>
-            {children}
-        </ApiStatusContext.Provider>
+        <ApiStatusContext.Provider value={{ isAvailable }}>{children}</ApiStatusContext.Provider>
     );
 };

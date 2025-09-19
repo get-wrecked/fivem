@@ -16,12 +16,13 @@
 import { useNuiVisibility } from '@tsfx/hooks';
 import type React from 'react';
 import type { PropsWithChildren } from 'react';
-import { cn } from '@/lib/utils';
-import logo from '../assets/logo.svg';
 ////=-- Indicators extracted to standalone components
 import { ApiIndicator } from '@/components/api-indicator';
 ////=-- WebSocket indicator extracted to its own component
 import { WebSocketIndicator } from '@/components/websocket-indicator';
+import { cn } from '@/lib/utils';
+import logo from '../assets/logo.svg';
+
 ////=-- Tooltips handled within indicator components
 
 const Header: React.FC = () => {

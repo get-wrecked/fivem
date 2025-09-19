@@ -10,10 +10,7 @@
  */
 
 import { useContext } from 'react';
-import {
-    ApiStatusContext,
-    type ApiStatusContextValue,
-} from '@/contexts/api-status-context';
+import { ApiStatusContext, type ApiStatusContextValue } from '@/contexts/api-status-context';
 
 /**
  * Hook for the API status context.
