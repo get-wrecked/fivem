@@ -1,13 +1,19 @@
-# SuperSoaker: Screenshot capture and upload
+# SuperSoaker
 
-SuperSoaker is a themed, drop-in style system to capture client screenshots and optionally upload them. It mirrors the ergonomics of `screenshot-basic` while integrating tightly with this resource's UI and event flow.
+Screenshot capture and upload system that provides drop-in replacement for `screenshot-basic` while integrating with Medal.tv functionality and the resource's UI/event flow.
+
+- **Client** (`superSoaker/client-main.lua`)
+  - Exposes exports to capture locally or upload.
+  - Listens for server requests to capture.
+  - Uses correlation mapping for async NUI callback routing.
+- **Server** (`superSoaker/server-main.lua`)
+  - Provides export to request player screenshots with callback support.
+  - Handles request correlation using generated IDs.
+- **NUI** (`ui/src/superSoaker/capture.ts`)
+  - Uses CitizenFX Three binding to read game frames into WebGL render targets.
+  - Handles capture requests via `window.postMessage` and returns Data URIs or upload responses.
 
 ## How it works
-
-SuperSoaker has 3 pieces:
-
-1. **Client** (`superSoaker/client-main.lua`)
-   - Exposes exports to capture locally or upload.
    - Listens for server requests to capture.
    - Uses a simple correlation map so async NUI replies route to the right callback.
 
