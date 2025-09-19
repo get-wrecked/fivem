@@ -45,7 +45,7 @@ export const ApiStatusProvider: React.FC<PropsWithChildren> = ({ children }) => 
         const id = window.setInterval(() => { void check(); }, 3000);
         return () => {
             cancelled = true;
-            try { clearInterval(id); } catch { //=-- ignore }
+            try { clearInterval(id); } catch { /*//=-- ignore */ }
         };
     }, [visible]);
 
