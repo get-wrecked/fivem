@@ -155,11 +155,12 @@ class WsClient {
             let env: WsEnvelope;
             try {
                 const parsed = JSON.parse(String(ev.data));
+                const parsedObj = parsed as Record<string, unknown>;
                 if (
                     parsed &&
                     typeof parsed === 'object' &&
-                    (typeof (parsed as Record<string, unknown>).type === 'string' ||
-                        Array.isArray((parsed as Record<string, unknown>).type))
+                    (typeof parsedObj.type === 'string' ||
+                        Array.isArray(parsedObj.type))
                 ) {
                     env = parsed as WsEnvelope;
                 } else {
