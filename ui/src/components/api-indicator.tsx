@@ -31,7 +31,7 @@ export const ApiIndicator: React.FC = () => {
           role='img'
         >
           {isAvailable ? (
-            <Camera size={16} className='text-green-500' />
+            <Camera size={16} color='#22c55e' />
           ) : (
             <CameraOff size={16} className='text-foreground-300' />
           )}

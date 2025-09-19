@@ -31,7 +31,7 @@ export const WebSocketIndicator: React.FC = () => {
           role='img'
         >
           {isConnected ? (
-            <Wifi size={16} className='text-green-500' />
+            <Wifi size={16} color='#22c55e' />
           ) : (
             <WifiOff size={16} className='text-foreground-300' />
           )}
