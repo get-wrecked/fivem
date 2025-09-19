@@ -54,6 +54,15 @@ local function _toRadians(deg)
   return deg * math.pi / 180.0
 end
 
+--- Check whether a vector is effectively the zero vector
+---@param v vector3|nil
+---@return boolean
+local function _isZeroVec(v)
+  --//=-- Consider nil as zero/invalid
+  if not v then return true end
+  return v.x == 0.0 and v.y == 0.0 and v.z == 0.0
+end
+
 --- Convert a camera rotation (in degrees; pitch=`x`, roll=`y`, yaw=`z`) to a forward unit vector.
 --- This uses yaw (`z`) and pitch (`x`); roll (`y`) is ignored for forward vector computation.
 ---@param rot vector3
@@ -75,12 +84,15 @@ function Medal.GV.Ore.cameraMatrix(cam)
   cam = cam or GetRenderingCam()
   if cam and cam ~= 0 then
     local right, forward, up, position = GetCamMatrix(cam)
-    return {
-      right = right,
-      forward = forward,
-      up = up,
-      position = position,
-    }
+    --//=-- Some cameras may return zeroed vectors; treat as invalid and fall back
+    if not (_isZeroVec(right) or _isZeroVec(forward) or _isZeroVec(up)) then
+      return {
+        right = right,
+        forward = forward,
+        up = up,
+        position = position,
+      }
+    end
   end
 
   --//=-- Fallback: build what I think is basically the matrix, from the gameplay camera (but, ignoring camera roll)
