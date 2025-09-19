@@ -134,20 +134,16 @@ local function getCharacterName()
     logDebug('qb/qbx: PlayerData type', type(PlayerData))
     if PlayerData and PlayerData.charinfo and PlayerData.charinfo.firstname and PlayerData.charinfo.lastname then
       name = ('%s %s'):format(PlayerData.charinfo.firstname, PlayerData.charinfo.lastname)
-      print('Full name: ' .. PlayerData.charinfo.firstname .. ' ' .. PlayerData.charinfo.lastname) --//=-- Requested debug print
       logDebug('qb/qbx: using PlayerData.charinfo firstname/lastname', name)
     elseif PlayerData and PlayerData.firstname and PlayerData.lastname then
       --//=-- Root firstname/lastname variant
       name = ('%s %s'):format(PlayerData.firstname, PlayerData.lastname)
-      print('Full name: ' .. PlayerData.firstname .. ' ' .. PlayerData.lastname)
       logDebug('qb/qbx: using PlayerData.firstname/lastname', name)
     elseif PlayerData and PlayerData.firstName and PlayerData.lastName then
       name = ('%s %s'):format(PlayerData.firstName, PlayerData.lastName)
-      print('Full name: ' .. PlayerData.firstName .. ' ' .. PlayerData.lastName)
       logDebug('qb/qbx: using PlayerData.firstName/lastName', name)
     elseif PlayerData and type(PlayerData.name) == 'string' and #PlayerData.name > 0 then
       name = tostring(PlayerData.name)
-      print('Full name: ' .. name)
       logDebug('qb/qbx: using PlayerData.name', name)
     else
       --//=-- Fallback: get core object and try QBCore.PlayerData.charinfo
@@ -163,19 +159,15 @@ local function getCharacterName()
         local pd = QBCore.PlayerData
         if pd.charinfo and pd.charinfo.firstname and pd.charinfo.lastname then
           name = ('%s %s'):format(pd.charinfo.firstname, pd.charinfo.lastname)
-          print('Full name: ' .. pd.charinfo.firstname .. ' ' .. pd.charinfo.lastname)
           logDebug('qb/qbx: using QBCore.PlayerData.charinfo firstname/lastname', name)
         elseif pd.firstname and pd.lastname then
           name = ('%s %s'):format(pd.firstname, pd.lastname)
-          print('Full name: ' .. pd.firstname .. ' ' .. pd.lastname)
           logDebug('qb/qbx: using QBCore.PlayerData firstname/lastname', name)
         elseif pd.firstName and pd.lastName then
           name = ('%s %s'):format(pd.firstName, pd.lastName)
-          print('Full name: ' .. pd.firstName .. ' ' .. pd.lastName)
           logDebug('qb/qbx: using QBCore.PlayerData firstName/lastName', name)
         elseif type(pd.name) == 'string' and #pd.name > 0 then
           name = tostring(pd.name)
-          print('Full name: ' .. name)
           logDebug('qb/qbx: using QBCore.PlayerData.name', name)
         end
       end
