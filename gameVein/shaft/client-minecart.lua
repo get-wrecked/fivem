@@ -40,6 +40,8 @@ end
 
 --//=-- NUI: Minecart ore endpoint (assay and push ore in a minecart to NUI, via ws:send)
 RegisterNUICallback('ws:minecart', function(req, cb)
+  --//=-- Capture ore type for improved error logging when pcall fails
+  local reqOreType = nil
   local ok, result = pcall(function()
     --//=-- Normalize incoming request from NUI
     local norm = req
@@ -78,6 +80,8 @@ RegisterNUICallback('ws:minecart', function(req, cb)
     elseif type(norm) == 'table' and type(norm.type) == 'string' then
       oreType = norm.type
     end
+    --//=-- Stash for outer error logging scope
+    reqOreType = oreType
 
     if oreType ~= nil and ore ~= nil then
       --//=-- Debug: log successful assay summary
@@ -98,7 +102,8 @@ RegisterNUICallback('ws:minecart', function(req, cb)
   end)
 
   if not ok then
-    Logger.error('minecart-assay-failed', req)
+    --//=-- Include the ore type and error reason in logs to aid debugging
+    Logger.error('minecart-assay-failed', { req = req, oreType = reqOreType, err = result })
     cb({ error = 'minecart-assay-failed' })
     return
   end
