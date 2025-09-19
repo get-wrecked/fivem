@@ -94,17 +94,6 @@ function Medal.Services.Framework.getKey(timeoutMs)
     return key
   end
 
-  --//=-- Fallback to client-side detection if server returned 'unknown'
-  if Medal and Medal.Services and Medal.Services.Framework and type(Medal.Services.Framework.detectClient) == 'function' then
-    local localKey = Medal.Services.Framework.detectClient()
-    cLogDebug('getKey: client fallback detection returned', localKey)
-    if localKey and localKey ~= 'unknown' then
-      cachedKey = localKey
-      cLogDebug('getKey: caching client fallback', cachedKey)
-      return localKey
-    end
-  end
-
   cLogDebug('getKey: returning unknown')
   return 'unknown'
 end
