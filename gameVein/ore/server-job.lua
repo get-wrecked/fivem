@@ -31,27 +31,23 @@ end
 ---@param src number
 ---@return Job
 local function getEsxJob(src)
-  local ESXObj = safeExport('es_extended', 'getSharedObject')
+  --//=-- Use safe export to obtain ESX shared object
+  local ESXObj = safeExport('es_extended', { 'getSharedObject', 'GetSharedObject' })
 
   if ESXObj and ESXObj.GetPlayerFromId then
     local xp = nil
     pcall(function() xp = ESXObj.GetPlayerFromId(src) end)
-    local j = xp and xp.job or nil
-    if j then
-      local id = j.id or j.name or 'unknown'
-      local name = j.label or j.name or 'unknown'
-      local rank = -1
-      local rankName = 'unknown'
-      if type(j.grade) == 'number' then rank = j.grade end
-      if type(j.grade) == 'table' then
-        if type(j.grade.level) == 'number' then rank = j.grade.level end
-        if type(j.grade.grade) == 'number' then rank = j.grade.grade end
-        if type(j.grade.name) == 'string' then rankName = j.grade.name end
-        if type(j.grade.label) == 'string' then rankName = j.grade.label end
+    if xp and type(xp.getJob) == 'function' then
+      local j = nil
+      pcall(function() j = xp.getJob() end)
+      if type(j) == 'table' then
+        --//=-- Map ESX getJob() fields to our Job structure
+        local id = j.id or j.name or 'unknown'
+        local name = j.label or j.name or 'unknown'
+        local rank = tonumber(j.grade) or -1
+        local rankName = j.grade_name or j.grade_label or 'unknown'
+        return { id = tostring(id), name = tostring(name), rank = rank, rankName = tostring(rankName) }
       end
-      if type(j.grade_label) == 'string' then rankName = j.grade_label end
-      if type(j.grade_name) == 'string' then rankName = j.grade_name end
-      return { id = tostring(id), name = tostring(name), rank = rank, rankName = tostring(rankName) }
     end
   end
   return unknownJob()
