@@ -19,6 +19,24 @@ Medal.GV = Medal.GV or {}
 Medal.GV.Ore = Medal.GV.Ore or {}
 Medal.Services = Medal.Services or {}
 
+---@class QbJobGrade
+---@field name string|nil
+---@field label string|nil
+---@field level number|nil
+---@field grade number|nil
+
+---@class QbJob
+---@field id string|nil
+---@field name string|nil
+---@field label string|nil
+---@field payment number|nil
+---@field onDuty boolean|nil
+---@field isBoss boolean|nil
+---@field grade QbJobGrade|number|nil
+
+---@class QbPlayerDataForJob
+---@field job QbJob|nil
+
 ---@type table<string, Job>
 local pendingResults = {}
 
@@ -40,23 +58,29 @@ end
 ---@param key 'qb'|'qbx'
 ---@return Job
 local function getQbJobClient(key)
-  local core = nil
+  --//=-- Prefer calling GetPlayerData directly via safe export; some builds return a function
+  ---@type QbPlayerDataForJob|function|nil
+  local PlayerData = nil
   if key == 'qbx' then
-    core = Medal.Services.Framework.safeExport('qbx_core', 'GetCoreObject') or rawget(_G, 'QBCore')
+    pcall(function() PlayerData = Medal.Services.Framework.safeExport('qbx_core', 'GetPlayerData') end)
   else
-    core = Medal.Services.Framework.safeExport('qb-core', 'GetCoreObject') or rawget(_G, 'QBCore')
+    pcall(function() PlayerData = Medal.Services.Framework.safeExport('qb-core', 'GetPlayerData') end)
   end
-  if core and core.Functions and type(core.Functions.GetPlayerData) == 'function' then
-    local pd = nil
-    pcall(function() pd = core.Functions.GetPlayerData() end)
-    local jd = pd and pd.job or nil
-    if jd then
+  if type(PlayerData) == 'function' then
+    local ok, res = pcall(PlayerData)
+    if ok then PlayerData = res end
+  end
+  if type(PlayerData) == 'table' then
+    ---@cast PlayerData QbPlayerDataForJob
+    local jd = PlayerData.job
+    if type(jd) == 'table' then
       local id = jd.id or jd.name or 'unknown'
       local name = jd.label or jd.name or 'unknown'
       local rank = -1
       local rankName = 'unknown'
       if type(jd.grade) == 'table' then
-        rank = tonumber(jd.grade.level or jd.grade.grade or jd.grade) or -1
+        ---@cast jd QbJob
+        rank = tonumber(jd.grade.level or jd.grade.grade) or -1
         rankName = jd.grade.name or jd.grade.label or 'unknown'
       else
         rank = tonumber(jd.grade) or -1
@@ -64,6 +88,34 @@ local function getQbJobClient(key)
       return { id = tostring(id), name = tostring(name), rank = rank, rankName = tostring(rankName) }
     end
   end
+
+  --//=-- Fallback: obtain QBCore object and read QBCore.PlayerData.job
+  ---@type table|nil
+  local QBCore = nil
+  if key == 'qbx' then
+    pcall(function() QBCore = Medal.Services.Framework.safeExport('qbx_core', 'GetCoreObject') end)
+  else
+    pcall(function() QBCore = Medal.Services.Framework.safeExport('qb-core', 'GetCoreObject') end)
+  end
+  if QBCore and type(QBCore) == 'table' and type(QBCore.PlayerData) == 'table' then
+    ---@type QbPlayerDataForJob
+    local pd = QBCore.PlayerData
+    local jd = pd and pd.job or nil
+    if type(jd) == 'table' then
+      local id = jd.id or jd.name or 'unknown'
+      local name = jd.label or jd.name or 'unknown'
+      local rank = -1
+      local rankName = 'unknown'
+      if type(jd.grade) == 'table' then
+        rank = tonumber(jd.grade.level or jd.grade.grade) or -1
+        rankName = jd.grade.name or jd.grade.label or 'unknown'
+      else
+        rank = tonumber(jd.grade) or -1
+      end
+      return { id = tostring(id), name = tostring(name), rank = rank, rankName = tostring(rankName) }
+    end
+  end
+
   return unknownJob()
 end
 
