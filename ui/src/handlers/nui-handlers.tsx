@@ -110,7 +110,10 @@ export const NuiHandlers: React.FC = () => {
                             typeof env.data === 'object' &&
                             Array.isArray((env.data as Record<string, unknown>).types)
                         ) {
-                            req = { type: 'bundle', types: (env.data as Record<string, unknown>).types };
+                            req = {
+                                type: 'bundle',
+                                types: (env.data as Record<string, unknown>).types,
+                            };
                         } else {
                             req = { type: env.type } as Record<string, unknown>;
                         }
@@ -123,7 +126,9 @@ export const NuiHandlers: React.FC = () => {
                         await fetchNui('ws:minecart', { payload: req });
                     } catch {
                         //=-- Return that the ore doesn't exist
-                        wsClient.send(Array.isArray(env.type) ? 'bundle' : env.type, { error: 'ore-unavailable' });
+                        wsClient.send(Array.isArray(env.type) ? 'bundle' : env.type, {
+                            error: 'ore-unavailable',
+                        });
                     }
                 })();
             } else {

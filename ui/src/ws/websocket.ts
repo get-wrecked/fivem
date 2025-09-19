@@ -80,9 +80,11 @@ class WsClient {
         if (cfg) {
             this.cfg = { ...this.cfg, ...cfg };
             //=-- Optional reconnect intervals from config
-            if (typeof cfg.reconnectShortMs === 'number') this.reconnectShortMs = cfg.reconnectShortMs;
+            if (typeof cfg.reconnectShortMs === 'number')
+                this.reconnectShortMs = cfg.reconnectShortMs;
             if (typeof cfg.reconnectLongMs === 'number') this.reconnectLongMs = cfg.reconnectLongMs;
-            if (typeof cfg.reconnectShortAttempts === 'number') this.reconnectShortAttempts = cfg.reconnectShortAttempts;
+            if (typeof cfg.reconnectShortAttempts === 'number')
+                this.reconnectShortAttempts = cfg.reconnectShortAttempts;
         }
 
         //=-- New external connect attempt cancels any existing reconnect loop
@@ -159,8 +161,7 @@ class WsClient {
                 if (
                     parsed &&
                     typeof parsed === 'object' &&
-                    (typeof parsedObj.type === 'string' ||
-                        Array.isArray(parsedObj.type))
+                    (typeof parsedObj.type === 'string' || Array.isArray(parsedObj.type))
                 ) {
                     env = parsed as WsEnvelope;
                 } else {
@@ -201,7 +202,10 @@ class WsClient {
                     try {
                         const shortSec = Math.max(1, Math.round(this.reconnectShortMs / 1000));
                         const longSec = Math.max(1, Math.round(this.reconnectLongMs / 1000));
-                        void nuiLog(`[ws] disconnected; retrying in ${shortSec}s, then silently every ${longSec}s`, 'warning');
+                        void nuiLog(
+                            `[ws] disconnected; retrying in ${shortSec}s, then silently every ${longSec}s`,
+                            'warning',
+                        );
                     } catch {
                         //=-- noop
                     }
@@ -214,7 +218,8 @@ class WsClient {
                         //=-- If it is already open/connecting, skip
                         if (
                             this.ws &&
-                            (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)
+                            (this.ws.readyState === WebSocket.OPEN ||
+                                this.ws.readyState === WebSocket.CONNECTING)
                         ) {
                             return;
                         }
@@ -234,7 +239,7 @@ class WsClient {
                         if (this.shortAttemptsMade >= this.reconnectShortAttempts) {
                             //=-- Switch to long interval loop
                             try {
-                                clearInterval(this.shortReconnectTimer!);
+                                clearInterval(this.shortReconnectTimer);
                             } catch {
                                 //=-- noop
                             }
@@ -377,7 +382,7 @@ class WsClient {
             try {
                 h(ev, undefined);
             } catch {
-              //=-- ignore listener error
+                //=-- ignore listener error
             }
         }
     }

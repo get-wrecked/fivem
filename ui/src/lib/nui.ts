@@ -49,7 +49,7 @@ export async function nuiLog(data: unknown, level: NuiLogLevel = 'info'): Promis
             try {
                 console.log('[ws:log]', level, ...(args as unknown[]));
             } catch {
-              //=-- ignore
+                //=-- ignore
             }
         }
         return res as unknown;

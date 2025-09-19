@@ -9,10 +9,10 @@
  * @exports WebSocketStatusProvider - The WebSocket status provider.
  */
 
-import { WebSocketStatusContext } from '@/contexts/websocket-status-context';
 import { useNuiEvent, useNuiVisibility } from '@tsfx/hooks';
 import type { PropsWithChildren } from 'react';
 import { useEffect, useState } from 'react';
+import { WebSocketStatusContext } from '@/contexts/websocket-status-context';
 import wsClient from '@/ws/websocket';
 
 /**
@@ -38,8 +38,16 @@ export const WebSocketStatusProvider: React.FC<PropsWithChildren> = ({ children 
         const offOpen = wsClient.onOpen(() => setIsConnected(true));
         const offClose = wsClient.onClose(() => setIsConnected(false));
         return () => {
-            try { offOpen(); } catch { /*//=-- ignore */ }
-            try { offClose(); } catch { /*//=-- ignore */ }
+            try {
+                offOpen();
+            } catch {
+                //=-- ignore
+            }
+            try {
+                offClose();
+            } catch {
+                //=-- ignore
+            }
         };
     }, []);
 
@@ -61,7 +69,11 @@ export const WebSocketStatusProvider: React.FC<PropsWithChildren> = ({ children 
             }
         }, 3000);
         return () => {
-            try { clearInterval(id); } catch { /*//=-- ignore */ }
+            try {
+                clearInterval(id);
+            } catch {
+                //=-- ignore
+            }
         };
     }, [visible]);
 
