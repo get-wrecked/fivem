@@ -74,6 +74,45 @@ local function getFivemName()
   end
 end
 
+--//=-- Pending results for ESX name requests
+---@type table<string, string>
+local pendingNameResults = {}
+
+--//=-- Receive server-resolved ESX name
+RegisterNetEvent('medal:gv:ore:resName', function(requestId, value)
+  pendingNameResults[requestId] = value
+end)
+
+--- Request ESX name from server and wait for response
+--- @param timeoutMs? integer
+--- @return string
+local function requestServerEsxName(timeoutMs)
+  local reqId = (Medal and Medal.GV and Medal.GV.Request and Medal.GV.Request.buildId and Medal.GV.Request.buildId()) or tostring(math.random(100000, 999999))
+  TriggerServerEvent('medal:gv:ore:reqName', reqId)
+  logDebug('esx: requested server name', reqId)
+
+  local result = nil
+  if Medal and Medal.GV and Medal.GV.Request and Medal.GV.Request.await then
+    result = Medal.GV.Request.await(pendingNameResults, reqId, timeoutMs or 5000, 'unknown')
+  else
+    --//=-- Simple local await loop fallback
+    local started = GetGameTimer()
+    local timeout = (timeoutMs or 5000)
+    while (GetGameTimer() - started) < timeout do
+      local val = pendingNameResults[reqId]
+      if val ~= nil then result = val; break end
+      Wait(0)
+    end
+    result = result or 'unknown'
+  end
+
+  logDebug('esx: server returned name', result)
+  if type(result) == 'string' and #result > 0 then
+    return result
+  end
+  return 'unknown'
+end
+
 --- Get the current client's character name
 --- @return string The player's character name or the fivem name
 local function getCharacterName()
@@ -92,27 +131,11 @@ local function getCharacterName()
   end
 
   if frameworkKey == 'esx' then
-    local ESX = Medal.Services.Framework.safeExport('es_extended', { 'getSharedObject', 'GetSharedObject' }) or rawget(_G, 'ESX')
-    logDebug('esx: ESX object type', type(ESX), 'has GetPlayerData', ESX and type(ESX.GetPlayerData) == 'function')
-    if ESX and type(ESX.GetPlayerData) == 'function' then
-      local playerData = nil
-      pcall(function() playerData = ESX.GetPlayerData() end)
-      logDebug('esx: playerData present', playerData ~= nil, 'keys: character?', playerData and (playerData.character ~= nil) or false)
-      if playerData then
-        if playerData.character and playerData.character.firstname and playerData.character.lastname then
-          name = ('%s %s'):format(playerData.character.firstname, playerData.character.lastname)
-          logDebug('esx: using character.firstname/lastname', name)
-        elseif playerData.firstName and playerData.lastName then
-          name = ('%s %s'):format(playerData.firstName, playerData.lastName)
-          logDebug('esx: using firstName/lastName', name)
-        elseif playerData.name then
-          name = tostring(playerData.name)
-          logDebug('esx: using name field', name)
-        end
-      end
-    end
-    logDebug('esx: derived name', name)
-  elseif (frameworkKey == 'qb' or frameworkKey == 'qbx') then
+    --//=-- ESX is resolved server-side to avoid client-side API differences; request and await
+    name = requestServerEsxName(5000)
+    logDebug('esx: derived name (server)', name)
+  
+elseif (frameworkKey == 'qb' or frameworkKey == 'qbx') then
     --//=-- Use safe export to get PlayerData directly from framework export
     ---@type QbPlayerData|function|nil
     local PlayerData = nil
