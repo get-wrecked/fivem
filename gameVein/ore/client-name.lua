@@ -19,6 +19,21 @@ Medal.GV = Medal.GV or {}
 Medal.GV.Ore = Medal.GV.Ore or {}
 Medal.Services = Medal.Services or {}
 
+---@class QbCharInfo
+---@field firstname string
+---@field lastname string
+
+---@class QbPlayerData
+---@field charinfo QbCharInfo|nil
+---@field firstname string|nil
+---@field lastname string|nil
+---@field firstName string|nil
+---@field lastName string|nil
+---@field name string|nil
+
+---@class QBCoreLike
+---@field PlayerData QbPlayerData|nil
+
 local frameworkKey = nil --//=-- Cached framework key
 
 --//=-- Safe export loader is provided by services/shared-framework-detection.lua
@@ -98,20 +113,63 @@ local function getCharacterName()
     end
     logDebug('esx: derived name', name)
   elseif (frameworkKey == 'qb' or frameworkKey == 'qbx') then
-    local core = nil
+    --//=-- Use safe export to get PlayerData directly from framework export
+    ---@type QbPlayerData|function|nil
+    local PlayerData = nil
     if frameworkKey == 'qbx' then
-      core = Medal.Services.Framework.safeExport('qbx_core', 'GetCoreObject') or rawget(_G, 'QBCore')
+      pcall(function() PlayerData = Medal.Services.Framework.safeExport('qbx_core', 'GetPlayerData') end)
     else
-      core = Medal.Services.Framework.safeExport('qb-core', 'GetCoreObject') or rawget(_G, 'QBCore')
+      pcall(function() PlayerData = Medal.Services.Framework.safeExport('qb-core', 'GetPlayerData') end)
     end
-    logDebug('qb/qbx: core type', type(core), 'has Functions.GetPlayerData', core and core.Functions and type(core.Functions.GetPlayerData) == 'function')
-    if core and core.Functions and type(core.Functions.GetPlayerData) == 'function' then
-      local pd = nil
-      pcall(function() pd = core.Functions.GetPlayerData() end)
-      logDebug('qb/qbx: player data present', pd ~= nil, 'has charinfo', pd and (pd.charinfo ~= nil) or false)
-      if pd and pd.charinfo and pd.charinfo.firstname and pd.charinfo.lastname then
-        name = ('%s %s'):format(pd.charinfo.firstname, pd.charinfo.lastname)
-        logDebug('qb/qbx: using charinfo firstname/lastname', name)
+    --//=-- If the export returns a function, invoke it to get the table
+    if type(PlayerData) == 'function' then
+      local ok, res = pcall(PlayerData)
+      if ok then PlayerData = res end
+    end
+    if type(PlayerData) == 'table' then
+      ---@cast PlayerData QbPlayerData
+    else
+      PlayerData = nil
+    end
+    logDebug('qb/qbx: PlayerData type', type(PlayerData))
+    if PlayerData and PlayerData.charinfo and PlayerData.charinfo.firstname and PlayerData.charinfo.lastname then
+      name = ('%s %s'):format(PlayerData.charinfo.firstname, PlayerData.charinfo.lastname)
+      logDebug('qb/qbx: using PlayerData.charinfo firstname/lastname', name)
+    elseif PlayerData and PlayerData.firstname and PlayerData.lastname then
+      --//=-- Root firstname/lastname variant
+      name = ('%s %s'):format(PlayerData.firstname, PlayerData.lastname)
+      logDebug('qb/qbx: using PlayerData.firstname/lastname', name)
+    elseif PlayerData and PlayerData.firstName and PlayerData.lastName then
+      name = ('%s %s'):format(PlayerData.firstName, PlayerData.lastName)
+      logDebug('qb/qbx: using PlayerData.firstName/lastName', name)
+    elseif PlayerData and type(PlayerData.name) == 'string' and #PlayerData.name > 0 then
+      name = tostring(PlayerData.name)
+      logDebug('qb/qbx: using PlayerData.name', name)
+    else
+      --//=-- Fallback: get core object and try QBCore.PlayerData.charinfo
+      ---@type QBCoreLike|nil
+      local QBCore = nil
+      if frameworkKey == 'qbx' then
+        pcall(function() QBCore = Medal.Services.Framework.safeExport('qbx_core', 'GetCoreObject') end)
+      else
+        pcall(function() QBCore = Medal.Services.Framework.safeExport('qb-core', 'GetCoreObject') end)
+      end
+      if QBCore and type(QBCore) == 'table' and type(QBCore.PlayerData) == 'table' then
+        ---@type QbPlayerData
+        local pd = QBCore.PlayerData
+        if pd.charinfo and pd.charinfo.firstname and pd.charinfo.lastname then
+          name = ('%s %s'):format(pd.charinfo.firstname, pd.charinfo.lastname)
+          logDebug('qb/qbx: using QBCore.PlayerData.charinfo firstname/lastname', name)
+        elseif pd.firstname and pd.lastname then
+          name = ('%s %s'):format(pd.firstname, pd.lastname)
+          logDebug('qb/qbx: using QBCore.PlayerData firstname/lastname', name)
+        elseif pd.firstName and pd.lastName then
+          name = ('%s %s'):format(pd.firstName, pd.lastName)
+          logDebug('qb/qbx: using QBCore.PlayerData firstName/lastName', name)
+        elseif type(pd.name) == 'string' and #pd.name > 0 then
+          name = tostring(pd.name)
+          logDebug('qb/qbx: using QBCore.PlayerData.name', name)
+        end
       end
     end
     logDebug('qb/qbx: derived name', name)

@@ -139,20 +139,81 @@ function Medal.Services.Framework.detectFramework(forceRefresh)
     return cached
   end
 
-  --//=-- Run specific detectors in priority order
-  local detectors = { detectESX, detectQB, detectQBX, detectND, detectOX, detectTMC }
-  for _, fn in ipairs(detectors) do
-    local ok, res = pcall(fn)
-    if ok and res ~= nil then
-      --//=-- Key is returned directly by detectors
-      cached = res
-      sLogDebug('detectFramework: detected', cached)
-      return cached
+  --//=-- Presence-only checks: use resource started state; do not invoke exports
+  --//=-- Search order: ESX -> QB -> QBX -> ND -> OX -> TMC
+
+  -- ESX
+  if hasStarted('es_extended') then
+    cached = 'esx'
+    sLogDebug('detectFramework: detected esx')
+    return cached
+  end
+
+  -- QBX first: qbx_core often 'provides' qb-core; prefer qbx classification
+  if hasStarted('qbx_core') then
+    cached = 'qbx'
+    sLogDebug('detectFramework: detected qbx')
+    return cached
+  end
+
+  -- QB-Core
+  if hasStarted('qb-core') then
+    cached = 'qb'
+    sLogDebug('detectFramework: detected qb')
+    return cached
+  end
+
+  -- ND (common name variants)
+  do
+    local ndResources = { 'ND_Core', 'nd-core', 'nd_core' }
+    for _, res in ipairs(ndResources) do
+      if hasStarted(res) then
+        cached = 'nd'
+        sLogDebug('detectFramework: detected nd via', res)
+        return cached
+      end
+    end
+  end
+
+  -- OX Core
+  if hasStarted('ox_core') then
+    cached = 'ox'
+    sLogDebug('detectFramework: detected ox')
+    return cached
+  end
+
+  -- TMC: quick list, then scan for tmc_* or tmc-*
+  do
+    local tmcResources = {
+      'tmc', 'TMC',
+      'tmc-core', 'tmc_core', 'tmc-base', 'tmc_base', 'tmc_queue',
+      'TMC-core', 'TMC_core', 'TMC-base', 'TMC_base', 'TMC_queue'
+    }
+    for _, res in ipairs(tmcResources) do
+      if hasStarted(res) then
+        cached = 'tmc'
+        sLogDebug('detectFramework: detected tmc via', res)
+        return cached
+      end
+    end
+
+    local num = GetNumResources and GetNumResources() or 0
+    for i = 0, (num - 1) do
+      local name = GetResourceByFindIndex(i)
+      if type(name) == 'string' then
+        local looksLikeTmc = name:match('^[Tt][Mm][Cc][_%-].+') ~= nil
+        if looksLikeTmc and hasStarted(name) then
+          cached = 'tmc'
+          sLogDebug('detectFramework: detected tmc via scan', name)
+          return cached
+        end
+      end
     end
   end
 
   --//=-- No known framework detected
   cached = 'unknown'
+  sLogDebug('detectFramework: no framework detected')
   return cached
 end
 
