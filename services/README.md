@@ -15,11 +15,14 @@ Detects which gameplay framework the server is running and exposes small helpers
   - Emits: `medal:services:framework:reqKey`
 
 - `server-framework-detection.lua`
-  - Server-side framework detectors and safe export wrapper.
+  - Server-side framework detectors.
   - API: `Medal.Services.Framework.detectFramework(forceRefresh?: boolean): FrameworkKey`
-  - API: `Medal.Services.Framework.safeExport(resource: string, method: string|string[], ...): any|nil`
   - Listens for: `medal:services:framework:reqKey`
   - Emits: `medal:services:framework:resKey`
+
+- `shared-framework-detection.lua`
+  - Shared helpers (client + server) for safe export invocation.
+  - API: `Medal.Services.Framework.safeExport(resource: string, method: string|string[], ...): any|nil`
 
 ### Framework keys
 
@@ -49,18 +52,16 @@ if key == 'qb' or key == 'qbx' then
 end
 ```
 
-Server: detect and use safeExport to call framework functions.
+Client or Server: use safeExport to call framework functions safely.
 
 ```lua
--- server
-local key = Medal.Services.Framework.detectFramework(false)
-if key == 'esx' then
-  local ESX = Medal.Services.Framework.safeExport('es_extended', 'getSharedObject')
+local ESX = Medal.Services.Framework.safeExport('es_extended', { 'getSharedObject', 'GetSharedObject' })
+if ESX then
   --//=-- Use ESX safely if available
 end
 ```
 
 Notes:
 
-- `safeExport` ensures no runtime error if the target resource is missing or not started.
+- `safeExport` ensures no runtime error if the target resource is missing or not started (server checks `GetResourceState`, client checks `exports[res]`).
 - The detection result is cached server-side until `forceRefresh=true` is passed.

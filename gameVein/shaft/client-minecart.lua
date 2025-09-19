@@ -41,15 +41,55 @@ end
 --//=-- NUI: Minecart ore endpoint (assay and push ore in a minecart to NUI, via ws:send)
 RegisterNUICallback('ws:minecart', function(req, cb)
   local ok, result = pcall(function()
-    local ore = Medal.GV.Ore.assay(req)
+    --//=-- Normalize incoming request from NUI
+    local norm = req
+    --//=-- Debug: log raw request
+    if Logger and Logger.debug then
+      Logger.debug('minecart:reqRaw', norm)
+    end
+    --//=-- Unwrap nested payload/data up to a few levels to be resilient to wrappers
+    for _ = 1, 3 do
+      if type(norm) == 'table' then
+        if type(norm.payload) == 'table' then
+          norm = norm.payload
+        elseif type(norm.data) == 'table' then
+          norm = norm.data
+        else
+          break
+        end
+      else
+        break
+      end
+    end
+    --//=-- If we received a bare array like { 'name', 'job' }, treat it as a bundle
+    if type(norm) == 'table' and type(norm.type) ~= 'string' and norm[1] ~= nil then
+      norm = { type = 'bundle', types = norm }
+    end
+
+    --//=-- Debug: log normalized request shape
+    if Logger and Logger.debug then
+      Logger.debug('minecart:reqNorm', norm)
+    end
+
+    local ore = Medal.GV.Ore.assay(norm)
     local oreType = nil
-    if type(req) == 'string' then
-      oreType = req
-    elseif type(req) == 'table' and type(req.type) == 'string' then
-      oreType = req.type
+    if type(norm) == 'string' then
+      oreType = norm
+    elseif type(norm) == 'table' and type(norm.type) == 'string' then
+      oreType = norm.type
     end
 
     if oreType ~= nil and ore ~= nil then
+      --//=-- Debug: log successful assay summary
+      if Logger and Logger.debug then
+        local summary = ore
+        if type(ore) == 'table' then
+          local keys = {}
+          for k, _ in pairs(ore) do keys[#keys+1] = tostring(k) end
+          summary = { keys = keys }
+        end
+        Logger.debug('minecart:assayed', { type = oreType, summary = summary })
+      end
     Medal.GV.pushMinecart(oreType, ore)
       return true
     end

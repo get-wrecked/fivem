@@ -12,6 +12,10 @@ GameVein is the in-resource data pipeline that extracts (mines) small, typed chu
   - Transport helpers. Opens/closes the UI WebSocket, and sends the resulting envelopes ("minecarts").
 - `client-main.lua`
   - Reads the WebSocket config from `Config.GameVein.*` and asks the UI to connect via NUI `ws:connect`.
+  - Supports optional reconnect intervals (forwarded to the UI):
+    - `Config.GameVein.WebSocket.reconnectShortMs` – the first retry delay after disconnect (default 30000ms)
+    - `Config.GameVein.WebSocket.reconnectLongMs` – the subsequent silent retry delay (default 120000ms)
+    - `Config.GameVein.WebSocket.reconnectShortAttempts` – the number of short retries before switching to long interval (default 5)
 - `server-main.lua`
   - Placeholder for future server-side logic.
 - `__types.lua`

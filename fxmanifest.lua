@@ -8,6 +8,7 @@ version '0.0.0'
 shared_scripts {
   'config.lua',
   'lib/shared-*.lua',
+  'services/shared-*.lua',
 }
 
 client_scripts {
@@ -36,7 +37,6 @@ server_scripts {
   'services/server-*.lua',
   'gameVein/server-main.lua',
   'gameVein/ore/server-cfx-id.lua',
-  'gameVein/ore/server-community-name.lua',
   'gameVein/ore/server-job.lua',
   'superSoaker/server-main.lua',
   'lib/server-*.lua',

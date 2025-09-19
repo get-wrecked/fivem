@@ -17,6 +17,7 @@
 Medal = Medal or {}
 Medal.GV = Medal.GV or {}
 Medal.GV.Ore = Medal.GV.Ore or {}
+Medal.Services = Medal.Services or {}
 
 ---@type table<string, Job>
 local pendingResults = {}
@@ -27,35 +28,10 @@ RegisterNetEvent('medal:gv:ore:resJob', function(requestId, data)
   pendingResults[requestId] = data
 end)
 
---//=-- Helpers
-
 --- Build a default/unknown job payload
 ---@return Job
 local function unknownJob()
   return { id = 'unknown', name = 'unknown', rank = -1, rankName = 'unknown' }
-end
-
----@param resource string
----@param method string|string[]
----@param ... any
----@return any|nil
-local function safeExport(resource, method, ...)
-  if not resource or not exports then return nil end
-  local ex = exports[resource]
-  if not ex then return nil end
-  local methods = type(method) == 'table' and method or { method }
-  local args = { ... }
-  for _, name in ipairs(methods) do
-    local ok, res = pcall(function()
-      local fn = ex and ex[name]
-      if type(fn) == 'function' then
-        return fn(ex, table.unpack(args))
-      end
-      return nil
-    end)
-    if ok and res ~= nil then return res end
-  end
-  return nil
 end
 
 --//=-- Client-side resolvers per framework
@@ -66,9 +42,9 @@ end
 local function getQbJobClient(key)
   local core = nil
   if key == 'qbx' then
-    core = safeExport('qbx_core', 'GetCoreObject') or rawget(_G, 'QBCore')
+    core = Medal.Services.Framework.safeExport('qbx_core', 'GetCoreObject') or rawget(_G, 'QBCore')
   else
-    core = safeExport('qb-core', 'GetCoreObject') or rawget(_G, 'QBCore')
+    core = Medal.Services.Framework.safeExport('qb-core', 'GetCoreObject') or rawget(_G, 'QBCore')
   end
   if core and core.Functions and type(core.Functions.GetPlayerData) == 'function' then
     local pd = nil

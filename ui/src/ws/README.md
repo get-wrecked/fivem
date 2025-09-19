@@ -13,6 +13,17 @@ The WebSocket client, used by NUI/UI.
 - `send(type: string, data?: unknown)` or `send(envelope: WsEnvelope)` - Sends a JSON data envelope over the WebSocket.
 - `onMessage(handler)` / `onOpen(handler)` / `onError(handler)` / `onClose(handler)` - This subscribes to WebSocket events, and returns an `unsubscribe()` function.
 
+### Reconnect behavior
+
+- On disconnect, the client logs a single warning that it will retry after a short delay, then silently on a longer interval.
+- The first retries occur every `reconnectShortMs` (default 30000ms) for up to `reconnectShortAttempts` times (default 5).
+- After the short attempts, subsequent retries occur every `reconnectLongMs` (default 120000ms), without spamming the console.
+- You can override these by passing them in the initial `connect(cfg)` call; they are also forwarded from Lua via `Config.GameVein.WebSocket`.
+
+```ts
+wsClient.connect({ reconnectShortMs: 15_000, reconnectLongMs: 90_000, reconnectShortAttempts: 3 });
+```
+
 ## Examples
 
 ```ts

@@ -45,6 +45,12 @@ export const NuiHandlers: React.FC = () => {
     useNuiEvent<unknown>('ws:send', {
         handler: (value) => {
             try {
+                //=-- Debug: log envelope being emitted to WS
+                try {
+                    void nuiLog({ event: 'ws:send:emit', value }, 'debug');
+                } catch {
+                    //=-- ignore
+                }
                 //=-- String: Treated as a type only, with no data
                 if (typeof value === 'string') {
                     wsClient.send(value);
@@ -84,17 +90,45 @@ export const NuiHandlers: React.FC = () => {
     useEffect(() => {
         let mounted = true;
         const off = wsClient.onMessage((env) => {
-            if (env?.type && typeof env.type === 'string') {
+            if (env?.type && (typeof env.type === 'string' || Array.isArray(env.type))) {
                 //=-- Print the data via shared Lua logger
-                void nuiLog(env.data, 'info');
+                void nuiLog(env.data, 'debug');
 
                 //=-- Route any message with a type to the ore assay system
                 (async () => {
                     try {
-                        await fetchNui('ws:minecart', { payload: { type: env.type } });
+                        //=-- Simplified routing:
+                        //=-- - string -> { type }
+                        //=-- - string[] -> { type: 'bundle', types }
+                        //=-- - 'bundle' with data.types -> { type: 'bundle', types }
+                        let req: Record<string, unknown>;
+                        if (Array.isArray(env.type)) {
+                            req = { type: 'bundle', types: env.type };
+                        } else if (
+                            env.type === 'bundle' &&
+                            env.data &&
+                            typeof env.data === 'object' &&
+                            Array.isArray((env.data as Record<string, unknown>).types)
+                        ) {
+                            req = {
+                                type: 'bundle',
+                                types: (env.data as Record<string, unknown>).types,
+                            };
+                        } else {
+                            req = { type: env.type } as Record<string, unknown>;
+                        }
+                        //=-- Debug: show exact request to Lua
+                        try {
+                            void nuiLog({ event: 'ws:minecart:req', req }, 'debug');
+                        } catch {
+                            //=-- ignore
+                        }
+                        await fetchNui('ws:minecart', { payload: req });
                     } catch {
                         //=-- Return that the ore doesn't exist
-                        wsClient.send(env.type, { error: 'ore-unavailable' });
+                        wsClient.send(Array.isArray(env.type) ? 'bundle' : env.type, {
+                            error: 'ore-unavailable',
+                        });
                     }
                 })();
             } else {
@@ -116,7 +150,7 @@ export const NuiHandlers: React.FC = () => {
                     try {
                         console.warn('[ws:onMessage:off-failed]', err);
                     } catch {
-                        /*//=-- ignore */
+                        //=-- ignore
                     }
                 }
             }

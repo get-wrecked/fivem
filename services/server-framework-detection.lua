@@ -5,14 +5,14 @@
   =====================
   Description:
     Framework detection service (server)
-    Provides detection of the active framework and safe export invocation.
+    Provides detection of the active framework.
+    (Safe export invocation is provided by `services/shared-framework-detection.lua` now).
   ---
   Exports:
     None
   ---
   Globals:
     - Medal.Services.Framework.detectFramework : Detects which framework is active
-    - Medal.Services.Framework.safeExport : Safely calls an export if available
 ]]
 
 
@@ -21,8 +21,24 @@ Medal.Services = Medal.Services or {}
 
 ---@class FrameworkService
 ---@field detectFramework fun(forceRefresh?: boolean): FrameworkKey
----@field safeExport fun(resource: string, method: string|string[], ...): any|nil
 Medal.Services.Framework = Medal.Services.Framework or {}
+
+local LOG_TAG = '[Services.Framework.Server]' --//=-- Log tag
+
+--- Safe debug logger on server; prefers Logger.debug then Logger.info
+--- @param ... any
+local function sLogDebug(...)
+  local fn = nil
+  if type(Logger) == 'table' then
+    if type(Logger.debug) == 'function' then fn = Logger.debug
+    elseif type(Logger.info) == 'function' then fn = Logger.info end
+  end
+  if fn then
+    pcall(fn, LOG_TAG, ...)
+  else
+    print('[Medal]', LOG_TAG, ...)
+  end
+end
 
 --- Internal: check if a resource is in the 'started' state
 ---@param resource string
@@ -32,62 +48,40 @@ local function hasStarted(resource)
   return GetResourceState(resource) == 'started'
 end
 
---- Internal: safe export fetcher/invoker (won't error if resource/exports are missing)
----@param resource string
----@param method string|string[]
----@param ... any
----@return any|nil
-function Medal.Services.Framework.safeExport(resource, method, ...)
-  if not resource or not hasStarted(resource) then return nil end
-  local methods = type(method) == 'table' and method or { method }
-  local args = { ... }
-  for _, name in ipairs(methods) do
-    local ok, result = pcall(function()
-      local ex = exports and exports[resource]
-      local fn = ex and ex[name]
-      if type(fn) == 'function' then
-        --//=-- Call with explicit self to support ':' style exports
-        return fn(ex, table.unpack(args))
-      end
-      return nil
-    end)
-    if ok and result ~= nil then return result end
-  end
-  return nil
-end
+--//=-- Safe export is provided in shared helpers (client + server)
 
 --//=-- Individual framework detectors
 
 --- QBX detection
 ---@return FrameworkKey|nil
 local function detectQBX()
-  if hasStarted('qbx_core') then
-    return 'qbx'
-  end
+  local started = hasStarted('qbx_core')
+  sLogDebug('detectQBX: qbx_core started', started)
+  if started then return 'qbx' end
 end
 
 --- QB-Core detection
 ---@return FrameworkKey|nil
 local function detectQB()
-  if hasStarted('qb-core') then
-    return 'qb'
-  end
+  local started = hasStarted('qb-core')
+  sLogDebug('detectQB: qb-core started', started)
+  if started then return 'qb' end
 end
 
 --- ESX detection
 ---@return FrameworkKey|nil
 local function detectESX()
-  if hasStarted('es_extended') then
-    return 'esx'
-  end
+  local started = hasStarted('es_extended')
+  sLogDebug('detectESX: es_extended started', started)
+  if started then return 'esx' end
 end
 
 --- OX Core detection
 ---@return FrameworkKey|nil
 local function detectOX()
-  if hasStarted('ox_core') then
-    return 'ox'
-  end
+  local started = hasStarted('ox_core')
+  sLogDebug('detectOX: ox_core started', started)
+  if started then return 'ox' end
 end
 
 --- ND Core detection
@@ -95,19 +89,38 @@ end
 local function detectND()
   local ndResources = { 'ND_Core', 'nd-core', 'nd_core' }
   for _, res in ipairs(ndResources) do
-    if hasStarted(res) then
-      return 'nd'
-    end
+    local started = hasStarted(res)
+    sLogDebug('detectND:', res, 'started', started)
+    if started then return 'nd' end
   end
 end
 
 --- TMC detection
 ---@return FrameworkKey|nil
 local function detectTMC()
-  local tmcResources = { 'tmc-core', 'tmc_core', 'tmc-base', 'tmc_base', 'tmc' }
+  --//=-- First check a small set of common names quickly
+  local tmcResources = {
+    'tmc', 'TMC',
+    'tmc-core', 'tmc_core', 'tmc-base', 'tmc_base', 'tmc_queue',
+    'TMC-core', 'TMC_core', 'TMC-base', 'TMC_base', 'TMC_queue'
+  }
   for _, res in ipairs(tmcResources) do
-    if hasStarted(res) then
-      return 'tmc'
+    local started = hasStarted(res)
+    sLogDebug('detectTMC: quick check', res, 'started', started)
+    if started then return 'tmc' end
+  end
+
+  --//=-- Then scan all resources for names that look like TMC (tmc_* or tmc-*)
+  local num = GetNumResources and GetNumResources() or 0
+  for i = 0, (num - 1) do
+    local name = GetResourceByFindIndex(i)
+    if type(name) == 'string' then
+      local looksLikeTmc = name:match('^[Tt][Mm][Cc][_%-].+') ~= nil
+      if looksLikeTmc then
+        local started = hasStarted(name)
+        sLogDebug('detectTMC: scan candidate', name, 'started', started)
+        if started then return 'tmc' end
+      end
     end
   end
 end
@@ -133,6 +146,7 @@ function Medal.Services.Framework.detectFramework(forceRefresh)
     if ok and res ~= nil then
       --//=-- Key is returned directly by detectors
       cached = res
+      sLogDebug('detectFramework: detected', cached)
       return cached
     end
   end
@@ -146,7 +160,9 @@ end
 ---@param reqId string
 local function handleReqFrameworkKey(reqId)
   local src = source
-  local key = Medal.Services.Framework.detectFramework(false)
+  --//=-- Force refresh each request to avoid stale cached value when resources change
+  local key = Medal.Services.Framework.detectFramework(true)
+  sLogDebug('handleReqFrameworkKey: src', src, 'reqId', reqId, 'key', key)
   --//=-- Respond only to the requesting player
   TriggerClientEvent('medal:services:framework:resKey', src, reqId, key)
 end

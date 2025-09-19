@@ -6,7 +6,7 @@ to communicate with the server.
 
 ## Built-in Ores
 
-- __name__ — `Medal.GV.Ore.name()` returns the player name using FiveM API.
+- __name__ — `Medal.GV.Ore.name()` returns a table `{ fivem, character }` with the player's raw FiveM name and their framework-specific character name.
 - __communityName__ — `Medal.GV.Ore.communityName()` requests the community name from the server.
 - __heartbeat__ — `Medal.GV.Ore.heartbeat()` returns `{ ok, ts, pid }` for round-trip diagnostics.
 - __job__ — `Medal.GV.Ore.job()` returns a Job table `{ id, name, rank, rankName }` resolved client-first, with a server fallback for ESX.

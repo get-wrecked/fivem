@@ -58,9 +58,15 @@ class WsClient {
     private onCloseHandlers = new Set<CloseHandler>();
 
     /** Reconnect config/state */
-    private reconnectIntervalMs = 30_000;
-    private reconnectTimer: number | null = null;
+    private reconnectShortMs = 30_000; //=-- First background retry delay
+    private reconnectLongMs = 120_000; //=-- Subsequent silent retry delay
+    private reconnectShortAttempts = 5; //=-- Number of short retries before switching to long interval
+    private shortAttemptsMade = 0; //=-- Counter for short attempts in the current disconnect cycle
+    private reconnectTimer: number | null = null; //=-- Long-interval timer id
+    private shortReconnectTimer: number | null = null; //=-- Short-interval timer id
     private intentionalClose = false;
+    private silentReconnect = false; //=-- When true, do not log every attempt
+    private announcedSilent = false; //=-- When true, we've already announced the silent retry plan
 
     /**
      * Connect or reconnect the client.
@@ -70,17 +76,36 @@ class WsClient {
      *
      * @param cfg - Optional configuration overrides
      */
-    connect = (cfg?: WsConfig) => {
-        if (cfg) this.cfg = { ...this.cfg, ...cfg };
+    connect = (cfg?: WsConfig, internal: boolean = false) => {
+        if (cfg) {
+            this.cfg = { ...this.cfg, ...cfg };
+            //=-- Optional reconnect intervals from config
+            if (typeof cfg.reconnectShortMs === 'number')
+                this.reconnectShortMs = cfg.reconnectShortMs;
+            if (typeof cfg.reconnectLongMs === 'number') this.reconnectLongMs = cfg.reconnectLongMs;
+            if (typeof cfg.reconnectShortAttempts === 'number')
+                this.reconnectShortAttempts = cfg.reconnectShortAttempts;
+        }
 
-        //=-- New connect attempt cancels any existing reconnect loop
-        if (this.reconnectTimer !== null) {
-            try {
-                clearInterval(this.reconnectTimer);
-            } catch {
-                /*//=-- noop */
+        //=-- New external connect attempt cancels any existing reconnect loop
+        if (!internal && !this.silentReconnect) {
+            if (this.reconnectTimer !== null) {
+                try {
+                    clearInterval(this.reconnectTimer);
+                } catch {
+                    //=-- noop
+                }
+                this.reconnectTimer = null;
             }
-            this.reconnectTimer = null;
+            if (this.shortReconnectTimer !== null) {
+                try {
+                    clearInterval(this.shortReconnectTimer);
+                } catch {
+                    //=-- noop
+                }
+                this.shortReconnectTimer = null;
+            }
+            this.shortAttemptsMade = 0;
         }
         this.intentionalClose = false;
 
@@ -92,7 +117,7 @@ class WsClient {
             try {
                 this.ws.close(1000, 'reconnect');
             } catch {
-                /*//=-- noop */
+                //=-- noop
             }
         }
 
@@ -106,14 +131,25 @@ class WsClient {
                 try {
                     clearInterval(this.reconnectTimer);
                 } catch {
-                    /*//=-- noop */
+                    //=-- noop
                 }
                 this.reconnectTimer = null;
             }
+            if (this.shortReconnectTimer !== null) {
+                try {
+                    clearInterval(this.shortReconnectTimer);
+                } catch {
+                    //=-- noop
+                }
+                this.shortReconnectTimer = null;
+            }
+            this.silentReconnect = false;
+            this.announcedSilent = false;
+            this.shortAttemptsMade = 0;
             try {
                 void nuiLog(`[ws] connected: ${url}`, 'info');
             } catch {
-                /*//=-- noop */
+                //=-- noop
             } //=-- Log connection
         });
 
@@ -121,15 +157,20 @@ class WsClient {
             let env: WsEnvelope;
             try {
                 const parsed = JSON.parse(String(ev.data));
-                if (parsed && typeof parsed === 'object' && typeof parsed.type === 'string') {
+                const parsedObj = parsed as Record<string, unknown>;
+                if (
+                    parsed &&
+                    typeof parsed === 'object' &&
+                    (typeof parsedObj.type === 'string' || Array.isArray(parsedObj.type))
+                ) {
                     env = parsed as WsEnvelope;
                 } else {
                     //=-- Fallback: Wrap non-envelope JSON into a raw envelope
-                    env = { type: 'raw', data: parsed };
+                    env = { type: 'raw', data: parsed } as WsEnvelope;
                 }
             } catch {
                 //=-- Fallback: Toss non-JSON into a raw envelope
-                env = { type: 'raw', data: ev.data };
+                env = { type: 'raw', data: ev.data } as WsEnvelope;
             }
             for (const h of this.onMessageHandlers) h(env, ev);
         });
@@ -142,38 +183,78 @@ class WsClient {
             this.emit('close', ev);
             this.ws = null; //=-- Mark the socket closed
 
-            //=-- Log the dropped connection
-            try {
-                void nuiLog(
-                    `[ws] connection dropped (code=${(ev as CloseEvent).code}, reason=${(ev as CloseEvent).reason || 'n/a'})`,
-                    'warning',
-                );
-            } catch {
-                /*//=-- noop */
+            //=-- Log the dropped connection only once before entering silent reconnect
+            if (!this.silentReconnect) {
+                try {
+                    void nuiLog(
+                        `[ws] connection dropped (code=${(ev as CloseEvent).code}, reason=${(ev as CloseEvent).reason || 'n/a'})`,
+                        'warning',
+                    );
+                } catch {
+                    //=-- noop
+                }
             }
 
-            //=-- Start the reconnect loop, if it was not intentionally closed
-            if (!this.intentionalClose && this.reconnectTimer === null) {
-                this.reconnectTimer = window.setInterval(() => {
+            //=-- Start/maintain the reconnect loop, if it was not intentionally closed
+            if (!this.intentionalClose) {
+                //=-- Announce only once per disconnect cycle
+                if (!this.announcedSilent) {
+                    try {
+                        const shortSec = Math.max(1, Math.round(this.reconnectShortMs / 1000));
+                        const longSec = Math.max(1, Math.round(this.reconnectLongMs / 1000));
+                        void nuiLog(
+                            `[ws] disconnected; retrying in ${shortSec}s, then silently every ${longSec}s`,
+                            'warning',
+                        );
+                    } catch {
+                        //=-- noop
+                    }
+                    this.silentReconnect = true;
+                    this.announcedSilent = true;
+                }
+
+                const attempt = () => {
                     try {
                         //=-- If it is already open/connecting, skip
                         if (
                             this.ws &&
                             (this.ws.readyState === WebSocket.OPEN ||
                                 this.ws.readyState === WebSocket.CONNECTING)
-                        )
+                        ) {
                             return;
-                        //=-- Attempt reconnection
-                        try {
-                            void nuiLog('[ws] attempting reconnect...', 'debug');
-                        } catch {
-                            /*//=-- noop */
                         }
-                        this.connect();
+                        //=-- Attempt reconnection (silent, keep timers and counters)
+                        this.connect(undefined, true);
                     } catch {
-                        /*//=-- ignore */
+                        //=-- ignore
                     }
-                }, this.reconnectIntervalMs);
+                };
+
+                //=-- Short-interval attempts up to N times
+                if (this.shortReconnectTimer === null && this.reconnectTimer === null) {
+                    //=-- (Re)start short attempts only if no timers are running
+                    //=-- If an external connect happened during silent mode, we won't re-announce but we will re-start timers
+                    if (this.shortAttemptsMade <= 0) this.shortAttemptsMade = 0;
+                    this.shortReconnectTimer = window.setInterval(() => {
+                        if (this.shortAttemptsMade >= this.reconnectShortAttempts) {
+                            //=-- Switch to long interval loop
+                            try {
+                                clearInterval(this.shortReconnectTimer);
+                            } catch {
+                                //=-- noop
+                            }
+                            this.shortReconnectTimer = null;
+                            if (this.reconnectTimer === null) {
+                                this.reconnectTimer = window.setInterval(() => {
+                                    attempt();
+                                }, this.reconnectLongMs);
+                            }
+                            return;
+                        }
+                        this.shortAttemptsMade++;
+                        attempt();
+                    }, this.reconnectShortMs);
+                }
             }
         });
     };
@@ -191,7 +272,7 @@ class WsClient {
             try {
                 clearInterval(this.reconnectTimer);
             } catch {
-                /*//=-- noop */
+                //=-- noop
             }
             this.reconnectTimer = null;
         }
@@ -201,7 +282,7 @@ class WsClient {
         try {
             this.ws.close(code, reason);
         } catch {
-            /*//=-- noop */
+            //=-- noop
         }
         this.ws = null;
     };
@@ -301,7 +382,7 @@ class WsClient {
             try {
                 h(ev, undefined);
             } catch {
-                /*//=-- ignore listener error */
+                //=-- ignore listener error
             }
         }
     }
@@ -315,6 +396,15 @@ class WsClient {
 
         map[event].add(handler);
         return () => map[event].delete(handler);
+    };
+
+    //=-- Return whether the WebSocket is currently open
+    isConnected = (): boolean => {
+        try {
+            return !!this.ws && this.ws.readyState === WebSocket.OPEN;
+        } catch {
+            return false;
+        }
     };
 }
 
