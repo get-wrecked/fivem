@@ -68,15 +68,15 @@ function Medal.Services.Framework.safeExport(resource, method, ...)
   local methods = type(method) == 'table' and method or { method }
   local args = { ... }
   for _, name in ipairs(methods) do
-    local ok, result = pcall(function()
-      local fn = ex and ex[name]
-      if type(fn) == 'function' then
-        --//=-- Call with explicit self to support ':' style exports
-        return fn(ex, table.unpack(args))
-      end
-      return nil
-    end)
-    if ok and result ~= nil then return result end
+    local fn = ex and ex[name]
+    if type(fn) == 'function' then
+      --//=-- Most Cfx exports are plain functions: try without self first
+      local ok1, res1 = pcall(fn, table.unpack(args))
+      if ok1 and res1 ~= nil then return res1 end
+      --//=-- Fallback: some frameworks expose colon-like exports; pass table as self
+      local ok2, res2 = pcall(fn, ex, table.unpack(args))
+      if ok2 and res2 ~= nil then return res2 end
+    end
   end
   return nil
 end
