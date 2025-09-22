@@ -27,33 +27,61 @@ local function unknownJob()
   return { id = 'unknown', name = 'unknown', rank = -1, rankName = 'unknown' }
 end
 
+--- Try to acquire the ESX shared object via multiple strategies
+---@return table|nil
+local function acquireESX()
+  --//=-- Export-only to match server-name simplified approach
+  local obj = safeExport('es_extended', { 'getSharedObject', 'GetSharedObject' })
+  return obj
+end
+
 --- Attempt ESX job resolution
 ---@param src number
 ---@return Job
 local function getEsxJob(src)
-  local ESXObj = safeExport('es_extended', 'getSharedObject')
+  --//=-- Export-only acquisition
+  local ESXObj = acquireESX()
+  if not ESXObj then return unknownJob() end
 
-  if ESXObj and ESXObj.GetPlayerFromId then
-    local xp = nil
-    pcall(function() xp = ESXObj.GetPlayerFromId(src) end)
-    local j = xp and xp.job or nil
-    if j then
-      local id = j.id or j.name or 'unknown'
-      local name = j.label or j.name or 'unknown'
-      local rank = -1
-      local rankName = 'unknown'
-      if type(j.grade) == 'number' then rank = j.grade end
-      if type(j.grade) == 'table' then
-        if type(j.grade.level) == 'number' then rank = j.grade.level end
-        if type(j.grade.grade) == 'number' then rank = j.grade.grade end
-        if type(j.grade.name) == 'string' then rankName = j.grade.name end
-        if type(j.grade.label) == 'string' then rankName = j.grade.label end
-      end
-      if type(j.grade_label) == 'string' then rankName = j.grade_label end
-      if type(j.grade_name) == 'string' then rankName = j.grade_name end
-      return { id = tostring(id), name = tostring(name), rank = rank, rankName = tostring(rankName) }
+  --//=-- Resolve xPlayer using Await when available
+  local xPlayer = nil
+  if type(ESXObj.Await) == 'function' then
+    pcall(function() xPlayer = ESXObj.Await(ESXObj.GetPlayerFromId, src) end)
+  else
+    pcall(function() xPlayer = ESXObj.GetPlayerFromId and ESXObj.GetPlayerFromId(src) end)
+  end
+  if not xPlayer then return unknownJob() end
+
+  --//=-- Prefer xPlayer.getJob() via Await when available
+  local j = nil
+  if type(ESXObj.Await) == 'function' and xPlayer.getJob ~= nil then
+    pcall(function() j = ESXObj.Await(xPlayer.getJob) end)
+  elseif xPlayer.getJob ~= nil then
+    pcall(function() j = xPlayer.getJob() end)
+  end
+  --//=-- Fallback to xPlayer.get('job') or xPlayer.job
+  if type(j) ~= 'table' and xPlayer.get ~= nil then
+    if type(ESXObj.Await) == 'function' then
+      pcall(function() j = ESXObj.Await(xPlayer.get, 'job') end)
+    else
+      pcall(function() j = xPlayer.get('job') end)
     end
   end
+  if type(j) ~= 'table' and type(xPlayer.job) == 'table' then
+    j = xPlayer.job
+  end
+
+  if type(j) == 'table' then
+    local id = j.id or j.name or 'unknown'
+    local name = j.label or j.name or 'unknown'
+    local rank = tonumber(j.grade) or -1
+    local rankName = j.grade_name or j.grade_label or (j.grade and (j.grade.name or j.grade.label)) or 'unknown'
+    if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+      pcall(Logger.debug, '[GV.Ore.server-job]', { src = src, source = 'job', mapped = { id = id, name = name, rank = rank, rankName = rankName } })
+    end
+    return { id = tostring(id), name = tostring(name), rank = rank, rankName = tostring(rankName) }
+  end
+
   return unknownJob()
 end
 
@@ -73,6 +101,11 @@ local function handleReqJob(requestId)
     data = getEsxJob(src)
   else
     data = unknownJob()
+  end
+
+  --//=-- Debug: final server response
+  if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+    pcall(Logger.debug, '[GV.Ore.server-job:response]', { src = src, framework = key, job = data })
   end
 
   TriggerClientEvent('medal:gv:ore:resJob', src, requestId, data)
