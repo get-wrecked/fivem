@@ -92,6 +92,30 @@ RegisterNetEvent('ox:setActiveCharacter', function(character, groups)
   logDebug('ox:setActiveCharacter cached', f, l)
 end)
 
+--//=-- Cached ND active character
+---@class NdCharacter
+---@field id number
+---@field source number
+---@field identifier string
+---@field firstname string|nil
+---@field lastname string|nil
+---@field fullname string|nil
+---@field job string|nil
+---@field jobInfo table|nil
+---@field rank number|nil
+---@field rankName string|nil
+---@field groups table|nil
+
+local ndActiveCharacter ---@type NdCharacter|nil
+
+--//=-- Listen for ND character loaded
+AddEventHandler('ND:characterLoaded', function(character)
+  ndActiveCharacter = character
+  local f = character and character.firstname or ''
+  local l = character and character.lastname or ''
+  logDebug('ND:characterLoaded cached', f, l)
+end)
+
 --- Get the current client's player name
 --- @return string The player's name or "unknown"
 local function getFivemName()
@@ -258,22 +282,39 @@ elseif (frameworkKey == 'qb' or frameworkKey == 'qbx') then
       pcall(Logger.debug, '[GV.Ore.name]', { framework = 'tmc', name = name })
     end
   elseif frameworkKey == 'nd' then
-    local src = nil
-    pcall(function() src = GetPlayerServerId(PlayerId()) end)
-    logDebug('nd: server id resolved', src)
-    local NDCore = Medal.Services.Framework.safeExport('nd_core', { 'getCoreObject', 'GetCoreObject' }) or rawget(_G, 'NDCore') or rawget(_G, 'ND')
-    logDebug('nd: NDCore type', type(NDCore), 'has getPlayer', NDCore and type(NDCore.getPlayer) == 'function')
-    if NDCore and type(NDCore.getPlayer) == 'function' then
-      local player = nil
-      pcall(function() player = NDCore.getPlayer(src) end)
-       logDebug('nd: player present', player ~= nil, 'type', type(player))
-      if player and type(player.getData) == 'function' then
-        local full = nil
-        pcall(function() full = player.getData('fullname') end)
-        logDebug('nd: getData("fullname") result', full)
-        if type(full) == 'string' and #full > 0 then
-          name = full
-          logDebug('nd: using fullname', name)
+    --//=-- Prefer cached ND character from ND:characterLoaded event
+    if ndActiveCharacter then
+      if type(ndActiveCharacter.fullname) == 'string' and #ndActiveCharacter.fullname > 0 then
+        name = ndActiveCharacter.fullname
+        logDebug('nd: using cached fullname', name)
+      else
+        local fn = ndActiveCharacter.firstname
+        local ln = ndActiveCharacter.lastname
+        if type(fn) == 'string' and #fn > 0 and type(ln) == 'string' and #ln > 0 then
+          name = ('%s %s'):format(fn, ln)
+          logDebug('nd: using cached firstname/lastname', name)
+        end
+      end
+    end
+    --//=-- Fallback: ND core API if cache not available
+    if name == 'unknown' then
+      local src = nil
+      pcall(function() src = GetPlayerServerId(PlayerId()) end)
+      logDebug('nd: server id resolved', src)
+      local NDCore = Medal.Services.Framework.safeExport('nd_core', { 'getCoreObject', 'GetCoreObject' }) or rawget(_G, 'NDCore') or rawget(_G, 'ND')
+      logDebug('nd: NDCore type', type(NDCore), 'has getPlayer', NDCore and type(NDCore.getPlayer) == 'function')
+      if NDCore and type(NDCore.getPlayer) == 'function' then
+        local player = nil
+        pcall(function() player = NDCore.getPlayer(src) end)
+        logDebug('nd: player present', player ~= nil, 'type', type(player))
+        if player and type(player.getData) == 'function' then
+          local full = nil
+          pcall(function() full = player.getData('fullname') end)
+          logDebug('nd: getData("fullname") result', full)
+          if type(full) == 'string' and #full > 0 then
+            name = full
+            logDebug('nd: using fullname', name)
+          end
         end
       end
     end

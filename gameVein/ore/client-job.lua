@@ -19,6 +19,24 @@ Medal.GV = Medal.GV or {}
 Medal.GV.Ore = Medal.GV.Ore or {}
 Medal.Services = Medal.Services or {}
 
+--//=-- Cached ND active character for job/group resolution
+---@class NdCharacterForJob
+---@field job string|nil
+---@field jobInfo table|nil
+---@field groups table<string, table>|nil
+local ndActiveCharacter ---@type NdCharacterForJob|nil
+
+--//=-- Listen for ND character load to cache job/groups
+AddEventHandler('ND:characterLoaded', function(character)
+  ndActiveCharacter = character
+  if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+    local j = character and character.job or 'nil'
+    local gCount = 0
+    if character and type(character.groups) == 'table' then for _ in pairs(character.groups) do gCount = gCount + 1 end end
+    Logger.debug('[GV.Ore.job]', 'ND:characterLoaded cached', j, 'groups', gCount)
+  end
+end)
+
 ---@class QbJobGrade
 ---@field name string|nil
 ---@field label string|nil
@@ -122,6 +140,45 @@ end
 --- Resolve job using ND statebag (LocalPlayer.state.job or nd_job)
 ---@return Job
 local function getNdJobClient()
+  --//=-- Prefer cached ND character (event-driven)
+  if ndActiveCharacter and type(ndActiveCharacter) == 'table' then
+    local ch = ndActiveCharacter
+    --//=-- Try groups first, find the group flagged as a job
+    local groups = ch.groups
+    if type(groups) == 'table' then
+      local chosenKey, chosen = nil, nil
+      for k, v in pairs(groups) do
+        if type(v) == 'table' and (v.isJob == true or v.isJob == 1) then
+          chosenKey, chosen = k, v
+          break
+        end
+      end
+      if not chosen then
+        for k, v in pairs(groups) do chosenKey, chosen = k, v; break end
+      end
+      if chosen then
+        local id = chosen.id or chosen.name or chosenKey or 'unknown'
+        local name = chosen.label or chosen.name or chosenKey or 'unknown'
+        local rank = tonumber(chosen.rank or (chosen.grade and chosen.grade.level)) or -1
+        local rankName = chosen.rankName or chosen.rank_label or (chosen.grade and (chosen.grade.name or chosen.grade.label)) or 'unknown'
+        return { id = tostring(id), name = tostring(name), rank = rank, rankName = tostring(rankName) }
+      end
+    end
+    --//=-- Fallback to character.job / character.jobInfo
+    if ch.job or ch.jobInfo then
+      local id = ch.job or (type(ch.jobInfo) == 'table' and (ch.jobInfo.id or ch.jobInfo.name)) or 'unknown'
+      local name = (type(ch.jobInfo) == 'table' and (ch.jobInfo.label or ch.jobInfo.name)) or id or 'unknown'
+      local rank = -1
+      local rankName = 'unknown'
+      if type(ch.jobInfo) == 'table' then
+        rank = tonumber(ch.jobInfo.rank or ch.jobInfo.grade) or -1
+        rankName = ch.jobInfo.rankName or ch.jobInfo.rank_name or ch.jobInfo.gradeName or ch.jobInfo.grade_label or 'unknown'
+      end
+      return { id = tostring(id), name = tostring(name), rank = rank, rankName = tostring(rankName) }
+    end
+  end
+
+  --//=-- Legacy/statebag path
   local lp = rawget(_G, 'LocalPlayer')
   local sb = lp and lp.state or nil
   local jd = sb and (sb.job or sb.nd_job) or nil
