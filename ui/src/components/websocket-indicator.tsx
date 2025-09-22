@@ -26,17 +26,18 @@ export const WebSocketIndicator: React.FC = () => {
         <Tooltip>
             <TooltipTrigger asChild>
                 <span
-                    className='size-14 flex items-center justify-center hover:bg-hover-muted rounded-md cursor-default'
+                    className='size-8 flex items-center justify-center cursor-default p-2'
                     aria-label={`WebSocket: ${isConnected ? 'Connected' : 'Disconnected'}`}
                     role='img'
                 >
                     {isConnected ? (
-                        <Wifi size={16} color='#22c55e' />
+                        <Wifi className='text-success-400' />
                     ) : (
-                        <WifiOff size={16} className='text-foreground-300' />
+                        <WifiOff className='text-foreground-300' />
                     )}
                 </span>
             </TooltipTrigger>
+
             <TooltipContent sideOffset={6}>
                 WebSocket: {isConnected ? 'Connected' : 'Disconnected'}
             </TooltipContent>
