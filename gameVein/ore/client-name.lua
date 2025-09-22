@@ -296,28 +296,6 @@ elseif (frameworkKey == 'qb' or frameworkKey == 'qbx') then
         end
       end
     end
-    --//=-- Fallback: ND core API if cache not available
-    if name == 'unknown' then
-      local src = nil
-      pcall(function() src = GetPlayerServerId(PlayerId()) end)
-      logDebug('nd: server id resolved', src)
-      local NDCore = Medal.Services.Framework.safeExport('nd_core', { 'getCoreObject', 'GetCoreObject' }) or rawget(_G, 'NDCore') or rawget(_G, 'ND')
-      logDebug('nd: NDCore type', type(NDCore), 'has getPlayer', NDCore and type(NDCore.getPlayer) == 'function')
-      if NDCore and type(NDCore.getPlayer) == 'function' then
-        local player = nil
-        pcall(function() player = NDCore.getPlayer(src) end)
-        logDebug('nd: player present', player ~= nil, 'type', type(player))
-        if player and type(player.getData) == 'function' then
-          local full = nil
-          pcall(function() full = player.getData('fullname') end)
-          logDebug('nd: getData("fullname") result', full)
-          if type(full) == 'string' and #full > 0 then
-            name = full
-            logDebug('nd: using fullname', name)
-          end
-        end
-      end
-    end
     logDebug('nd: derived name', name)
     if type(Logger) == 'table' and type(Logger.debug) == 'function' then
       pcall(Logger.debug, '[GV.Ore.name]', { framework = 'nd', name = name })
@@ -339,7 +317,7 @@ elseif (frameworkKey == 'qb' or frameworkKey == 'qbx') then
   end
 
   logDebug('final character name', name)
-  return name
+  return tostring(name)
 end
 
 --- Get the current client's player name

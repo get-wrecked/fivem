@@ -191,18 +191,6 @@ local function getNdJobClient()
       return { id = tostring(id), name = tostring(name), rank = rank, rankName = tostring(rankName) }
     end
   end
-
-  --//=-- Legacy/statebag path
-  local lp = rawget(_G, 'LocalPlayer')
-  local sb = lp and lp.state or nil
-  local jd = sb and (sb.job or sb.nd_job) or nil
-  if type(jd) == 'table' then
-    local id = jd.id or jd.name or 'unknown'
-    local name = jd.label or jd.name or 'unknown'
-    local rank = tonumber(jd.grade or (jd.grade and jd.grade.level)) or -1
-    local rankName = (jd.grade and (jd.grade.name or jd.grade.label)) or jd.grade_label or jd.grade_name or 'unknown'
-    return { id = tostring(id), name = tostring(name), rank = rank, rankName = tostring(rankName) }
-  end
   return unknownJob()
 end
 
@@ -226,30 +214,6 @@ local function getOxJobClient()
       local rankName = 'unknown'
       return { id = tostring(id), name = tostring(name), rank = rank, rankName = tostring(rankName) }
     end
-  end
-
-  --//=-- Fallback to legacy/statebag group structure if event cache unavailable
-  local lp = rawget(_G, 'LocalPlayer')
-  local sb = lp and lp.state or nil
-  local groups = sb and (sb.groups or sb.group or sb.ox_groups) or nil
-  local group = nil
-  if type(groups) == 'table' then
-    group = groups.job or groups['job']
-    if not group then
-      for k, v in pairs(groups) do
-        if type(v) == 'table' and (v.type == 'job' or k == 'job' or v.name == 'job') then
-          group = v
-          break
-        end
-      end
-    end
-  end
-  if group then
-    local id = group.id or group.name or 'unknown'
-    local name = group.label or group.name or 'unknown'
-    local rank = tonumber(group.grade or (group.grade and group.grade.level)) or -1
-    local rankName = group.grade_name or group.grade_label or group.gradeName or group.gradeLabel or 'unknown'
-    return { id = tostring(id), name = tostring(name), rank = rank, rankName = tostring(rankName) }
   end
   return unknownJob()
 end
