@@ -37,6 +37,20 @@ AddEventHandler('ND:characterLoaded', function(character)
   end
 end)
 
+--//=-- Cached ox_core groups from active character selection
+---@type table<string, number>|nil
+local oxActiveGroups = nil
+
+--//=-- Listen for ox_core active character and cache groups for job resolution
+RegisterNetEvent('ox:setActiveCharacter', function(character, groups)
+  oxActiveGroups = groups
+  if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+    local count = 0
+    if type(groups) == 'table' then for _ in pairs(groups) do count = count + 1 end end
+    Logger.debug('[GV.Ore.job]', 'ox:setActiveCharacter cached groups', count)
+  end
+end)
+
 ---@class QbJobGrade
 ---@field name string|nil
 ---@field label string|nil
@@ -195,6 +209,26 @@ end
 --- Resolve job from the  ox_core groups statebag
 ---@return Job
 local function getOxJobClient()
+  --//=-- Prefer cached ox groups from event: table<string, number>
+  if type(oxActiveGroups) == 'table' then
+    local chosenName, chosenRank = nil, nil
+    for k, v in pairs(oxActiveGroups) do
+      if type(k) == 'string' and type(v) == 'number' then
+        if not chosenRank or v > chosenRank then
+          chosenName, chosenRank = k, v
+        end
+      end
+    end
+    if chosenName then
+      local id = chosenName
+      local name = chosenName
+      local rank = tonumber(chosenRank) or -1
+      local rankName = 'unknown'
+      return { id = tostring(id), name = tostring(name), rank = rank, rankName = tostring(rankName) }
+    end
+  end
+
+  --//=-- Fallback to legacy/statebag group structure if event cache unavailable
   local lp = rawget(_G, 'LocalPlayer')
   local sb = lp and lp.state or nil
   local groups = sb and (sb.groups or sb.group or sb.ox_groups) or nil
