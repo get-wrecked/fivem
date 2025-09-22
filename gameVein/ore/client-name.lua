@@ -63,6 +63,35 @@ local function logDebug(...)
   end
 end
 
+--//=-- Cached ox_core active character/groups
+---@class OxCharacter
+---@field charId number
+---@field stateId number
+---@field firstname string|nil
+---@field lastname string|nil
+---@field firstName string|nil
+---@field lastName string|nil
+---@field gender string|nil
+---@field x number|nil
+---@field y number|nil
+---@field z number|nil
+---@field lastPlayed string|nil
+---@field health number|nil
+---@field armour number|nil
+---@field isNew boolean|nil
+
+local oxActiveCharacter ---@type OxCharacter|nil
+local oxActiveGroups ---@type table<string, number>|nil
+
+--//=-- Listen for active character selection from ox_core
+RegisterNetEvent('ox:setActiveCharacter', function(character, groups)
+  oxActiveCharacter = character
+  oxActiveGroups = groups
+  local f = character and (character.firstName or character.firstname) or ''
+  local l = character and (character.lastName or character.lastname) or ''
+  logDebug('ox:setActiveCharacter cached', f, l)
+end)
+
 --- Get the current client's player name
 --- @return string The player's name or "unknown"
 local function getFivemName()
@@ -253,17 +282,13 @@ elseif (frameworkKey == 'qb' or frameworkKey == 'qbx') then
       pcall(Logger.debug, '[GV.Ore.name]', { framework = 'nd', name = name })
     end
   elseif frameworkKey == 'ox' then
-    local pd = Medal.Services.Framework.safeExport('ox_core', { 'GetPlayerData', 'GetPlayer' })
-    logDebug('ox: player data object type', type(pd))
-    if pd then
-      local ci = pd.charinfo or pd.Character or pd.character or nil
-      logDebug('ox: charinfo-like table present', ci ~= nil)
-      if ci and ci.firstname and ci.lastname then
-        name = ('%s %s'):format(ci.firstname, ci.lastname)
-        logDebug('ox: using charinfo firstname/lastname', name)
-      elseif pd.name then
-        name = tostring(pd.name)
-        logDebug('ox: using name field', name)
+    --//=-- Use only cached character from ox:setActiveCharacter; ox exports are unreliable for names
+    if oxActiveCharacter then
+      local fn = oxActiveCharacter.firstName or oxActiveCharacter.firstname
+      local ln = oxActiveCharacter.lastName or oxActiveCharacter.lastname
+      if type(fn) == 'string' and #fn > 0 and type(ln) == 'string' and #ln > 0 then
+        name = ('%s %s'):format(fn, ln)
+        logDebug('ox: using cached active character first/last', name)
       end
     end
     logDebug('ox: derived name', name)
