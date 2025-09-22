@@ -19,6 +19,39 @@ Medal.GV = Medal.GV or {}
 Medal.GV.Ore = Medal.GV.Ore or {}
 Medal.Services = Medal.Services or {}
 
+--//=-- Cached ND active character for job/group resolution
+---@class NdCharacterForJob
+---@field job string|nil
+---@field jobInfo table|nil
+---@field groups table<string, table>|nil
+local ndActiveCharacter ---@type NdCharacterForJob|nil
+
+--//=-- Listen for ND character load to cache job/groups
+--//=-- Ensure ND event is registered
+RegisterNetEvent('ND:characterLoaded', function(character)
+  ndActiveCharacter = character
+  if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+    local j = character and character.job or 'nil'
+    local gCount = 0
+    if character and type(character.groups) == 'table' then for _ in pairs(character.groups) do gCount = gCount + 1 end end
+    Logger.debug('[GV.Ore.job]', 'ND:characterLoaded cached', j, 'groups', gCount)
+  end
+end)
+
+--//=-- Cached ox_core groups from active character selection
+---@type table<string, number>|nil
+local oxActiveGroups = nil
+
+--//=-- Listen for ox_core active character and cache groups for job resolution
+RegisterNetEvent('ox:setActiveCharacter', function(character, groups)
+  oxActiveGroups = groups
+  if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+    local count = 0
+    if type(groups) == 'table' then for _ in pairs(groups) do count = count + 1 end end
+    Logger.debug('[GV.Ore.job]', 'ox:setActiveCharacter cached groups', count)
+  end
+end)
+
 ---@class QbJobGrade
 ---@field name string|nil
 ---@field label string|nil
@@ -122,15 +155,42 @@ end
 --- Resolve job using ND statebag (LocalPlayer.state.job or nd_job)
 ---@return Job
 local function getNdJobClient()
-  local lp = rawget(_G, 'LocalPlayer')
-  local sb = lp and lp.state or nil
-  local jd = sb and (sb.job or sb.nd_job) or nil
-  if type(jd) == 'table' then
-    local id = jd.id or jd.name or 'unknown'
-    local name = jd.label or jd.name or 'unknown'
-    local rank = tonumber(jd.grade or (jd.grade and jd.grade.level)) or -1
-    local rankName = (jd.grade and (jd.grade.name or jd.grade.label)) or jd.grade_label or jd.grade_name or 'unknown'
-    return { id = tostring(id), name = tostring(name), rank = rank, rankName = tostring(rankName) }
+  --//=-- Prefer cached ND character (event-driven)
+  if ndActiveCharacter and type(ndActiveCharacter) == 'table' then
+    local ch = ndActiveCharacter
+    --//=-- Try groups first, find the group flagged as a job
+    local groups = ch.groups
+    if type(groups) == 'table' then
+      local chosenKey, chosen = nil, nil
+      for k, v in pairs(groups) do
+        if type(v) == 'table' and (v.isJob == true or v.isJob == 1) then
+          chosenKey, chosen = k, v
+          break
+        end
+      end
+      if not chosen then
+        for k, v in pairs(groups) do chosenKey, chosen = k, v; break end
+      end
+      if chosen then
+        local id = chosen.id or chosen.name or chosenKey or 'unknown'
+        local name = chosen.label or chosen.name or chosenKey or 'unknown'
+        local rank = tonumber(chosen.rank or (chosen.grade and chosen.grade.level)) or -1
+        local rankName = chosen.rankName or chosen.rank_label or (chosen.grade and (chosen.grade.name or chosen.grade.label)) or 'unknown'
+        return { id = tostring(id), name = tostring(name), rank = rank, rankName = tostring(rankName) }
+      end
+    end
+    --//=-- Fallback to character.job / character.jobInfo
+    if ch.job or ch.jobInfo then
+      local id = ch.job or (type(ch.jobInfo) == 'table' and (ch.jobInfo.id or ch.jobInfo.name)) or 'unknown'
+      local name = (type(ch.jobInfo) == 'table' and (ch.jobInfo.label or ch.jobInfo.name)) or id or 'unknown'
+      local rank = -1
+      local rankName = 'unknown'
+      if type(ch.jobInfo) == 'table' then
+        rank = tonumber(ch.jobInfo.rank or ch.jobInfo.grade) or -1
+        rankName = ch.jobInfo.rankName or ch.jobInfo.rank_name or ch.jobInfo.gradeName or ch.jobInfo.grade_label or 'unknown'
+      end
+      return { id = tostring(id), name = tostring(name), rank = rank, rankName = tostring(rankName) }
+    end
   end
   return unknownJob()
 end
@@ -138,27 +198,23 @@ end
 --- Resolve job from the  ox_core groups statebag
 ---@return Job
 local function getOxJobClient()
-  local lp = rawget(_G, 'LocalPlayer')
-  local sb = lp and lp.state or nil
-  local groups = sb and (sb.groups or sb.group or sb.ox_groups) or nil
-  local group = nil
-  if type(groups) == 'table' then
-    group = groups.job or groups['job']
-    if not group then
-      for k, v in pairs(groups) do
-        if type(v) == 'table' and (v.type == 'job' or k == 'job' or v.name == 'job') then
-          group = v
-          break
+  --//=-- Prefer cached ox groups from event: table<string, number>
+  if type(oxActiveGroups) == 'table' then
+    local chosenName, chosenRank = nil, nil
+    for k, v in pairs(oxActiveGroups) do
+      if type(k) == 'string' and type(v) == 'number' then
+        if not chosenRank or v > chosenRank then
+          chosenName, chosenRank = k, v
         end
       end
     end
-  end
-  if group then
-    local id = group.id or group.name or 'unknown'
-    local name = group.label or group.name or 'unknown'
-    local rank = tonumber(group.grade or (group.grade and group.grade.level)) or -1
-    local rankName = group.grade_name or group.grade_label or group.gradeName or group.gradeLabel or 'unknown'
-    return { id = tostring(id), name = tostring(name), rank = rank, rankName = tostring(rankName) }
+    if chosenName then
+      local id = chosenName
+      local name = chosenName
+      local rank = tonumber(chosenRank) or -1
+      local rankName = 'unknown'
+      return { id = tostring(id), name = tostring(name), rank = rank, rankName = tostring(rankName) }
+    end
   end
   return unknownJob()
 end

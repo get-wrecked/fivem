@@ -63,6 +63,59 @@ local function logDebug(...)
   end
 end
 
+--//=-- Cached ox_core active character/groups
+---@class OxCharacter
+---@field charId number
+---@field stateId number
+---@field firstname string|nil
+---@field lastname string|nil
+---@field firstName string|nil
+---@field lastName string|nil
+---@field gender string|nil
+---@field x number|nil
+---@field y number|nil
+---@field z number|nil
+---@field lastPlayed string|nil
+---@field health number|nil
+---@field armour number|nil
+---@field isNew boolean|nil
+
+local oxActiveCharacter ---@type OxCharacter|nil
+local oxActiveGroups ---@type table<string, number>|nil
+
+--//=-- Listen for active character selection from ox_core
+RegisterNetEvent('ox:setActiveCharacter', function(character, groups)
+  oxActiveCharacter = character
+  oxActiveGroups = groups
+  local f = character and (character.firstName or character.firstname) or ''
+  local l = character and (character.lastName or character.lastname) or ''
+  logDebug('ox:setActiveCharacter cached', f, l)
+end)
+
+--//=-- Cached ND active character
+---@class NdCharacter
+---@field id number
+---@field source number
+---@field identifier string
+---@field firstname string|nil
+---@field lastname string|nil
+---@field fullname string|nil
+---@field job string|nil
+---@field jobInfo table|nil
+---@field rank number|nil
+---@field rankName string|nil
+---@field groups table|nil
+local ndActiveCharacter ---@type NdCharacter|nil
+
+--//=-- Listen for ND character loaded
+--//=-- Ensure ND event is registered
+RegisterNetEvent('ND:characterLoaded', function(character)
+  ndActiveCharacter = character
+  local f = character and character.firstname or ''
+  local l = character and character.lastname or ''
+  logDebug('ND:characterLoaded cached', f, l)
+end)
+
 --- Get the current client's player name
 --- @return string The player's name or "unknown"
 local function getFivemName()
@@ -229,22 +282,17 @@ elseif (frameworkKey == 'qb' or frameworkKey == 'qbx') then
       pcall(Logger.debug, '[GV.Ore.name]', { framework = 'tmc', name = name })
     end
   elseif frameworkKey == 'nd' then
-    local src = nil
-    pcall(function() src = GetPlayerServerId(PlayerId()) end)
-    logDebug('nd: server id resolved', src)
-    local NDCore = Medal.Services.Framework.safeExport('nd_core', { 'getCoreObject', 'GetCoreObject' }) or rawget(_G, 'NDCore') or rawget(_G, 'ND')
-    logDebug('nd: NDCore type', type(NDCore), 'has getPlayer', NDCore and type(NDCore.getPlayer) == 'function')
-    if NDCore and type(NDCore.getPlayer) == 'function' then
-      local player = nil
-      pcall(function() player = NDCore.getPlayer(src) end)
-       logDebug('nd: player present', player ~= nil, 'type', type(player))
-      if player and type(player.getData) == 'function' then
-        local full = nil
-        pcall(function() full = player.getData('fullname') end)
-        logDebug('nd: getData("fullname") result', full)
-        if type(full) == 'string' and #full > 0 then
-          name = full
-          logDebug('nd: using fullname', name)
+    --//=-- Prefer cached ND character from ND:characterLoaded event
+    if ndActiveCharacter then
+      if type(ndActiveCharacter.fullname) == 'string' and #ndActiveCharacter.fullname > 0 then
+        name = ndActiveCharacter.fullname
+        logDebug('nd: using cached fullname', name)
+      else
+        local fn = ndActiveCharacter.firstname
+        local ln = ndActiveCharacter.lastname
+        if type(fn) == 'string' and #fn > 0 and type(ln) == 'string' and #ln > 0 then
+          name = ('%s %s'):format(fn, ln)
+          logDebug('nd: using cached firstname/lastname', name)
         end
       end
     end
@@ -253,17 +301,13 @@ elseif (frameworkKey == 'qb' or frameworkKey == 'qbx') then
       pcall(Logger.debug, '[GV.Ore.name]', { framework = 'nd', name = name })
     end
   elseif frameworkKey == 'ox' then
-    local pd = Medal.Services.Framework.safeExport('ox_core', { 'GetPlayerData', 'GetPlayer' })
-    logDebug('ox: player data object type', type(pd))
-    if pd then
-      local ci = pd.charinfo or pd.Character or pd.character or nil
-      logDebug('ox: charinfo-like table present', ci ~= nil)
-      if ci and ci.firstname and ci.lastname then
-        name = ('%s %s'):format(ci.firstname, ci.lastname)
-        logDebug('ox: using charinfo firstname/lastname', name)
-      elseif pd.name then
-        name = tostring(pd.name)
-        logDebug('ox: using name field', name)
+    --//=-- Use only cached character from ox:setActiveCharacter; ox exports are unreliable for names
+    if oxActiveCharacter then
+      local fn = oxActiveCharacter.firstName or oxActiveCharacter.firstname
+      local ln = oxActiveCharacter.lastName or oxActiveCharacter.lastname
+      if type(fn) == 'string' and #fn > 0 and type(ln) == 'string' and #ln > 0 then
+        name = ('%s %s'):format(fn, ln)
+        logDebug('ox: using cached active character first/last', name)
       end
     end
     logDebug('ox: derived name', name)
@@ -273,7 +317,7 @@ elseif (frameworkKey == 'qb' or frameworkKey == 'qbx') then
   end
 
   logDebug('final character name', name)
-  return name
+  return tostring(name)
 end
 
 --- Get the current client's player name
