@@ -4,9 +4,10 @@ A FiveM/GTA V server resource that integrates with the Medal.tv desktop client t
 
 ## Features
 
-- Manual video and screenshot capture via the Medal.tv client
-- Optional auto-clipping on configurable ingame events
-- Ingame menu for toggling and configuring the auto-clipping behavior
+- **Auto-Clipping**: Automatic clip capture on configurable in-game events (player kills, deaths)
+- **Manual Capture**: Screenshot and video capture via Medal.tv integration
+- **UI Management**: In-game menu for configuration and event toggling
+- **Framework Agnostic**: Works with any FiveM framework via detection system
 
 ## Requirements
 
