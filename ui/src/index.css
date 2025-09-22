@@ -25,12 +25,13 @@
   --bg-first-layer: oklch(0 0 0);
   --bg-second-layer: oklch(0.2006 0.002 286.22);
   --bg-third-layer: oklch(0.2397 0.0019 286.26);
-  /*=-- Slightly lighter than third layer for subtle hovers */
-  --bg-hover-muted: oklch(0.34 0.0019 286.26);
 
   /* Neutral colors */
   --color-neutral-300: oklch(0.7668 0 0);
   --color-neutral-800: oklch(0.4243 0.0016 286.33);
+
+    /* Success colors */
+  --color-success-400: oklch(0.8073 0.17 162.11);
 
   /* Text and icon colors */
   --color-foreground-0: oklch(1 0 0);

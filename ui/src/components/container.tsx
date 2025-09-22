@@ -35,7 +35,7 @@ const Header: React.FC = () => {
                 <img src={logo} alt='Medal Logo' className='h-6' />
             </span>
 
-            <div className='flex items-center gap-1 pr-2'>
+            <div className='flex items-center gap-1'>
                 {/*//=-- Autoclipping API availability indicator */}
                 <ApiIndicator />
 

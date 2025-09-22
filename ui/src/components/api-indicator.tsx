@@ -26,14 +26,14 @@ export const ApiIndicator: React.FC = () => {
         <Tooltip>
             <TooltipTrigger asChild>
                 <span
-                    className='size-14 flex items-center justify-center hover:bg-hover-muted rounded-md cursor-default'
+                    className='size-8 flex items-center justify-center cursor-default p-2'
                     aria-label={`Autoclipping API: ${isAvailable ? 'Available' : 'Unavailable'}`}
                     role='img'
                 >
                     {isAvailable ? (
-                        <Camera size={16} color='#22c55e' />
+                        <Camera className='text-success-400' />
                     ) : (
-                        <CameraOff size={16} className='text-foreground-300' />
+                        <CameraOff className='text-foreground-300' />
                     )}
                 </span>
             </TooltipTrigger>
