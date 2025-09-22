@@ -105,11 +105,11 @@ end)
 ---@field rank number|nil
 ---@field rankName string|nil
 ---@field groups table|nil
-
 local ndActiveCharacter ---@type NdCharacter|nil
 
 --//=-- Listen for ND character loaded
-AddEventHandler('ND:characterLoaded', function(character)
+--//=-- Ensure ND event is registered
+RegisterNetEvent('ND:characterLoaded', function(character)
   ndActiveCharacter = character
   local f = character and character.firstname or ''
   local l = character and character.lastname or ''

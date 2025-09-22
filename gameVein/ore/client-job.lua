@@ -27,7 +27,8 @@ Medal.Services = Medal.Services or {}
 local ndActiveCharacter ---@type NdCharacterForJob|nil
 
 --//=-- Listen for ND character load to cache job/groups
-AddEventHandler('ND:characterLoaded', function(character)
+--//=-- Ensure ND event is registered
+RegisterNetEvent('ND:characterLoaded', function(character)
   ndActiveCharacter = character
   if type(Logger) == 'table' and type(Logger.debug) == 'function' then
     local j = character and character.job or 'nil'
