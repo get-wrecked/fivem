@@ -38,4 +38,4 @@ pnpm install
 pnpm build
 ```
 
-3) FiveM loads the built UI, from `ui/dist/`, via `ui/index.html`, in the resource.
+3) FiveM loads the built UI from `ui/dist/` via `ui/dist/index.html` in the resource.
