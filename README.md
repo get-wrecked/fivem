@@ -169,7 +169,9 @@ EventConfig = {
     - [ore/](gameVein/ore/README.md)
     - [assayer/](gameVein/assayer/README.md)
     - [shaft/](gameVein/shaft/README.md)
-  - [lib/](lib/README.md)
+  - [clipping/](clipping/README.md)
+  - [superSoaker/](superSoaker/README.md)
+  
 - **UI**
   - [ui/](ui/README.md)
     - [ui/src/](ui/src/README.md)
@@ -180,8 +182,7 @@ EventConfig = {
       - [components/ui/](ui/src/components/ui/README.md)
       - [assets/](ui/src/assets/README.md)
 - **Utilities**
-  - [clipping/](clipping/README.md)
-  - [superSoaker/](superSoaker/README.md)
+  - [lib/](lib/README.md)
   - [services/](services/README.md)
 
 ## Contributors
