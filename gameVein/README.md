@@ -3,7 +3,7 @@
 GameVein is the in-resource data pipeline that extracts (mines) small, typed chunks of game data ("ores"), routes them (the "assayer"), and ships them to the UI over NUI/WebSocket transports (the "shaft" and "minecarts").
 
 - __ore/__
-  - Functions that return specific pieces of data (ex: `name`, `communityName`, `heartbeat`).
+  - Functions that return specific pieces of data (ex: `name`, `cfxId`, `job`, `vehicle`).
 - __assayer/__
   - Routing helpers only. 
     - Maps ore type strings to the correct `Medal.GV.Ore.*()` producer.

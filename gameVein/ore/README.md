@@ -7,7 +7,7 @@ to communicate with the server.
 ## Built-in Ores
 
 - __name__ — `Medal.GV.Ore.name()` returns a table `{ fivem, character }` with the player's raw FiveM name and their framework-specific character name.
-- __communityName__ — `Medal.GV.Ore.communityName()` requests the community name from the server.
+- __cfxId__ — `Medal.GV.Ore.cfxId()` requests the server's Cfx Id (community identifier) via server event.
 - __heartbeat__ — `Medal.GV.Ore.heartbeat()` returns `{ ok, ts, pid }` for round-trip diagnostics.
 - __job__ — `Medal.GV.Ore.job()` returns a Job table `{ id, name, rank, rankName }` resolved client-first, with a server fallback for ESX.
 - __entityMatrix__ — `Medal.GV.Ore.entityMatrix()` returns an entity matrix `{ right, forward, up, position }` (client).
@@ -16,7 +16,9 @@ to communicate with the server.
 
 See implementations in this folder for reference:
 - `client-name.lua`
-- `client-community-name.lua`
+- `server-name.lua`
+- `client-cfx-id.lua`
+- `server-cfx-id.lua`
 - `client-heartbeat.lua`
 - `client-job.lua`
 - `server-job.lua`
@@ -33,8 +35,8 @@ The router in `gameVein/assayer/client-assayer.lua` inspects the request and cal
 if oreType == 'name' then
   return Medal.GV.Ore.name()
 end
-if oreType == 'communityName' then
-  return Medal.GV.Ore.communityName()
+if oreType == 'cfxId' then
+  return Medal.GV.Ore.cfxId()
 end
 if oreType == 'heartbeat' then
   return Medal.GV.Ore.heartbeat()
