@@ -39,7 +39,7 @@ function Medal.GV.pushMinecart(a, b)
 end
 
 --//=-- NUI: Minecart ore endpoint (assay and push ore in a minecart to NUI, via ws:send)
-RegisterNUICallback('ws:minecart', function(req, cb)
+RegisterNuiCallback('ws:minecart', function(req, cb)
   --//=-- Capture ore type for improved error logging when pcall fails
   local reqOreType = nil
   local ok, result = pcall(function()

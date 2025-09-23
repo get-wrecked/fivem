@@ -15,7 +15,7 @@
     None
 ]]
 
-RegisterNUICallback('ws:log', function(data, cb)
+RegisterNuiCallback('ws:log', function(data, cb)
   --//=-- Accept both shapes: { level, args } and { payload = { level, args } }
   if type(data) == 'table' and type(data.payload) == 'table' then
     data = data.payload
