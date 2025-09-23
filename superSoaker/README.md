@@ -81,7 +81,7 @@ end)
 
 ## NUI Flow
 
-File: `ui/src/supersoaker/capture.ts`
+File: `ui/src/superSoaker/capture.ts`
 
 - Listens for `window.postMessage({ request })` where `request` has:
   - `encoding`, `quality`, `headers`, `correlation`
@@ -117,13 +117,13 @@ Feature parity and differences compared to `screenshot-basic`:
   - SuperSoaker: `requestPlayerWater(player, options, cb)`; returns a Data URI from the client. There is no built-in server-side file storage option; if you need remote storage, prefer client `shootWater` to your own endpoint.
 
 - **Rendering backend**
-  - Both use a Three.js wrapper around the Cfx game view texture; SuperSoaker’s implementation is in `ui/src/supersoaker/capture.ts`.
+  - Both use a Three.js wrapper around the Cfx game view texture; SuperSoaker’s implementation is in `ui/src/superSoaker/capture.ts`.
 
 - **Fallback behavior**
   - Both aim to be robust; SuperSoaker returns a 1×1 transparent PNG when the Three binding is unavailable.
 
 ## Notes & tips
 
-- Ensure the import path casing matches the folder name in the UI (the folder here is `supersoaker/`). On case-sensitive environments, `@/superSoaker/capture` will not resolve unless the folder is renamed.
+- Ensure the import path casing matches the folder name in the UI (the folder here is `superSoaker/`). On case-sensitive environments, always import using `@/superSoaker/capture` to match the folder name.
 - Use `headers` for authenticated uploads.
 - Default encoding is `jpg` with quality `0.92` unless overridden.
