@@ -15,6 +15,7 @@ to communicate with the server.
 - __vehicle__ — `Medal.GV.Ore.vehicle()` returns `{ inVehicle, vehicleInfo }` where `inVehicle` is a boolean indicating if the player is in a vehicle, and `vehicleInfo` is `{ id, name, hash, class, className }` for the current (or last driven) vehicle (client).
 
 See implementations in this folder for reference:
+
 - `client-name.lua`
 - `server-name.lua`
 - `client-cfx-id.lua`

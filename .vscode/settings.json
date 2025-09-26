@@ -86,5 +86,8 @@
     "wasi",
     "yallist"
   ],
-  "stylua.targetReleaseVersion": "latest"
+  "stylua.targetReleaseVersion": "latest",
+  "conventionalCommits.scopes": [
+    "ore"
+  ]
 }
