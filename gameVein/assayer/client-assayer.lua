@@ -21,6 +21,9 @@ Medal.GV = Medal.GV or {}
 Medal.GV.Ore = Medal.GV.Ore or {}
 --//=-- Client-side Assayer routes ore requests only (framework detection moved to services)
 Medal.GV.Assayer = Medal.GV.Assayer or {}
+--//=-- Lazy-initialized, lowercase-keyed dispatch for ore types
+--//=-- Each value holds the canonical `type` casing and its function
+local _oreDispatch = nil
 
 --- Assay a requested ore, and return the relevant data
 --- Accepted forms:
@@ -38,36 +41,28 @@ function Medal.GV.Ore.assay(req)
     oreType = req.type
   end
 
-  if oreType == 'name' then
-    return Medal.GV.Ore.name()
+  --//=-- Initialize the dispatch table on first use to avoid early binding
+  if _oreDispatch == nil then
+    _oreDispatch = {
+      name = { type = 'name', fn = Medal.GV.Ore.name },
+      communityname = { type = 'communityName', fn = Medal.GV.Ore.communityName },
+      heartbeat = { type = 'heartbeat', fn = Medal.GV.Ore.heartbeat },
+      cfxid = { type = 'cfxId', fn = Medal.GV.Ore.cfxId },
+      job = { type = 'job', fn = Medal.GV.Ore.job },
+      entitymatrix = { type = 'entityMatrix', fn = Medal.GV.Ore.entityMatrix },
+      cameramatrix = { type = 'cameraMatrix', fn = Medal.GV.Ore.cameraMatrix },
+      vehicle = { type = 'vehicle', fn = Medal.GV.Ore.vehicle },
+    }
   end
 
-  if oreType == 'communityName' then
-    return Medal.GV.Ore.communityName()
+  --//=-- Case-insensitive lookup using lowercase key
+  local key = (type(oreType) == 'string') and string.lower(oreType) or nil
+  if key and _oreDispatch[key] then
+    local entry = _oreDispatch[key]
+    if type(entry.fn) == 'function' then
+      return entry.fn()
+    end
   end
-
-  if oreType == 'heartbeat' then
-    return Medal.GV.Ore.heartbeat()
-  end
-
-  if oreType == 'cfxId' then
-    return Medal.GV.Ore.cfxId()
-  end
-
-  if oreType == 'job' then
-    return Medal.GV.Ore.job()
-  end
-
-  if oreType == 'entityMatrix' then
-    return Medal.GV.Ore.entityMatrix()
-  end
-
-  if oreType == 'cameraMatrix' then
-    return Medal.GV.Ore.cameraMatrix()
-  end
-
-  if oreType == 'vehicle' then
-    return Medal.GV.Ore.vehicle()
   end
 
     --//=-- Handle bundle requests, which assay multiple ore types at once
