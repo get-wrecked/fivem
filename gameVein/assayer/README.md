@@ -24,25 +24,17 @@ See `lib/shared-request.lua`:
 
 ## Extending Ore Routing
 
-To add a new ore type, include another branch in `Medal.GV.Ore.assay()`:
+The assayer now uses a lowercase-keyed dispatch table (case-insensitive lookup). To add a new ore type, add an entry to the dispatch after it is initialized. Keys must be lowercase; the `type` value should preserve the canonical casing, and `fn` should point to the ore function.
 
 ```lua
 --//=-- gameVein/assayer/client-assayer.lua
-if oreType == 'yourType' then
-  return Medal.GV.Ore.yourType()
-end
+-- After _oreDispatch is initialized inside Medal.GV.Ore.assay(req):
+_oreDispatch.yourtype = { type = 'yourType', fn = Medal.GV.Ore.yourType }
 
---//=-- For bundled requests
-if oreType == 'bundle' and type(req.types) == 'table' then
-  local results = {}
-  for _, subType in ipairs(req.types) do
-    local result = Medal.GV.Ore.assay(subType)
-    if result ~= nil then
-      results[subType] = result
-    end
-  end
-  return results
-end
+-- Lookup is case-insensitive:
+-- local key = string.lower(oreType)
+-- local entry = _oreDispatch[key]
+-- if entry then return entry.fn() end
 ```
 
 ## How It's Interacted With
@@ -98,4 +90,5 @@ print('player name', name)
 ```
 
 Notes:
+
 - `Medal.GV.Ore.assay(req)` accepts a string (the type), or a table (also the type, and not for eating) with `type = string`.
