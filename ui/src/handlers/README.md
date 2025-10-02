@@ -13,7 +13,7 @@ NUI event handlers that bridge UI actions with the LUA side, and the WebSocket c
     - Logs messages without a `type` property to console for debugging
   - Guards logging during the cleanup, to avoid logging post-unmount, when unavailable.
 
-From the UI code, you can also call Lua NUI callbacks directly via `fetchNui` (see `ui/src/lib/nui.ts`). 
+From the UI code, you can also call Lua NUI callbacks directly via `fetchNui` (see `ui/src/lib/nui.ts`).
 
 EX: Requesting a minecart full of ore:
 
