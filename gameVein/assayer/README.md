@@ -13,12 +13,14 @@ Framework detection has been moved to the shared `services/` framework detection
     - Also accepts `{ type = 'bundle', types = { 'name', 'job' } }` to request multiple ores at once.
 
 For framework detection, use the service APIs instead:
+
 - Client: `Medal.Services.Framework.getKey(timeoutMs?: number): FrameworkKey`
 - Server: `Medal.Services.Framework.detectFramework(forceRefresh?: boolean): FrameworkKey`
 
 ## Request Helpers
 
 See `lib/shared-request.lua`:
+
 - `Medal.GV.Request.buildId()`
 - `Medal.GV.Request.await(pending, requestId, timeoutMs?, defaultValue)`
 
@@ -53,6 +55,49 @@ import { fetchNui } from '@tsfx/hooks';
 await fetchNui('ws:minecart', { payload: { type: 'yourOreType' } });
 // The POST returns an ACK; the actual object (`{ type: 'yourType', data }`), is forwarded via WebSocket.
 ```
+
+### Proximity Fan-out (players around you)
+
+You can request an ore (or a bundle of ores) from nearby players by adding `radius` to any request. This is compatible with OneSync Infinity.
+
+- Single ore: `{ type: 'job', radius?: number, maxPlayers?: number, timeoutMs?: number }`
+- Bundle: `{ type: 'bundle', types: { 'name', 'job' }, radius?: number, maxPlayers?: number, timeoutMs?: number }`
+
+Return value is a table of tables: `[ selfData, others ]`
+
+- `selfData`: The invoking player's data for the requested ore(s).
+- `others`: An array of wrappers, each shaped `{ id, name, data }` where:
+  - `id` is the nearby player's server id
+  - `name` is the nearby player's FiveM name
+  - `data` is the ore result (or bundle table) for that player
+
+Examples:
+
+```lua
+--//=-- Single ore from nearby players (preferred modern usage)
+local selfJob, others = table.unpack(Medal.GV.Ore.assay({ type = 'job', radius = 60.0, maxPlayers = 5 }))
+for _, entry in ipairs(others) do
+  print(('nearby id=%d name=%s'):format(entry.id, entry.name))
+  print(('job: %s %d'):format(entry.data.name or 'unknown', entry.data.rank or -1))
+end
+
+--//=-- Bundle from nearby players
+local selfBundle, othersBundles = table.unpack(Medal.GV.Ore.assay({ type = 'bundle', types = { 'name', 'job' }, radius = 80.0, maxPlayers = 5 }))
+-- selfBundle is a table keyed by ore type, e.g., { name = {...}, job = {...} }
+for _, entry in ipairs(othersBundles) do
+  print(('nearby id=%d name=%s'):format(entry.id, entry.name))
+  local bundle = entry.data
+  -- bundle mirrors the structure for the requester
+  -- example: bundle.name, bundle.job
+end
+```
+
+Events used:
+
+- Client -> Server: `medal:gv:assayer:reqNearby` to initiate a nearby query
+- Server -> Client: `medal:gv:assayer:reqFromServer` to ask a client to assay on behalf of the invoker
+- Client -> Server: `medal:gv:assayer:resFromClient` to send back the assayed data
+- Server -> Client: `medal:gv:assayer:resNearby` to deliver the aggregated results back to the invoker
 
 ## Direct Lua Usage (no WebSocket)
 
