@@ -14,6 +14,9 @@ Screenshot capture and upload system that provides drop-in replacement for `scre
   - Handles capture requests via `window.postMessage` and returns Data URIs or upload responses.
 
 ## How it works
+
+1. **Client** (`superSoaker/client-main.lua`)
+   - Exposes exports to capture locally or upload.
    - Listens for server requests to capture.
    - Uses a simple correlation map so async NUI replies route to the right callback.
 
@@ -33,14 +36,14 @@ The `fxmanifest.lua` wires the built UI (`ui_page 'ui/dist/index.html'`). The cl
 
 File: `superSoaker/client-main.lua`
 
-- __fillSoaker(options?: SoakerOptions, cb: fun(data: string))__
+- **fillSoaker(options?: SoakerOptions, cb: fun(data: string))**
   - Captures a screenshot and returns a `data:image/...;base64,...` URI to your callback.
   - Options:
     - `encoding`: 'jpg' | 'png' | 'webp' (default: 'jpg')
     - `quality`: number 0..1 (for jpg/webp, default 0.92)
     - `headers`: table<string,string> (only used for upload paths)
 
-- __shootWater(url: string, field: string, options?: SoakerOptions, cb: fun(result: string))__
+- **shootWater(url: string, field: string, options?: SoakerOptions, cb: fun(result: string))**
   - Captures a screenshot and uploads it as `multipart/form-data` to `url` with file field name `field`.
   - Returns the HTTP response text from the upload endpoint.
   - `headers` (optional) will be sent on the upload request.
@@ -65,7 +68,7 @@ end)
 
 File: `superSoaker/server-main.lua`
 
-- __requestPlayerWater(player: number, options: SoakerOptions, cb: fun(err:any|false, data:string, src:number))__
+- **requestPlayerWater(player: number, options: SoakerOptions, cb: fun(err:any|false, data:string, src:number))**
   - Asks `player` to capture a screenshot.
   - Calls back with `err=false` and `data` containing the Data URI returned by the client.
   - If you want the image uploaded, have the client use `shootWater` directly instead.
