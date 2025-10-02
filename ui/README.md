@@ -1,6 +1,6 @@
 # UI
 
-React + Vite frontend for the Medal FiveM resource. 
+React + Vite frontend for the Medal FiveM resource.
 It communicates with the LUA side, via NUI callbacks, and a WebSocket bridge.
 
 ## Scripts
