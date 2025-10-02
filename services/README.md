@@ -28,7 +28,7 @@ Detects which gameplay framework the server is running and exposes small helpers
 
 `FrameworkKey` is defined in `gameVein/__types.lua` and is one of:
 
-```
+```lua
 'esx' | 'qbx' | 'qb' | 'nd' | 'ox' | 'tmc' | 'unknown'
 ```
 
@@ -36,7 +36,7 @@ Detects which gameplay framework the server is running and exposes small helpers
 
 The server checks for known resources in this order (first match wins, QBX first as it provides the same as QB):
 
-```
+```md
 ESX -> QBX -> QB -> ND -> OX -> TMC -> unknown
 ```
 
