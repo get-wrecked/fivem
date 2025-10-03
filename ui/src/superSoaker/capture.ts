@@ -14,7 +14,7 @@ import {
     WebGLRenderer,
     WebGLRenderTarget,
 } from '@citizenfx/three';
-import { hasMedal, screenshot } from '@/lib/medal';
+import { Medal } from '@/lib/medal';
 
 /** Output encoding type for screenshots. */
 type Encoding = 'jpg' | 'png' | 'webp';
@@ -151,7 +151,7 @@ class SoakerUI {
             this.available = false;
         }
 
-        this.hasMedal = await hasMedal();
+        this.hasMedal = await Medal.hasApp();
 
         //=-- Listen for capture requests from Lua
         window.addEventListener('message', (event) => {
@@ -238,7 +238,7 @@ class SoakerUI {
         }
 
         if (this.hasMedal && request.preferMedal) {
-            const medalImage = await screenshot(
+            const medalImage = await Medal.screenshot(
                 request.encoding === 'jpg' ? 'jpeg' : request.encoding,
             );
 
