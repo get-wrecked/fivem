@@ -29,9 +29,9 @@ server_scripts {
   'lib/server-*.lua',
   'services/server-*.lua',
   'gameVein/server-*.lua',
+  'gameVein/assayer/server-*.lua',
   'gameVein/ore/server-*.lua',
   'superSoaker/server-*.lua',
-  'lib/server-*.lua',
 }
 
 files {

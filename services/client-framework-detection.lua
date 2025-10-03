@@ -23,6 +23,10 @@ Medal.Services = Medal.Services or {}
 ---@field getKey fun(timeoutMs?: integer): FrameworkKey
 Medal.Services.Framework = Medal.Services.Framework or {}
 
+--//=-- Wait and Timeout constants
+local FRAMEWORK_REQUEST_TIMEOUT_MS = 5000
+local WAIT_INSTANT = 0
+
 --//=-- In-flight results, keyed by request id
 local pendingResults = {}
 
@@ -57,7 +61,7 @@ RegisterNetEvent('medal:services:framework:resKey', function(reqId, key)
 end)
 
 --- Request the server framework key and wait for a response
---- @param timeoutMs? integer Optional timeout in milliseconds (default 5000)
+--- @param timeoutMs? integer Optional timeout in milliseconds (default FRAMEWORK_REQUEST_TIMEOUT_MS)
 --- @return FrameworkKey key The detected framework key, or 'unknown' on timeout
 function Medal.Services.Framework.getKey(timeoutMs)
   --//=-- Return cached non-unknown immediately
@@ -74,15 +78,15 @@ function Medal.Services.Framework.getKey(timeoutMs)
   --//=-- Await response with timeout, using shared request helper when available
   local key = nil
   if Medal and Medal.GV and Medal.GV.Request and Medal.GV.Request.await then
-    key = Medal.GV.Request.await(pendingResults, reqId, timeoutMs or 5000, 'unknown')
+    key = Medal.GV.Request.await(pendingResults, reqId, timeoutMs or FRAMEWORK_REQUEST_TIMEOUT_MS, 'unknown')
   else
     --//=-- Fallback simple await if shared helper not present
     local started = GetGameTimer()
-    local timeout = (timeoutMs or 5000)
+    local timeout = (timeoutMs or FRAMEWORK_REQUEST_TIMEOUT_MS)
     while (GetGameTimer() - started) < timeout do
       local val = pendingResults[reqId]
       if val ~= nil then key = val; break end
-      Wait(0)
+      Wait(WAIT_INSTANT)
     end
     key = key or 'unknown'
   end

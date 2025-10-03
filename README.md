@@ -20,9 +20,11 @@ A FiveM/GTA V server resource that integrates with the Medal.tv desktop client t
 
 1. Place this resource folder into your server's `resources/` directory.
 2. In your server's `server.cfg` (or whatever config file your server uses to load resources), add the line below (replace with your actual folder name for this resource):
+
     ```cfg
     ensure medal--fivem-resource
     ```
+
 3. Start (or restart) your server.
 
 ## Usage
@@ -132,7 +134,7 @@ The UI has its own Node.js project under `ui`. Use pnpm to install and build the
 
 Event configs define how an auto-clipping event appears and behaves in the UI. See `clipping/__types.lua`.
 
-```
+```lua
 EventConfig = {
   id: string,           -- unique id used internally and for persistence
   title: string,        -- display name in the UI
