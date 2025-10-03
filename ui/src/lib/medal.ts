@@ -7,7 +7,7 @@
     Medal.tv Recorder client API functions for the UI/NUI
   ---
   Exports & Exported Components:
-    - triggerClip : a function to trigger a clip with the Medal.tv Recorder client
+    - Medal: Api wrapper for Medal desktop client local game API
   ---
   Globals:
     None
@@ -43,68 +43,91 @@ export interface ScreenshotResponse {
     mimeType: string;
 }
 
-const MEDAL_KEY = 'pub_82qkpMKV77AkpqLSgWsxLlDyfzpPI7Vw';
+class Medal {
+    private static readonly API_KEY: string = 'pub_82qkpMKV77AkpqLSgWsxLlDyfzpPI7Vw';
+    private static readonly BASE_URL: string = 'http://localhost:12665/api/v1/';
 
-const buildHeaders = (method: string = 'GET', body?: ClipData | ScreenshotData): RequestInit => {
-    return {
-        method,
-        headers: {
-            publicKey: MEDAL_KEY,
-            'Content-Type': 'application/json',
+    private buildHeaders(method: string = 'GET', body?: ClipData | ScreenshotData): RequestInit {
+        return {
+            method,
+            headers: {
+                publicKey: Medal.API_KEY,
+                'Content-Type': 'application/json',
+            },
+            body: body ? JSON.stringify(body) : undefined,
+        };
+    }
+
+    private buildUrl(uri: string, parameters?: Record<string, string>): URL {
+        const params = new URLSearchParams(parameters || {});
+        const url = new URL(uri, Medal.BASE_URL);
+        url.search = params.toString();
+
+        return url;
+    }
+
+    private async request(
+        uri: string,
+        options?: {
+            method?: string;
+            body?: ClipData | ScreenshotData;
+            parameters?: Record<string, string>;
         },
-        body: body ? JSON.stringify(body) : undefined,
-    };
-};
+    ): Promise<Response> {
+        const url = this.buildUrl(uri, options?.parameters);
+        const init = this.buildHeaders(options?.method, options?.body);
 
-export const triggerClip = async (data: ClipData): Promise<void> => {
-    try {
-        const response = await fetch(
-            'http://localhost:12665/api/v1/event/invoke',
-            buildHeaders('POST', data),
-        );
+        return fetch(url, init);
+    }
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(
-                `Failed to trigger clip: ${response.status} ${response.statusText} - ${errorText}`,
-            );
+    public async triggerClip(data: ClipData): Promise<void> {
+        try {
+            const response = await this.request('event/invoke', { method: 'POST', body: data });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(
+                    `Failed to trigger clip: ${response.status} ${response.statusText} - ${errorText}`,
+                );
+            }
+        } catch (error) {
+            console.error('Network error while triggering clip:', error);
         }
-    } catch (error) {
-        console.error('Network error while triggering clip:', error);
     }
-};
 
-export const hasMedal = async (): Promise<boolean> => {
-    try {
-        const response = await fetch('http://localhost:12665/api/v1/user/profile', buildHeaders());
+    public async hasApp(): Promise<boolean> {
+        try {
+            const response = await this.request('user/profile');
 
-        return response.ok;
-    } catch (_err) {
-        return false;
-    }
-};
-
-export const screenshot = async (mimeType: string): Promise<string> => {
-    try {
-        const params = new URLSearchParams({ format: mimeType });
-        const response = await fetch(
-            `http://localhost:12665/api/v1/screenshot/base64?${params}`,
-            buildHeaders(),
-        );
-
-        if (!response.ok) {
-            const errorText = await response.text();
-
-            throw new Error(
-                `Failed to return base64 screenshot: ${response.status} ${response.statusText} - ${errorText}`,
-            );
+            return response.ok;
+        } catch (_err) {
+            return false;
         }
-
-        const result = (await response.json()) as ScreenshotResponse;
-
-        return result.imageBase64;
-    } catch (error) {
-        console.error('Network error while retrieving base64 screenshot:', error);
-        return '';
     }
-};
+
+    public async screenshot(mimeType: string): Promise<string> {
+        try {
+            const response = await this.request('screenshot/base64', {
+                parameters: { format: mimeType },
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+
+                throw new Error(
+                    `Failed to return base64 screenshot: ${response.status} ${response.statusText} - ${errorText}`,
+                );
+            }
+
+            const result = (await response.json()) as ScreenshotResponse;
+
+            return result.imageBase64;
+        } catch (error) {
+            console.error('Network error while retrieving base64 screenshot:', error);
+            return '';
+        }
+    }
+}
+
+const medal = new Medal();
+export { medal as Medal };

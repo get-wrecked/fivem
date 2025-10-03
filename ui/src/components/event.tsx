@@ -18,7 +18,7 @@ import { fetchNui, useNuiEvent } from '@tsfx/hooks';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import { useClipLength } from '@/hooks/use-clip-length';
-import { triggerClip } from '@/lib/medal';
+import { Medal } from '@/lib/medal';
 import { Checkbox } from './ui/checkbox';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
@@ -42,7 +42,7 @@ export const Event: React.FC<{ event: EventData }> = ({ event }) => {
     useNuiEvent<string[]>(`ac:clip:${event.id}`, {
         handler: (_tags) => {
             if (enabled) {
-                triggerClip({
+                Medal.triggerClip({
                     eventId: event.id,
                     eventName: event.title,
                     triggerActions: ['SaveClip'],
