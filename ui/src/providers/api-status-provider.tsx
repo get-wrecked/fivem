@@ -13,7 +13,7 @@ import { useNuiEvent, useNuiVisibility } from '@tsfx/hooks';
 import type { PropsWithChildren } from 'react';
 import { useEffect, useState } from 'react';
 import { ApiStatusContext } from '@/contexts/api-status-context';
-import { hasMedal } from '@/lib/medal';
+import { Medal } from '@/lib/medal';
 
 /**
  * The API status provider for the UI.
@@ -33,7 +33,7 @@ export const ApiStatusProvider: React.FC<PropsWithChildren> = ({ children }) => 
 
         const check = async () => {
             try {
-                const ok = await hasMedal();
+                const ok = await Medal.hasApp();
                 if (!cancelled) setIsAvailable(ok);
             } catch {
                 if (!cancelled) setIsAvailable(false);

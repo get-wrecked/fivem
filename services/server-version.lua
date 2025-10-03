@@ -82,3 +82,7 @@ function Medal.Services.Version.checkForUpdates(cb)
 end
 
 Medal.Services.Version.checkForUpdates()
+
+RegisterNetEvent('medal:services:reqVersion', function ()
+    TriggerClientEvent('medal:services:resVersion', source, Medal.Services.Version.current)
+end)
