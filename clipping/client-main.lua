@@ -22,6 +22,9 @@
 Medal = Medal or {}
 Medal.AC = Medal.AC or {} --//=-- The namespace for the client Auto Clipping functions
 
+--//=-- Wait Constants
+local RESOURCE_START_DELAY_MS = 100
+
 ---Safely reads a specific event config from the shared `Config` table
 ---@param eventId string
 ---@return EventConfig
@@ -98,7 +101,7 @@ AddEventHandler('onClientResourceStart', function (resourceName)
     if resourceName ~= GetCurrentResourceName() then return end
 
     CreateThread(function ()
-        Wait(100)
+        Wait(RESOURCE_START_DELAY_MS)
 
         Medal.AC.registerCommand()
         Medal.AC.buildClippingUi()
