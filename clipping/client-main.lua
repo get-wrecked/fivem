@@ -98,7 +98,20 @@ AddEventHandler('onClientResourceStart', function (resourceName)
     if resourceName ~= GetCurrentResourceName() then return end
 
     CreateThread(function ()
+        local count = 0
+        local timeout = 5000
+
         Wait(100)
+
+        repeat
+            Wait(1)
+
+            count += 1
+
+            if count >= timeout then
+                return Logger.error('Failed to retrieve resource version! Medal will not run!')
+            end
+        until Medal.Services.Version.current ~= nil
 
         Medal.AC.registerCommand()
         Medal.AC.buildClippingUi()
