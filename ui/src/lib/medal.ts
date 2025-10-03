@@ -58,7 +58,7 @@ class Medal {
     private static readonly API_KEY: string = 'pub_82qkpMKV77AkpqLSgWsxLlDyfzpPI7Vw';
     private static readonly BASE_URL: string = 'http://localhost:12665/api/v1/';
 
-    private buildHeaders(method: string = 'GET', body?: MedalApiData): RequestInit {
+    private static buildHeaders(method: string = 'GET', body?: MedalApiData): RequestInit {
         return {
             method,
             headers: {
@@ -69,7 +69,7 @@ class Medal {
         };
     }
 
-    private buildUrl(uri: string, parameters?: Record<string, string>): URL {
+    private static buildUrl(uri: string, parameters?: Record<string, string>): URL {
         const params = new URLSearchParams(parameters || {});
         const url = new URL(uri, Medal.BASE_URL);
         url.search = params.toString();
@@ -77,7 +77,7 @@ class Medal {
         return url;
     }
 
-    private async request(
+    private static async request(
         uri: string,
         options?: {
             method?: string;
@@ -85,15 +85,15 @@ class Medal {
             parameters?: Record<string, string>;
         },
     ): Promise<Response> {
-        const url = this.buildUrl(uri, options?.parameters);
-        const init = this.buildHeaders(options?.method, options?.body);
+        const url = Medal.buildUrl(uri, options?.parameters);
+        const init = Medal.buildHeaders(options?.method, options?.body);
 
         return fetch(url, init);
     }
 
     public async triggerClip(data: ClipData): Promise<void> {
         try {
-            const response = await this.request('event/invoke', { method: 'POST', body: data });
+            const response = await Medal.request('event/invoke', { method: 'POST', body: data });
 
             if (!response.ok) {
                 const errorText = await response.text();
@@ -108,7 +108,7 @@ class Medal {
 
     public async hasApp(): Promise<boolean> {
         try {
-            const response = await this.request('user/profile');
+            const response = await Medal.request('user/profile');
 
             return response.ok;
         } catch (_err) {
@@ -118,7 +118,7 @@ class Medal {
 
     public async screenshot(mimeType: string): Promise<string> {
         try {
-            const response = await this.request('screenshot/base64', {
+            const response = await Medal.request('screenshot/base64', {
                 parameters: { format: mimeType },
             });
 
@@ -141,7 +141,7 @@ class Medal {
 
     public async context(data: ContextData): Promise<void> {
         try {
-            const response = await this.request('context/submit', { method: 'POST', body: data });
+            const response = await Medal.request('context/submit', { method: 'POST', body: data });
 
             if (!response.ok) {
                 const errorText = await response.text();
