@@ -15,6 +15,11 @@
 
 print('Medal [assayer] server loaded')
 
+--//=-- Assayer defaults (override via Config.Assayer if present)
+local ASSAYER_DEFAULT_RADIUS = (Config and Config.Assayer and tonumber(Config.Assayer.ProximityRadius)) or 60.0
+local ASSAYER_DEFAULT_TIMEOUT_MS = (Config and Config.Assayer and tonumber(Config.Assayer.RequestTimeoutMs)) or 1500
+local ASSAYER_BUCKET_MISMATCH_LOG_TOLERANCE = (Config and Config.Assayer and tonumber(Config.Assayer.BucketMismatchLogTolerance)) or 5.0
+
 --//=-- Pending aggregation state keyed by requestId
 local PendingNearby = {}
 
@@ -96,8 +101,8 @@ end)
 --//=-- Entry point: invoker requests ores from nearby players
 RegisterNetEvent('medal:gv:assayer:reqNearby', function(requestId, payload)
   local src = source
-  local radius = tonumber(payload and payload.radius or 60.0) or 60.0
-  local timeoutMs = tonumber(payload and payload.timeoutMs or 1500) or 1500
+  local radius = tonumber(payload and payload.radius or ASSAYER_DEFAULT_RADIUS) or ASSAYER_DEFAULT_RADIUS
+  local timeoutMs = tonumber(payload and payload.timeoutMs or ASSAYER_DEFAULT_TIMEOUT_MS) or ASSAYER_DEFAULT_TIMEOUT_MS
   local maxCount = tonumber(payload and (payload.max or payload.maxPlayers or payload.count) or 0) or 0
   local isBundle = type(payload) == 'table' and type(payload.types) == 'table'
   local ore = (not isBundle) and (payload and payload.ore) or nil
@@ -153,7 +158,7 @@ RegisterNetEvent('medal:gv:assayer:reqNearby', function(requestId, payload)
           if ped and ped > 0 then
             local coords = GetEntityCoords(ped)
             local dist = distance(invokerCoords, coords, false)
-            if dist <= (radius + 5.0) then
+            if dist <= (radius + ASSAYER_BUCKET_MISMATCH_LOG_TOLERANCE) then
               Logger.debug('assayer:server:skipBucketMismatch', { pid = pid, pidBucket = bucket, invokerBucket = invokerBucket, dist = dist })
             end
           end

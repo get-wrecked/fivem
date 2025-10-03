@@ -21,6 +21,10 @@ Medal.GV.Ore = Medal.GV.Ore or {}
 --//=-- Client-side Assayer routes ore requests only (framework detection moved to services)
 Medal.GV.Assayer = Medal.GV.Assayer or {}
 
+--//=-- Assayer defaults (override via Config.Assayer if present)
+local ASSAYER_DEFAULT_RADIUS = (Config and Config.Assayer and tonumber(Config.Assayer.ProximityRadius)) or 60.0
+local ASSAYER_DEFAULT_TIMEOUT_MS = (Config and Config.Assayer and tonumber(Config.Assayer.RequestTimeoutMs)) or 1500
+
 --//=-- Pending table for nearby ore aggregation responses
 local _pendingNearby = {}
 
@@ -86,9 +90,10 @@ function Medal.GV.Ore.assay(req)
   --//=-- Proximity fan-out must run BEFORE direct returns for single ores
   --//=-- If a request includes `radius`, gather from nearby players too (OneSync Infinity)
   if type(req) == 'table' and ((tonumber(req.radius or 0) or 0) > 0) then
-    local radius = tonumber(req.radius or 60) or 60
+    local radius = tonumber(req.radius or ASSAYER_DEFAULT_RADIUS) or ASSAYER_DEFAULT_RADIUS
     local isBundle = (oreType == 'bundle') or (type(req.types) == 'table')
     local maxPlayers = tonumber(req.max or req.maxPlayers or req.count or 0) or 0
+    local timeoutMs = tonumber(req.timeoutMs or ASSAYER_DEFAULT_TIMEOUT_MS) or ASSAYER_DEFAULT_TIMEOUT_MS
 
     --//=-- Build the invoking player's data (first entry of return value)
     local selfData = nil
@@ -110,18 +115,18 @@ function Medal.GV.Ore.assay(req)
     --//=-- Ask server to gather from nearby players
     local requestId = Medal.GV.Request.buildId()
     if Logger and Logger.debug then
-      Logger.debug('assayer:client:reqNearby', { requestId = requestId, oreType = oreType, radius = radius, isBundle = isBundle, max = maxPlayers, types = isBundle and req.types or nil })
+      Logger.debug('assayer:client:reqNearby', { requestId = requestId, oreType = oreType, radius = radius, isBundle = isBundle, max = maxPlayers, timeoutMs = timeoutMs, types = isBundle and req.types or nil })
     end
     TriggerServerEvent('medal:gv:assayer:reqNearby', requestId, {
       radius = radius,
       types = isBundle and req.types or nil,
       ore = (not isBundle) and oreType or nil,
-      timeoutMs = tonumber(req.timeoutMs or 1500) or 1500,
+      timeoutMs = timeoutMs,
       max = maxPlayers,
     })
 
     --//=-- Await aggregated nearby array of { id, source, name, bucket, data, primary=false }
-    local pack = Medal.GV.Request.await(_pendingNearby, requestId, req.timeoutMs, { others = {}, invokerBucket = 0 })
+    local pack = Medal.GV.Request.await(_pendingNearby, requestId, timeoutMs, { others = {}, invokerBucket = 0 })
     local others = (type(pack) == 'table' and type(pack.others) == 'table') and pack.others or {}
     local invBucket = (type(pack) == 'table' and tonumber(pack.invokerBucket or 0)) or 0
     if Logger and Logger.debug then
