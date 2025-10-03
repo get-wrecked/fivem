@@ -20,6 +20,7 @@ import {
     ServerDetailsContext,
     type ServerDetailsContextValue,
 } from '@/contexts/server-details-context';
+import { Medal } from '@/lib/medal';
 
 export interface ServerDetailsProviderProps {
     context?: React.Context<ServerDetailsContextValue>;
@@ -46,8 +47,8 @@ export const ServerDetailsProvider: React.FC<PropsWithChildren<ServerDetailsProv
     const [name, setName] = useState<string>(initialName);
     const [iconUrl, setIconUrl] = useState<string>(initialIconUrl);
 
-    useNuiEvent<string>('ac:details', {
-        handler: async (id) => {
+    useNuiEvent<{ id: string; version: string }>('ac:details', {
+        handler: async ({ id, version }) => {
             try {
                 const response = await fetch(
                     `https://servers-frontend.fivem.net/api/servers/single/${id}`,
@@ -78,6 +79,17 @@ export const ServerDetailsProvider: React.FC<PropsWithChildren<ServerDetailsProv
                     setIconUrl(
                         `https://servers-live.fivem.net/servers/icon/${id}/${iconVersion}.png`,
                     );
+                }
+
+                if (await Medal.hasApp()) {
+                    Medal.context({
+                        serverId: id,
+                        serverName: name,
+                        globalContextData: {
+                            source: 'fivem-plugin',
+                            pluginVersion: version,
+                        },
+                    });
                 }
             } catch (error) {
                 console.error('Error fetching server details:', error);

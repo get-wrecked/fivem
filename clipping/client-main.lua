@@ -70,7 +70,10 @@ end
 function Medal.AC.buildClippingUi()
     SendNUIMessage({
         action = 'ac:details',
-        payload = Medal.GV.Ore.assay('cfxId')
+        payload = {
+            id = Medal.GV.Ore.assay('cfxId'),
+            version = Medal.Services.Version.current
+        }
     })
 
     SendNUIMessage({
