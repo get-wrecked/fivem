@@ -37,6 +37,17 @@ export interface ScreenshotData {
     mimeType: string;
 }
 
+export interface ContextData {
+    serverId?: string;
+    serverName?: string;
+    localPlayer?: Record<string, string>;
+    customStatus?: string;
+    globalContextTags?: Record<string, string>;
+    globalContextData?: Record<string, string>;
+}
+
+export type MedalApiData = ClipData | ScreenshotData | ContextData;
+
 export interface ScreenshotResponse {
     status: string;
     imageBase64: string;
@@ -47,7 +58,7 @@ class Medal {
     private static readonly API_KEY: string = 'pub_82qkpMKV77AkpqLSgWsxLlDyfzpPI7Vw';
     private static readonly BASE_URL: string = 'http://localhost:12665/api/v1/';
 
-    private buildHeaders(method: string = 'GET', body?: ClipData | ScreenshotData): RequestInit {
+    private buildHeaders(method: string = 'GET', body?: MedalApiData): RequestInit {
         return {
             method,
             headers: {
@@ -70,7 +81,7 @@ class Medal {
         uri: string,
         options?: {
             method?: string;
-            body?: ClipData | ScreenshotData;
+            body?: MedalApiData;
             parameters?: Record<string, string>;
         },
     ): Promise<Response> {
@@ -125,6 +136,21 @@ class Medal {
         } catch (error) {
             console.error('Network error while retrieving base64 screenshot:', error);
             return '';
+        }
+    }
+
+    public async context(data: ContextData): Promise<void> {
+        try {
+            const response = await this.request('context/submit', { method: 'POST', body: data });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(
+                    `Failed to set context: ${response.status} ${response.statusText} - ${errorText}`,
+                );
+            }
+        } catch (error) {
+            console.error('Network error while setting game context:', error);
         }
     }
 }
