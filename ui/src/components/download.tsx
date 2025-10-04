@@ -1,10 +1,10 @@
-import { fetchNui } from '@tsfx/hooks';
 import type React from 'react';
 import { Button } from './ui/button';
 
 export const Download: React.FC = () => {
     const openLink = () => {
-        fetchNui('');
+        // biome-ignore lint/suspicious/noExplicitAny: FiveM Natives not in default window types
+        (window as any).invokeNative('openUrl', 'https://medal.tv/download?ref=fivem-plugin');
     };
 
     return (
