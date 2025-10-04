@@ -18,6 +18,9 @@ Medal = Medal or {}
 Medal.GV = Medal.GV or {}
 Medal.GV.Request = Medal.GV.Request or {}
 
+--//=-- Default timeout for request/response operations (ms)
+local REQUEST_DEFAULT_TIMEOUT_MS = 5000
+
 --- Build a unique (enough) request id for the local player
 --- Format: "<playerId>:<gameTimer>"
 --- @return string requestId
@@ -30,11 +33,11 @@ end
 --- Cleans up the pending entry on success or timeout
 --- @param pending table   --//=-- Table of in-flight results, keyed by requestId
 --- @param requestId string
---- @param timeoutMs? integer  --//=-- Defaults to 5000
+--- @param timeoutMs? integer  --//=-- Defaults to REQUEST_DEFAULT_TIMEOUT_MS
 --- @param defaultValue any    --//=-- Value to return on timeout
 --- @return any result
 function Medal.GV.Request.await(pending, requestId, timeoutMs, defaultValue)
-  local deadline = GetGameTimer() + (timeoutMs or 5000)
+  local deadline = GetGameTimer() + (timeoutMs or REQUEST_DEFAULT_TIMEOUT_MS)
   while GetGameTimer() < deadline do
     local v = pending[requestId]
     if v ~= nil then

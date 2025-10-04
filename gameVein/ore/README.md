@@ -15,6 +15,7 @@ to communicate with the server.
 - __vehicle__ — `Medal.GV.Ore.vehicle()` returns `{ inVehicle, vehicleInfo }` where `inVehicle` is a boolean indicating if the player is in a vehicle, and `vehicleInfo` is `{ id, name, hash, class, className }` for the current (or last driven) vehicle (client).
 
 See implementations in this folder for reference:
+
 - `client-name.lua`
 - `server-name.lua`
 - `client-cfx-id.lua`
@@ -28,31 +29,26 @@ See implementations in this folder for reference:
 
 ## How Ore Routing/Assaying Works
 
-The router in `gameVein/assayer/client-assayer.lua` inspects the request and calls the matching producer:
+The router in `gameVein/assayer/client-assayer.lua` now uses a lowercase-keyed dispatch table for case-insensitive routing. Keys are lowercase; each entry preserves the canonical `type` casing and points to the producer function.
 
 ```lua
 --//=-- Inside Medal.GV.Ore.assay(req)
-if oreType == 'name' then
-  return Medal.GV.Ore.name()
-end
-if oreType == 'cfxId' then
-  return Medal.GV.Ore.cfxId()
-end
-if oreType == 'heartbeat' then
-  return Medal.GV.Ore.heartbeat()
-end
-if oreType == 'job' then
-  return Medal.GV.Ore.job()
-end
-if oreType == 'entityMatrix' then
-  return Medal.GV.Ore.entityMatrix()
-end
-if oreType == 'cameraMatrix' then
-  return Medal.GV.Ore.cameraMatrix()
-end
+-- Initialized once, then used for lookups
+_oreDispatch = {
+  name = { type = 'name', fn = Medal.GV.Ore.name },
+  cfxid = { type = 'cfxId', fn = Medal.GV.Ore.cfxId },
+  heartbeat = { type = 'heartbeat', fn = Medal.GV.Ore.heartbeat },
+  job = { type = 'job', fn = Medal.GV.Ore.job },
+  entitymatrix = { type = 'entityMatrix', fn = Medal.GV.Ore.entityMatrix },
+  cameramatrix = { type = 'cameraMatrix', fn = Medal.GV.Ore.cameraMatrix },
+  vehicle = { type = 'vehicle', fn = Medal.GV.Ore.vehicle },
+}
 
-if oreType == 'vehicle' then
-  return Medal.GV.Ore.vehicle()
+-- Case-insensitive lookup
+local key = (type(oreType) == 'string') and string.lower(oreType) or nil
+local entry = key and _oreDispatch[key] or nil
+if entry and type(entry.fn) == 'function' then
+  return entry.fn()
 end
 ```
 
@@ -74,13 +70,11 @@ function Medal.GV.Ore.job()
 end
 ```
 
-2) __Route it__ in `gameVein/assayer/client-assayer.lua`:
+2) __Route it__ in `gameVein/assayer/client-assayer.lua` by adding an entry to the lowercase-keyed dispatch (keys must be lowercase; `type` preserves canonical casing):
 
 ```lua
---//=-- Inside Medal.GV.Ore.assay(req)
-if oreType == 'job' then
-  return Medal.GV.Ore.job()
-end
+--//=-- Inside Medal.GV.Ore.assay(req), after _oreDispatch is initialized
+_oreDispatch.job = { type = 'job', fn = Medal.GV.Ore.job }
 ```
 
 3) __If server data is required__, use the shared Request helpers from `lib/shared-request.lua`.

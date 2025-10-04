@@ -4,15 +4,14 @@ GameVein is the in-resource data pipeline that extracts (mines) small, typed chu
 
 - __ore/__
   - Functions that return specific pieces of data (ex: `name`, `cfxId`, `job`, `vehicle`).
-- __assayer/__
-  - Routing helpers only. 
-    - Maps ore type strings to the correct `Medal.GV.Ore.*()` producer.
+- __assayer__/
+  - Routing helpers only.
+    - Maps ore type strings via a lowercase-keyed dispatch table (case-insensitive) to the correct `Medal.GV.Ore.*()` producer.
     - Framework detection has moved to `services/`.
 - __shaft/__
   - Transport helpers. Opens/closes the UI WebSocket, and sends the resulting envelopes ("minecarts").
 - `client-main.lua`
   - Reads the WebSocket config from `Config.GameVein.*` and asks the UI to connect via NUI `ws:connect`.
-  - Supports optional reconnect intervals (forwarded to the UI):
     - `Config.GameVein.WebSocket.reconnectShortMs` – the first retry delay after disconnect (default 30000ms)
     - `Config.GameVein.WebSocket.reconnectLongMs` – the subsequent silent retry delay (default 120000ms)
     - `Config.GameVein.WebSocket.reconnectShortAttempts` – the number of short retries before switching to long interval (default 5)
@@ -29,7 +28,7 @@ GameVein is the in-resource data pipeline that extracts (mines) small, typed chu
 
 ## Adding a New Ore type (quick start)
 
-1) __Create a new function__ in `gameVein/ore/` that returns the ore payload.
+1) __Create a new function__ in `gameVein/ore/` that returns the ore payload:
 
 ```lua
 --//=-- gameVein/ore/client-job.lua
@@ -45,13 +44,11 @@ function Medal.GV.Ore.job()
 end
 ```
 
-2) __Route the ore type__ in `gameVein/assayer/client-assayer.lua` by extending `Medal.GV.Ore.assay()`.
+2) __Route the ore type__ in `gameVein/assayer/client-assayer.lua` by adding an entry to the lowercase-keyed dispatch (keys must be lowercase; `type` preserves canonical casing):
 
 ```lua
---//=-- Inside Medal.GV.Ore.assay(req)
-if oreType == 'job' then
-  return Medal.GV.Ore.job()
-end
+--//=-- Inside Medal.GV.Ore.assay(req), after _oreDispatch is initialized
+_oreDispatch.job = { type = 'job', fn = Medal.GV.Ore.job }
 ```
 
 3) __If server data is required__, use the shared Request helpers.

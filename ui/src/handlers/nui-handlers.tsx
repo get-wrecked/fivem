@@ -117,6 +117,22 @@ export const NuiHandlers: React.FC = () => {
                         } else {
                             req = { type: env.type } as Record<string, unknown>;
                         }
+
+                        //=-- Merge ALL fields from the envelope into the top-level request (flatten env.data)
+                        //=-- Reserve 'type' and 'data' keys to avoid clobbering request shape
+                        const mergeAll = (src: unknown) => {
+                            if (!src || typeof src !== 'object') return;
+                            for (const [k, v] of Object.entries(src as Record<string, unknown>)) {
+                                if (k === 'type' || k === 'data') continue;
+                                // biome-ignore lint/suspicious/noExplicitAny: dynamic merge
+                                (req as any)[k] = v;
+                            }
+                        };
+                        mergeAll(env as unknown);
+                        const d: unknown = (env as unknown as { data?: unknown }).data;
+                        if (d && typeof d === 'object') {
+                            mergeAll(d);
+                        }
                         //=-- Debug: show exact request to Lua
                         try {
                             void nuiLog({ event: 'ws:minecart:req', req }, 'debug');
@@ -132,8 +148,8 @@ export const NuiHandlers: React.FC = () => {
                     }
                 })();
             } else {
-                //=-- No type property: log the exact payload to console
-                console.log('[ws] Message received with no type:', env);
+                //=-- No type property: log via shared logger bridge
+                void nuiLog({ event: 'ws:no-type', payload: env }, 'debug');
             }
         });
         return () => {

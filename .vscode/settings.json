@@ -4,11 +4,14 @@
     "autoprefixer",
     "biomejs",
     "browserslist",
+    "cameramatrix",
+    "cfxid",
     "charinfo",
     "chownr",
     "citizenfx",
     "clsx",
     "colorizr",
+    "communityname",
     "Convar",
     "cssdb",
     "cssesc",
@@ -17,6 +20,7 @@
     "dismissable",
     "eabi",
     "emnapi",
+    "entitymatrix",
     "esbuild",
     "estree",
     "fdir",
@@ -34,6 +38,7 @@
     "headshots",
     "imthatguyhere",
     "ingame",
+    "ipairs",
     "isaacs",
     "jiti",
     "jridgewell",
@@ -84,7 +89,11 @@
     "vite",
     "vitejs",
     "wasi",
-    "yallist"
+    "yallist",
+    "yourtype"
   ],
-  "stylua.targetReleaseVersion": "latest"
+  "stylua.targetReleaseVersion": "latest",
+  "conventionalCommits.scopes": [
+    "ore"
+  ]
 }
