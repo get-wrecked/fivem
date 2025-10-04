@@ -38,6 +38,7 @@
   --color-foreground-300: oklch(0.7635 0.0074 304.21);
   --color-foreground-500: oklch(0.6467 0 0);
   --color-foreground-700: oklch(0.4783 0.0083 304.1);
+  --color-foreground-950: oklch(0.2006 0.002 286.22);
 
   /* Accent colors */
   --color-accent-secondary: var(--color-brand-secondary-400);
