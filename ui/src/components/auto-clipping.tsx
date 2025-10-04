@@ -17,6 +17,8 @@ import { fetchNui, useNuiEvent } from '@tsfx/hooks';
 import clsx from 'clsx';
 import type React from 'react';
 import { useState } from 'react';
+import { useApiStatus } from '@/hooks/use-api-status';
+import { Download } from './download';
 import { Event, type EventData } from './event';
 import { ScrollArea } from './ui/scroll-area';
 import { Switch } from './ui/switch';
@@ -24,6 +26,7 @@ import { Switch } from './ui/switch';
 export const AutoClipping: React.FC = () => {
     const [events, setEvents] = useState<EventData[]>([]);
     const [enabled, setEnabled] = useState<boolean>(false);
+    const { isAvailable } = useApiStatus();
 
     const updateEnabled = (toggle: boolean): void => {
         setEnabled(toggle);
@@ -44,7 +47,16 @@ export const AutoClipping: React.FC = () => {
 
     return (
         <div className='w-full grow flex flex-col gap-2 font-medium'>
-            <div className='w-full h-6 flex items-center justify-between'>
+            {!isAvailable && <Download />}
+
+            <div className='w-full h-6 flex items-center justify-between relative'>
+                {!isAvailable && (
+                    <div
+                        className='size-full absolute inset-0 z-50'
+                        style={{ backdropFilter: 'blur(1.25px)' }}
+                    />
+                )}
+
                 <h4 className='font-medium'>Auto Clipping</h4>
 
                 <div className='flex items-center gap-1.5'>
@@ -57,9 +69,19 @@ export const AutoClipping: React.FC = () => {
             </div>
 
             <div
-                className={clsx('w-full grow', !enabled && 'opacity-40 pointer-events-none')}
+                className={clsx(
+                    'w-full grow relative',
+                    !enabled && 'opacity-40 pointer-events-none',
+                )}
                 style={{ containerType: 'size' }}
             >
+                {!isAvailable && (
+                    <div
+                        className='size-full absolute inset-0 z-50'
+                        style={{ backdropFilter: 'blur(1.25px)' }}
+                    />
+                )}
+
                 <ScrollArea style={{ height: '100cqh' }}>
                     <div className='size-full flex flex-col gap-2'>
                         {events.map((event) => (
