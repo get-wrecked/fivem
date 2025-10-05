@@ -19,5 +19,5 @@ export function cn(...inputs: ClassValue[]) {
  * @returns The string with color codes removed
  */
 export const pruneAscii = (input: string): string => {
-    return input.replace(/\^[0-9]/g, '');
+    return (input ?? '').replace(/\^[0-9]/g, '');
 };
