@@ -21,6 +21,7 @@ import {
     type ServerDetailsContextValue,
 } from '@/contexts/server-details-context';
 import { Medal } from '@/lib/medal';
+import { pruneAscii } from '@/lib/utils';
 
 export interface ServerDetailsProviderProps {
     context?: React.Context<ServerDetailsContextValue>;
@@ -72,8 +73,9 @@ export const ServerDetailsProvider: React.FC<PropsWithChildren<ServerDetailsProv
                 const iconVersion = serverData.Data.iconVersion;
                 const hostName = serverData.Data.hostname;
                 const projectName = serverData.Data.vars.sv_projectName;
+                const prunedName = pruneAscii(projectName ?? hostName);
 
-                setName(projectName ?? hostName);
+                setName(prunedName);
 
                 if (iconVersion) {
                     setIconUrl(
