@@ -3,7 +3,7 @@ game 'gta5'
 use_experimental_fxv2_oal 'yes'
 lua54 'yes'
 
-version '1.10.2'
+version '1.11.2'
 
 shared_scripts {
   'config.lua',
