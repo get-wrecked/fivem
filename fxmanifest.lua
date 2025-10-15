@@ -5,6 +5,8 @@ lua54 'yes'
 
 version '1.11.2'
 
+description 'Medal for FiveM'
+
 shared_scripts {
   'config.lua',
   'lib/shared-*.lua',
