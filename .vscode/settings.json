@@ -94,6 +94,7 @@
   ],
   "stylua.targetReleaseVersion": "latest",
   "conventionalCommits.scopes": [
-    "ore"
+    "ore",
+    "SuperSoaker"
   ]
 }

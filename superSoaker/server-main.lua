@@ -1,12 +1,37 @@
---- SuperSoaker Server
---- Handles requesting water (screenshots) from clients and returning the data
---- to supplied callbacks using simple correlation ids.
+--[[
+  Medal.tv - FiveM Resource
+  =========================
+  File: superSoaker/server-main.lua
+  =====================
+  Description:
+    Handles requesting water (screenshots) from clients and returning the data
+    to supplied callbacks using simple correlation ids.
+  ---
+  Exports:
+    - requestPlayerWater: Request water from a given player
+  ---
+  Globals:
+    None
+]]
+
 
 ---Callback invoked when a player's water is ready
 ---@alias SoakerServerCb fun(err:any, data:string, src:number)
 
 local pending = {}
 local corr = 0
+
+--//=-- Check if value is a valid callback (function or CFX function reference)
+local function isValidCallback(cb)
+    local cbType = type(cb)
+    if cbType == 'function' then
+        return true
+    end
+    if cbType == 'table' and cb.__cfx_functionReference then
+        return true
+    end
+    return false
+end
 
 --//=-- Generate a simple correlation id
 local function nextCorrelation()
@@ -35,8 +60,10 @@ end)
 ---@param options SoakerOptions
 ---@param cb SoakerServerCb
 local function requestPlayerWater(playerSrc, options, cb)
-    if type(cb) ~= 'function' then
-        error('SuperSoaker: requestPlayerWater requires a callback')
+    print('SuperSoaker Callback Type: ' .. json.encode(cb))
+    
+    if not isValidCallback(cb) then
+        error('SuperSoaker: requestPlayerWater requires a callback (function or CFX function reference)')
     end
 
     local id = nextCorrelation()
