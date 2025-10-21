@@ -13,7 +13,7 @@
     None
 */
 
-import { useNuiEvent } from '@tsfx/hooks';
+import { fetchNui, useNuiEvent } from '@tsfx/hooks';
 import type React from 'react';
 import { type PropsWithChildren, useState } from 'react';
 import {
@@ -83,7 +83,9 @@ export const ServerDetailsProvider: React.FC<PropsWithChildren<ServerDetailsProv
                     );
                 }
 
-                if (await Medal.hasApp()) {
+                const hasApp = await Medal.hasApp();
+
+                if (hasApp) {
                     Medal.context({
                         serverId: id,
                         serverName: name,
@@ -93,6 +95,8 @@ export const ServerDetailsProvider: React.FC<PropsWithChildren<ServerDetailsProv
                         },
                     });
                 }
+
+                fetchNui('services:medal-status', { payload: hasApp })
             } catch (error) {
                 console.error('Error fetching server details:', error);
             }
