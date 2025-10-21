@@ -45,3 +45,11 @@ function Medal.Services.HoneyComb.playerJoin(fivemId, hasMedal)
         ['Content-Type'] = 'application/json'
     })
 end
+
+Citizen.CreateThread(function ()
+    repeat
+        Citizen.Wait(100)
+    until Medal.GV.Ore.cfxIdServer() ~= nil and Medal.Services.Version.current ~= nil
+
+    Medal.Services.HoneyComb.startup()
+end)
