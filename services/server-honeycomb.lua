@@ -58,5 +58,5 @@ RegisterNetEvent('medal:services:medalState', function (hasMedal)
     local fivemId = GetPlayerIdentifierByType(source, 'fivem')
     local _, id = string.strsplit(':', fivemId, 2)
 
-    Medal.Services.HoneyComb.playerJoin(tonumber(id), hasMedal)
+    Medal.Services.HoneyComb.playerJoin(tonumber(id) --[[@as number]], hasMedal)
 end)
