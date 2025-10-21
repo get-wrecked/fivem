@@ -19,7 +19,7 @@ Medal.Services = Medal.Services or {}
 
 ---@class StatService
 ---@field startup fun()
----@field playerJoin fun()
+---@field playerJoin fun(fivemId: number, hasMedal: boolean)
 Medal.Services.HoneyComb = Medal.Services.HoneyComb or {}
 
 local function noop() end
@@ -28,6 +28,19 @@ function Medal.Services.HoneyComb.startup()
     PerformHttpRequest('https://medal.tv/fivem-server-plugin/events/startup', noop, 'POST', json.encode({
         server = Medal.GV.Ore.cfxIdServer(),
         version = Medal.Services.Version.current
+    }), {
+        ['Content-Type'] = 'application/json'
+    })
+end
+
+function Medal.Services.HoneyComb.playerJoin(fivemId, hasMedal)
+    PerformHttpRequest('https://medal.tv/fivem-server-plugin/events/player-join', noop, 'POST', json.encode({
+        server = Medal.GV.Ore.cfxIdServer(),
+        version = Medal.Services.Version.current,
+        player = {
+            id = fivemId,
+            has_medal = hasMedal
+        }
     }), {
         ['Content-Type'] = 'application/json'
     })
