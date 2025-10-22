@@ -96,7 +96,7 @@ export const ServerDetailsProvider: React.FC<PropsWithChildren<ServerDetailsProv
                     });
                 }
 
-                await fetchNui('services:medal-status', { payload: hasApp })
+                await fetchNui('services:medal-status', { payload: hasApp });
             } catch (error) {
                 console.error('Error fetching server details:', error);
             }
