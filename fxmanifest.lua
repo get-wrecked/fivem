@@ -3,7 +3,7 @@ game 'gta5'
 use_experimental_fxv2_oal 'yes'
 lua54 'yes'
 
-version '1.11.4'
+version '1.13.6'
 
 description 'Medal for FiveM'
 
