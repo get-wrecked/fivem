@@ -11,8 +11,12 @@
     None
   ---
   Globals:
-    None
+    Medal.GV.Ore.cfxIdServer: Get the server's Cfx Id
 ]]
+
+Medal = Medal or {}
+Medal.GV = Medal.GV or {}
+Medal.GV.Ore = Medal.GV.Ore or {}
 
 local serverId = nil
 
@@ -31,6 +35,10 @@ end)
 local function handleReqServerId(requestId)
     local playerSrc = source
     TriggerClientEvent('medal:gv:ore:resCfxId', playerSrc, requestId, serverId)
+end
+
+function Medal.GV.Ore.cfxIdServer()
+    return serverId
 end
 
 RegisterNetEvent('medal:gv:ore:reqCfxId', handleReqServerId)
