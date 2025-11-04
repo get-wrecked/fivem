@@ -21,18 +21,6 @@
 local pending = {}
 local corr = 0
 
---//=-- Check if value is a valid callback (function or CFX function reference)
-local function isValidCallback(cb)
-    local cbType = type(cb)
-    if cbType == 'function' then
-        return true
-    end
-    if cbType == 'table' and cb.__cfx_functionReference then
-        return true
-    end
-    return false
-end
-
 --//=-- Generate a simple correlation id
 local function nextCorrelation()
     corr = corr + 1
@@ -62,7 +50,7 @@ end)
 local function requestPlayerWater(playerSrc, options, cb)
     print('SuperSoaker Callback Type: ' .. json.encode(cb))
     
-    if not isValidCallback(cb) then
+    if not Common.isValidCallback(cb) then
         error('SuperSoaker: requestPlayerWater requires a callback (function or CFX function reference)')
     end
 

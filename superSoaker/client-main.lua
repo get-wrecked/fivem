@@ -71,7 +71,7 @@ end
 local function fillSoaker(options, cb)
     local realCb ---@type fun(data:string)
     local opts    ---@type SoakerOptions
-    if type(cb) == 'function' or (type(cb) == 'table' and cb?.__cfx_functionReference) then
+    if Common.isValidCallback(cb) then
         realCb = cb --[[@as fun(result:string)]]
         ---@cast options SoakerOptions
         opts = options
@@ -111,7 +111,7 @@ local function fillSoaker(options, cb)
 local function shootWater(url, field, options, cb)
     local realCb ---@type fun(result:string)
     local opts    ---@type SoakerOptions
-    if type(cb) == 'function' or (type(cb) == 'table' and cb?.__cfx_functionReference) then
+    if Common.isValidCallback(cb) then
         realCb = cb --[[@as fun(result:string)]]
         ---@cast options SoakerOptions
         opts = options
