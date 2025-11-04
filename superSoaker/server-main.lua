@@ -18,6 +18,10 @@
 ---Callback invoked when a player's water is ready
 ---@alias SoakerServerCb fun(err:any, data:string, src:number)
 
+Medal = Medal or {}
+Medal.Shared = Medal.Shared or {}
+Medal.Shared.Utils = Medal.Shared.Utils or {}
+
 local pending = {}
 local corr = 0
 
@@ -50,7 +54,7 @@ end)
 local function requestPlayerWater(playerSrc, options, cb)
     print('SuperSoaker Callback Type: ' .. json.encode(cb))
     
-    if not Common.isValidCallback(cb) then
+    if not Medal.Shared.Utils.isValidCallback(cb) then
         error('SuperSoaker: requestPlayerWater requires a callback (function or CFX function reference)')
     end
 
