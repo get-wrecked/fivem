@@ -39,6 +39,10 @@
     return id
 end
 
+Medal = Medal or {}
+Medal.Shared = Medal.Shared or {}
+Medal.Shared.Utils = Medal.Shared.Utils or {}
+
  ---NUI callback: water created (screenshot ready)
  ---@param body { id: string, data: string }
  ---@param cb fun(ok:boolean)
@@ -71,8 +75,8 @@ end
 local function fillSoaker(options, cb)
     local realCb ---@type fun(data:string)
     local opts    ---@type SoakerOptions
-    if type(cb) == 'function' then
-        realCb = cb
+    if Medal.Shared.Utils.isValidCallback(cb) then
+        realCb = cb --[[@as fun(result:string)]]
         ---@cast options SoakerOptions
         opts = options
     else
@@ -111,8 +115,8 @@ local function fillSoaker(options, cb)
 local function shootWater(url, field, options, cb)
     local realCb ---@type fun(result:string)
     local opts    ---@type SoakerOptions
-    if type(cb) == 'function' then
-        realCb = cb
+    if Medal.Shared.Utils.isValidCallback(cb) then
+        realCb = cb --[[@as fun(result:string)]]
         ---@cast options SoakerOptions
         opts = options
     else
