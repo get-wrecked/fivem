@@ -1,0 +1,25 @@
+{
+  "name": "@medal/super-soaker",
+  "private": true,
+  "version": "1.0.0",
+  "description": "SuperSoaker screenshot upload handler",
+  "type": "commonjs",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@citizenfx/http-wrapper": "^0.2.2",
+    "@citizenfx/server": "^1.0.651",
+    "koa": "^2.16.3",
+    "koa-body": "^4.2.0",
+    "koa-router": "^7.4.0",
+    "uuid": "13.0.0"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.15.0",
+    "@types/koa-router": "^7.4.9",
+    "@types/uuid": "^10.0.0",
+    "typescript": "^5.9.3"
+  }
+}
