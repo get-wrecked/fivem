@@ -49,34 +49,47 @@ You can configure automatic capture triggers through the ingame menu. Common exa
 
 Your server can enable/disable specific events to fit its gameplay style.
 
-## UI Building (/ui)
+## Building
 
-The UI has its own Node.js project under `ui`. Use pnpm to install and build the UI.
+This resource uses a pnpm workspace to manage builds for both the UI and the SuperSoaker HTTP server.
 
 ### Prerequisites
 
-- Node.js LTS
+- Node.js LTS (v18+)
 - pnpm installed globally:
 
   ```bash
   npm i -g pnpm
   ```
 
-### Build steps
+### Build Steps
 
-1. From the `ui` directory, install dependencies:
+From the **root** of the resource:
+
+1. Install dependencies:
 
    ```bash
    pnpm install
    ```
 
-2. Build the UI assets:
+2. Build everything:
 
    ```bash
    pnpm build
    ```
 
-3. This builds `ui/src` into `ui/dist`, which is the NUI loaded by the resource/FXServer.
+This builds:
+
+- **UI**: `ui/src` → `ui/dist` (Vite build for the NUI)
+- **SuperSoaker Server**: `superSoaker/src/server/server.ts` → `superSoaker/dist/server.js` (TypeScript → CommonJS)
+
+### Individual Builds
+
+- `pnpm build:server` - Build only the SuperSoaker HTTP server
+- `pnpm build:ui` - Build only the React UI
+- `pnpm dev:ui` - Start Vite dev server for UI development
+
+**Note**: The compiled `superSoaker/dist/server.js` must exist before starting the resource.
 
 ## Configuration Highlights
 
@@ -187,7 +200,7 @@ EventConfig = {
   - [lib/](lib/README.md)
   - [services/](services/README.md)
 
-## Contributors
+## Primary Contributors
 
 - [![lynexer's Avatar](https://avatars.githubusercontent.com/u/5565402?s=18&v=4)  lynexer](https://github.com/lynexer)
 - [![Imthatguyhere's Avatar](https://avatars.githubusercontent.com/u/5384585?s=18&v=4)  Imthatguyhere](https://github.com/imthatguyhere)
