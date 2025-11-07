@@ -1,0 +1,7 @@
+packages:
+  - ui
+  - superSoaker
+
+onlyBuiltDependencies:
+  - esbuild
+  - rollup
