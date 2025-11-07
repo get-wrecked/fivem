@@ -22,45 +22,35 @@ Medal = Medal or {}
 Medal.Shared = Medal.Shared or {}
 Medal.Shared.Utils = Medal.Shared.Utils or {}
 
-local pending = {}
-local corr = 0
-
---//=-- Generate a simple correlation id
-local function nextCorrelation()
-    corr = corr + 1
-    return tostring(corr)
-end
-
- ---Event from client when water (image) is ready
- ---@param id string
- ---@param data string
- RegisterNetEvent('superSoaker:waterReady', function(id, data)
-    local src = source
-    local entry = pending[id]
-    if entry ~= nil then
-        pending[id] = nil
-        --//=-- Return to the original callback
-        Medal.Shared.Utils.logBase64Payload('[SuperSoaker.Server]', 'Client -> server waterReady', data)
-        local ok, err = pcall(entry.cb, false, data, src)
-        if not ok then
-            print(('SuperSoaker callback error: %s'):format(err))
-        end
-    end
-end)
+--//=-- Pending callbacks are now handled by the HTTP server with tokens
 
 --//=-- Export: request water from a given player; options mirrors screenshot-basic (encoding, quality, headers, etc.)
 ---@param playerSrc number
 ---@param options SoakerOptions
 ---@param cb SoakerServerCb
 local function requestPlayerWater(playerSrc, options, cb)
-    print('SuperSoaker Callback Type: ' .. json.encode(cb))
+    if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+        local serialized
+        if type(json) == 'table' and type(json.encode) == 'function' then
+            local ok, encoded = pcall(json.encode, cb)
+            serialized = ok and encoded or '<json encode failed>'
+        else
+            serialized = '<json module unavailable>'
+        end
+        Logger.debug('[SuperSoaker.Server]', 'Callback Type', serialized)
+    else
+        print('SuperSoaker Callback Type: ' .. json.encode(cb))
+    end
     
     if not Medal.Shared.Utils.isValidCallback(cb) then
         error('SuperSoaker: requestPlayerWater requires a callback (function or CFX function reference)')
     end
 
-    local id = nextCorrelation()
-    pending[id] = { cb = cb }
+    --//=-- Generate unique token for this upload
+    local token = exports['medal-fivem']:generateToken()
+    
+    --//=-- Register the token and callback with the HTTP server
+    exports['medal-fivem']:registerUpload(token, playerSrc, cb)
 
     local optionsLog
     if type(options) == 'table' then
@@ -88,8 +78,9 @@ local function requestPlayerWater(playerSrc, options, cb)
         Logger.debug('[SuperSoaker.Server]', 'requestPlayerWater options', serialized)
     end
 
-    --//=-- Ask the client to fill the soaker. Client will NUI-capture and reply via superSoaker:waterReady
-    TriggerClientEvent('superSoaker:askFill', playerSrc, options or {}, id)
+    --//=-- Build upload URL and send to client. Client will NUI-capture and upload via HTTP
+    local uploadURL = ('http://%s/superSoaker/upload/%s'):format(GetCurrentResourceName(), token)
+    TriggerClientEvent('superSoaker:askFillHTTP', playerSrc, options or {}, uploadURL)
 end
 
 exports('requestPlayerWater', requestPlayerWater)
