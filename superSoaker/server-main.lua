@@ -40,6 +40,7 @@ end
     if entry ~= nil then
         pending[id] = nil
         --//=-- Return to the original callback
+        Medal.Shared.Utils.logBase64Payload('[SuperSoaker.Server]', 'Client -> server waterReady', data)
         local ok, err = pcall(entry.cb, false, data, src)
         if not ok then
             print(('SuperSoaker callback error: %s'):format(err))
@@ -60,6 +61,32 @@ local function requestPlayerWater(playerSrc, options, cb)
 
     local id = nextCorrelation()
     pending[id] = { cb = cb }
+
+    local optionsLog
+    if type(options) == 'table' then
+        optionsLog = {}
+        for key, value in pairs(options) do
+            if type(value) ~= 'function' then
+                optionsLog[key] = value
+            end
+        end
+    else
+        optionsLog = options
+    end
+    if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+        local serialized
+        if type(optionsLog) == 'table' then
+            if type(json) == 'table' and type(json.encode) == 'function' then
+                local ok, encoded = pcall(json.encode, optionsLog)
+                serialized = ok and encoded or '<json encode failed>'
+            else
+                serialized = '<options table>'
+            end
+        else
+            serialized = tostring(optionsLog)
+        end
+        Logger.debug('[SuperSoaker.Server]', 'requestPlayerWater options', serialized)
+    end
 
     --//=-- Ask the client to fill the soaker. Client will NUI-capture and reply via superSoaker:waterReady
     TriggerClientEvent('superSoaker:askFill', playerSrc, options or {}, id)
