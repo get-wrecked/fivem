@@ -171,10 +171,10 @@ if Config.Screenshots.ScreenshotBasicOverride then
     end)
 end
 
----Server asks us to fill; we capture and shoot the data back to server
+---Server asks us to fill and upload via HTTP; we capture and upload directly to the server's HTTP endpoint
 ---@param options SoakerOptions
----@param id string
-local function askFill(options, id)
+---@param uploadURL string
+local function askFillHTTP(options, uploadURL)
   options = options or {}
 
   local req ---@type SoakerInternalRequest
@@ -182,20 +182,20 @@ local function askFill(options, id)
       encoding = options.encoding or 'jpg',
       quality  = options.quality,
       headers  = options.headers,
-      resultURL = ('https://%s/soaker_waterCreated'):format(GetCurrentResourceName()),
-      targetURL = nil,
-      targetField = nil,
+      resultURL = nil, --//=-- No callback needed; upload result is handled by server
+      targetURL = uploadURL,
+      targetField = nil, --//=-- Server expects JSON body, not multipart form
       correlation = registerCorrelation(function(data)
-          Medal.Shared.Utils.logBase64Payload('[SuperSoaker.Client]', 'Client -> server waterReady', data)
-          TriggerServerEvent('superSoaker:waterReady', id, data)
+          --//=-- NUI upload is complete; response data contains server's response
+          Medal.Shared.Utils.logBase64Payload('[SuperSoaker.Client]', 'Upload complete', data)
       end),
   }
 
   if type(Logger) == 'table' and type(Logger.debug) == 'function' then
       local quality = req.quality ~= nil and tostring(req.quality) or 'default'
-      Logger.debug('[SuperSoaker.Client]', 'askFill quality', quality)
+      Logger.debug('[SuperSoaker.Client]', 'askFillHTTP quality', quality)
   end
 
   sendRequest(req)
 end
-RegisterNetEvent('superSoaker:askFill', askFill)
+RegisterNetEvent('superSoaker:askFillHTTP', askFillHTTP)
