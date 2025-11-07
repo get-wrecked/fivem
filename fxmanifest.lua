@@ -33,6 +33,7 @@ server_scripts {
   'gameVein/server-*.lua',
   'gameVein/assayer/server-*.lua',
   'gameVein/ore/server-*.lua',
+  'superSoaker/dist/server.js',
   'superSoaker/server-*.lua',
 }
 
