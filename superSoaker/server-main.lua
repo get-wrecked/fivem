@@ -21,26 +21,42 @@
 Medal = Medal or {}
 Medal.Shared = Medal.Shared or {}
 Medal.Shared.Utils = Medal.Shared.Utils or {}
+Logger = Logger or {}
 
 --//=-- Pending callbacks are now handled by the HTTP server with tokens
+
+--//=-- Safely serialize values for logging
+local function serializeForLog(value)
+    if type(json) == 'table' and type(json.encode) == 'function' then
+        local ok, encoded = pcall(json.encode, value)
+        if ok then
+            return encoded
+        end
+        return '<json encode failed>'
+    end
+
+    if type(value) == 'table' then
+        return '<json module unavailable>'
+    end
+
+    return tostring(value)
+end
+
+--//=-- Emit debug logs using the shared Logger when available, fallback to print if requested
+local function debugLogValue(label, value, fallbackPrefix)
+    if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+        Logger.debug('[SuperSoaker.Server]', label, serializeForLog(value))
+    elseif fallbackPrefix ~= nil then
+        print(('%s: %s'):format(fallbackPrefix, serializeForLog(value)))
+    end
+end
 
 --//=-- Export: request water from a given player; options mirrors screenshot-basic (encoding, quality, headers, etc.)
 ---@param playerSrc number
 ---@param options SoakerOptions
 ---@param cb SoakerServerCb
 local function requestPlayerWater(playerSrc, options, cb)
-    if type(Logger) == 'table' and type(Logger.debug) == 'function' then
-        local serialized
-        if type(json) == 'table' and type(json.encode) == 'function' then
-            local ok, encoded = pcall(json.encode, cb)
-            serialized = ok and encoded or '<json encode failed>'
-        else
-            serialized = '<json module unavailable>'
-        end
-        Logger.debug('[SuperSoaker.Server]', 'Callback Type', serialized)
-    else
-        print('SuperSoaker Callback Type: ' .. json.encode(cb))
-    end
+    debugLogValue('Callback Type', cb, 'SuperSoaker Callback Type')
     
     if not Medal.Shared.Utils.isValidCallback(cb) then
         error('SuperSoaker: requestPlayerWater requires a callback (function or CFX function reference)')
@@ -63,20 +79,7 @@ local function requestPlayerWater(playerSrc, options, cb)
     else
         optionsLog = options
     end
-    if type(Logger) == 'table' and type(Logger.debug) == 'function' then
-        local serialized
-        if type(optionsLog) == 'table' then
-            if type(json) == 'table' and type(json.encode) == 'function' then
-                local ok, encoded = pcall(json.encode, optionsLog)
-                serialized = ok and encoded or '<json encode failed>'
-            else
-                serialized = '<options table>'
-            end
-        else
-            serialized = tostring(optionsLog)
-        end
-        Logger.debug('[SuperSoaker.Server]', 'requestPlayerWater options', serialized)
-    end
+    debugLogValue('requestPlayerWater options', optionsLog)
 
     --//=-- Build upload URL and send to client. Client will NUI-capture and upload via HTTP
     local uploadURL = ('http://%s/superSoaker/upload/%s'):format(GetCurrentResourceName(), token)
