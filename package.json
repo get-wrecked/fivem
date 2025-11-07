@@ -1,0 +1,17 @@
+{
+  "name": "medal-fivem-resource",
+  "private": true,
+  "version": "1.13.6",
+  "type": "module",
+  "scripts": {
+    "build": "pnpm run build:server && pnpm run build:ui",
+    "build:server": "pnpm --filter @medal/super-soaker run build",
+    "build:ui": "pnpm --filter medal_fivem_resource run build",
+    "dev:ui": "pnpm --filter medal_fivem_resource run dev"
+  },
+  "devDependencies": {
+    "patch-package": "^8.0.0",
+    "typescript": "~5.9.3"
+  },
+  "packageManager": "pnpm@10.20.0"
+}
