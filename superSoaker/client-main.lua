@@ -54,6 +54,93 @@ end
 Medal = Medal or {}
 Medal.Shared = Medal.Shared or {}
 Medal.Shared.Utils = Medal.Shared.Utils or {}
+Logger = Logger or {}
+
+--//=-- Internal logging helpers with fallback to print
+local function clientDebug(label, detail)
+    if type(Logger) == 'table' and type(Logger.debug) == 'function' then
+        if detail ~= nil then
+            Logger.debug('[SuperSoaker.Client]', label, detail)
+        else
+            Logger.debug('[SuperSoaker.Client]', label)
+        end
+    end
+end
+
+local function clientError(label, detail)
+    if type(Logger) == 'table' and type(Logger.error) == 'function' then
+        if detail ~= nil then
+            Logger.error('[SuperSoaker.Client]', label, detail)
+        else
+            Logger.error('[SuperSoaker.Client]', label)
+        end
+    else
+        local suffix = detail ~= nil and (' - ' .. tostring(detail)) or ''
+        print(('SuperSoaker Client Error: %s%s'):format(label, suffix))
+    end
+end
+
+--//=-- Known encodings supported by the NUI capture
+local validEncodings = {
+    jpg = true,
+    png = true,
+    webp = true,
+}
+
+--//=-- Sanitize and validate headers object
+local function sanitizeHeaders(headers)
+    if headers == nil then
+        return nil
+    end
+
+    if type(headers) ~= 'table' then
+        clientError('askFillHTTP invalid headers type', type(headers))
+        return nil
+    end
+
+    local sanitized = {}
+    for key, value in pairs(headers) do
+        if type(key) == 'string' and type(value) == 'string' then
+            sanitized[key] = value
+        else
+            clientError('askFillHTTP header entry ignored', ('%s=%s'):format(tostring(key), tostring(value)))
+        end
+    end
+
+    if next(sanitized) == nil then
+        return nil
+    end
+
+    return sanitized
+end
+
+--//=-- Parse upload response payload and emit logging
+local function handleUploadResponse(data, uploadURL)
+    if type(data) ~= 'string' or data == '' then
+        clientError('askFillHTTP upload response invalid', type(data))
+        return
+    end
+
+    local decoded ---@type table|nil
+    if type(json) == 'table' and type(json.decode) == 'function' then
+        local ok, parsed = pcall(json.decode, data)
+        if ok and type(parsed) == 'table' then
+            decoded = parsed
+        end
+    end
+
+    if decoded ~= nil and decoded.success ~= nil then
+        if decoded.success == true then
+            clientDebug('askFillHTTP upload success', uploadURL)
+        else
+            clientError('askFillHTTP upload failed', tostring(decoded.error or 'unknown error'))
+        end
+        return
+    end
+
+    Medal.Shared.Utils.logBase64Payload('[SuperSoaker.Client]', 'askFillHTTP raw response', data)
+    clientDebug('askFillHTTP upload response length', tostring(#data))
+end
 
  ---NUI callback: water created (screenshot ready)
  ---@param body { id: string, data: string }
@@ -175,27 +262,51 @@ end
 ---@param options SoakerOptions
 ---@param uploadURL string
 local function askFillHTTP(options, uploadURL)
-  options = options or {}
+    if type(uploadURL) ~= 'string' or uploadURL == '' then
+        clientError('askFillHTTP called with invalid uploadURL', uploadURL)
+        return
+    end
 
-  local req ---@type SoakerInternalRequest
-  req = {
-      encoding = options.encoding or 'jpg',
-      quality  = options.quality,
-      headers  = options.headers,
-      resultURL = nil, --//=-- No callback needed; upload result is handled by server
-      targetURL = uploadURL,
-      targetField = nil, --//=-- Server expects JSON body, not multipart form
-      correlation = registerCorrelation(function(data)
-          --//=-- NUI upload is complete; response data contains server's response
-          Medal.Shared.Utils.logBase64Payload('[SuperSoaker.Client]', 'Upload complete', data)
-      end),
-  }
+    if options ~= nil and type(options) ~= 'table' then
+        clientError('askFillHTTP options must be a table', type(options))
+        options = {}
+    end
+    options = options or {}
 
-  if type(Logger) == 'table' and type(Logger.debug) == 'function' then
-      local quality = req.quality ~= nil and tostring(req.quality) or 'default'
-      Logger.debug('[SuperSoaker.Client]', 'askFillHTTP quality', quality)
-  end
+    local encoding = options.encoding
+    if encoding ~= nil then
+        if not validEncodings[encoding] then
+            clientError('askFillHTTP invalid encoding', encoding)
+            encoding = nil
+        end
+    end
+    encoding = encoding or 'jpg'
 
-  sendRequest(req)
+    local quality = options.quality
+    if quality ~= nil then
+        if type(quality) ~= 'number' or quality < 0 or quality > 1 then
+            clientError('askFillHTTP invalid quality', tostring(quality))
+            quality = nil
+        end
+    end
+
+    local headers = sanitizeHeaders(options.headers)
+
+    local req ---@type SoakerInternalRequest
+    req = {
+        encoding = encoding,
+        quality  = quality,
+        headers  = headers,
+        resultURL = nil, --//=-- No callback needed; upload result is handled by server
+        targetURL = uploadURL,
+        targetField = nil, --//=-- Server expects JSON body, not multipart form
+        correlation = registerCorrelation(function(data)
+            handleUploadResponse(data, uploadURL)
+        end),
+    }
+
+    clientDebug('askFillHTTP quality', quality ~= nil and tostring(quality) or 'default')
+
+    sendRequest(req)
 end
 RegisterNetEvent('superSoaker:askFillHTTP', askFillHTTP)
