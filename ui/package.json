@@ -9,6 +9,7 @@
     "lint": "biome check --write"
   },
   "dependencies": {
+    "@citizenfx/http-wrapper": "^0.2.2",
     "@citizenfx/three": "^0.100.0",
     "@radix-ui/react-checkbox": "^1.3.3",
     "@radix-ui/react-label": "^2.1.7",
@@ -40,5 +41,5 @@
     "typescript": "~5.8.3",
     "vite": "^7.1.11"
   },
-  "packageManager": "pnpm@10.18.0"
+  "packageManager": "pnpm@10.20.0"
 }
