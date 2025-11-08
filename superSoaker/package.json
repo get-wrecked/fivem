@@ -6,7 +6,8 @@
   "type": "commonjs",
   "main": "dist/server.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "tsc --noEmit"
   },
   "dependencies": {
     "@citizenfx/http-wrapper": "^0.2.2",
@@ -20,6 +21,6 @@
     "@types/koa": "^2.15.0",
     "@types/koa-router": "^7.4.9",
     "@types/uuid": "^10.0.0",
-    "typescript": "^5.9.3"
+    "typescript": "catalog:"
   }
 }

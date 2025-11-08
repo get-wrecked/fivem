@@ -18,3 +18,6 @@ superSoaker/dist
 
 # Root dependencies
 node_modules
+
+# Turborepo
+.turbo
