@@ -25,6 +25,8 @@ Medal.AC = Medal.AC or {} --//=-- The namespace for the client Auto Clipping fun
 --//=-- Wait Constants
 local RESOURCE_START_DELAY_MS = 100
 
+local isUiOpen = false --//=-- UI State
+
 ---Safely reads a specific event config from the shared `Config` table
 ---@param eventId string
 ---@return EventConfig
@@ -54,18 +56,28 @@ function Medal.AC.registerCommand()
     end
 
     RegisterCommand(Config.Command, function ()
-        Logger.debug('Opening Medal UI')
-
-        SetNuiFocus(true, true)
-        SendNUIMessage({
-            action = 'show',
-            payload = true
-        })
+        if isUiOpen then
+            Logger.debug('Closing Medal UI')
+            isUiOpen = false
+            SetNuiFocus(false, false)
+            SendNUIMessage({
+                action = 'show',
+                payload = false
+            })
+        else
+            Logger.debug('Opening Medal UI')
+            isUiOpen = true
+            SetNuiFocus(true, true)
+            SendNUIMessage({
+                action = 'show',
+                payload = true
+            })
+        end
     end, false)
 
     if Config.Keybind and type(Config.Keybind) == 'string' then
         Logger.debug(('Registering Medal UI keymapping: %s'):format(Config.Keybind))
-        RegisterKeyMapping(Config.Command, 'Open Medal Clipping UI', 'keyboard', Config.Keybind)
+        RegisterKeyMapping(Config.Command, 'Toggle Medal Clipping UI', 'keyboard', Config.Keybind)
     end
 end
 
@@ -139,6 +151,7 @@ RegisterNuiCallback('ac:length', function (length, cb)
 end)
 
 RegisterNuiCallback('hide', function (_, cb)
+    isUiOpen = false
     SetNuiFocus(false, false)
     cb('ok')
 end)
