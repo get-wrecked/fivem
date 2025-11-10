@@ -116,8 +116,17 @@ File: `ui/src/superSoaker/capture.ts`
   - `encoding`, `quality`, `headers`, `correlation`
   - `resultURL?` — NUI will POST `{ id, data }` here (either image data URI or upload response text)
   - `targetURL?` and `targetField?` — if present, NUI uploads a file via `multipart/form-data`
-- Uses `@citizenfx/three` to read pixels and generate the image.
-- If Three is unavailable, returns a 1x1 transparent PNG as a safe fallback.
+- Screenshot capture priority:
+  1. **Medal.tv capture** (when `preferMedal: true` and Medal client is available)
+     - High-quality direct game capture
+     - If Medal is unreachable (network error, timeout, etc.), this automatically falls back to WebGL
+     - Failures are logged as warnings with the error details
+  2. **WebGL/Three.js capture** (fallback or when Medal not preferred)
+     - Uses `@citizenfx/three` to read pixels from game frame
+     - Reliable fallback for when Medal is unavailable or fails
+  3. **1x1 transparent PNG** (final fallback)
+     - Returned when all capture methods fail
+     - Ensures the resource never crashes, even in degraded conditions
 
 Build UI with:
 
@@ -149,7 +158,12 @@ Feature parity and differences compared to `screenshot-basic`:
   - Both use a Three.js wrapper around the Cfx game view texture; SuperSoaker’s implementation is in `ui/src/superSoaker/capture.ts`.
 
 - **Fallback behavior**
-  - Both aim to be robust; SuperSoaker returns a 1×1 transparent PNG when the Three binding is unavailable.
+  - SuperSoaker uses a multi-layer fallback approach for maximum reliability:
+    1. **Medal.tv** (if available and preferred) - High-quality direct capture from Medal client.
+    2. **WebGL/Three.js** (automatic fallback) - Uses CitizenFX Three binding if Medal doesn't respond, or is not running.
+    3. **1×1 transparent PNG** (final fallback) - Safe fallback when all capture methods fail.
+  - Medal failures are automatically detected and logged, with seamless fallback to WebGL/Three.js.
+  - screenshot-basic returns a 1×1 transparent PNG when the Three binding is unavailable.
 
 ## Notes & tips
 
