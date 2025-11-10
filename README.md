@@ -91,6 +91,33 @@ This builds:
 
 **Note**: The compiled `superSoaker/dist/server.js` must exist before starting the resource.
 
+## Release
+
+To create a production-ready release package for deployment to FiveM servers:
+
+```bash
+pnpm release
+```
+
+This command:
+
+1. **Automatically builds** the entire project (UI and TypeScript)
+2. **Creates** a `release/medal/` directory
+3. **Packages** only production files (~60 files, ~2.3 MB):
+   - Core resource files (`fxmanifest.lua`, `config.lua`)
+   - All Lua scripts (client/server/shared)
+   - Built JavaScript (`superSoaker/dist/server.js`)
+   - Built UI (`ui/dist/*`)
+   - Documentation (all README files, LICENSE)
+
+The release script:
+
+- **Dynamically excludes** files from `.gitignore` and `.git/info/exclude`
+- **Preserves** built `dist` folders (overriding gitignore) as they contain production code
+- **Works** on Windows, Linux, and macOS
+
+The resulting `release/medal/` folder can be directly copied to your FiveM server's resources directory.
+
 ## Configuration Highlights
 
 - `config.lua`
@@ -199,6 +226,7 @@ EventConfig = {
 - **Utilities**
   - [lib/](lib/README.md)
   - [services/](services/README.md)
+  - [scripts/](scripts/README.md)
 
 ## Primary Contributors
 
