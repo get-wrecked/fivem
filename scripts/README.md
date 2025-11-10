@@ -6,13 +6,19 @@ The `release.js` script creates a production-ready release of the Medal FiveM re
 
 ### Usage
 
-Run the following command from the root directory:
+Run the following command from the root directory to create a release:
 
 ```bash
 pnpm release
 ```
 
-After creating a release, you can validate the output with:
+To create a release **and** immediately verify it in a single step:
+
+```bash
+pnpm release:verify
+```
+
+If you want to validate an existing release without rebuilding, run:
 
 ```bash
 pnpm verify-release

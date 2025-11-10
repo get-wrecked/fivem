@@ -99,7 +99,19 @@ To create a production-ready release package for deployment to FiveM servers:
 pnpm release
 ```
 
-This command:
+To build a fresh release and immediately verify the output in one step, run:
+
+```bash
+pnpm release:verify
+```
+
+If you only need to run the verification checks against an existing release folder, use:
+
+```bash
+pnpm verify-release
+```
+
+These commands:
 
 1. **Automatically builds** the entire project (UI and TypeScript)
 2. **Creates** a `release/medal/` directory
@@ -115,6 +127,7 @@ The release script:
 - **Dynamically excludes** files from `.gitignore` and `.git/info/exclude`
 - **Preserves** built `dist` folders (overriding gitignore) as they contain production code
 - **Works** on Windows, Linux, and macOS
+- **Verifies** the release contents to ensure required files ship and unwanted files stay excluded (`release:verify` or `verify-release`)
 
 The resulting `release/medal/` folder can be directly copied to your FiveM server's resources directory.
 
