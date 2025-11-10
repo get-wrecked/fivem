@@ -259,17 +259,12 @@ class SoakerUI {
             imageURL = `data:${type};base64,${medalImage}`;
         } else if (this.available && this.renderer && this.rtTexture) {
             if (request.quality !== undefined) {
-                void nuiLog([
-                    '[SuperSoaker.UI]',
-                    'handleRequest quality',
-                    request.quality,
-                ], 'debug');
+                void nuiLog(
+                    ['[SuperSoaker.UI]', 'handleRequest quality', request.quality],
+                    'debug',
+                );
             } else {
-                void nuiLog([
-                    '[SuperSoaker.UI]',
-                    'handleRequest quality',
-                    'default',
-                ], 'debug');
+                void nuiLog(['[SuperSoaker.UI]', 'handleRequest quality', 'default'], 'debug');
             }
             const read = new Uint8Array(window.innerWidth * window.innerHeight * 4);
             // @ts-ignore
@@ -321,15 +316,18 @@ class SoakerUI {
                         : JSON.stringify({ data: imageURL, id: request.correlation }),
                 });
                 if (!request.targetField && imageURL.startsWith('data:')) {
-                    void nuiLog([
-                        '[SuperSoaker.UI]',
-                        'NUI -> targetURL',
-                        request.targetURL,
-                        '---BEGIN BASE64 PAYLOAD---',
-                        'Length:',
-                        imageURL.length,
-                        '---END BASE64 PAYLOAD---',
-                    ], 'debug');
+                    void nuiLog(
+                        [
+                            '[SuperSoaker.UI]',
+                            'NUI -> targetURL',
+                            request.targetURL,
+                            '---BEGIN BASE64 PAYLOAD---',
+                            'Length:',
+                            imageURL.length,
+                            '---END BASE64 PAYLOAD---',
+                        ],
+                        'debug',
+                    );
                 }
                 const text = await resp.text();
 
@@ -348,15 +346,18 @@ class SoakerUI {
                     body: JSON.stringify({ data: imageURL, id: request.correlation }),
                 });
                 if (imageURL.startsWith('data:')) {
-                    void nuiLog([
-                        '[SuperSoaker.UI]',
-                        'NUI -> Lua resultURL',
-                        request.resultURL,
-                        '---BEGIN BASE64 PAYLOAD---',
-                        'Length:',
-                        imageURL.length,
-                        '---END BASE64 PAYLOAD---',
-                    ], 'debug');
+                    void nuiLog(
+                        [
+                            '[SuperSoaker.UI]',
+                            'NUI -> Lua resultURL',
+                            request.resultURL,
+                            '---BEGIN BASE64 PAYLOAD---',
+                            'Length:',
+                            imageURL.length,
+                            '---END BASE64 PAYLOAD---',
+                        ],
+                        'debug',
+                    );
                 }
             }
         } catch (_e) {

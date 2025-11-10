@@ -1,6 +1,9 @@
 packages:
-  - ui
-  - superSoaker
+  - ui/**
+  - superSoaker/**
+
+catalog:
+  typescript: ^5.9.3
 
 onlyBuiltDependencies:
   - esbuild
