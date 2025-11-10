@@ -12,6 +12,12 @@ Run the following command from the root directory:
 pnpm release
 ```
 
+After creating a release, you can validate the output with:
+
+```bash
+pnpm verify-release
+```
+
 ### What it does
 
 1. **Builds the project** - Runs `pnpm build` to compile TypeScript and build the UI
@@ -58,3 +64,4 @@ This folder can be directly copied to your FiveM server's resources directory.
 - Typical release contains ~60 files totaling ~2.3 MB
 - All component README files are preserved in the release for documentation
 - Respects git-ignored patterns including items in `.git/info/exclude`
+- `pnpm verify-release` re-runs the release process and confirms critical files are present, docs are shipped, and development artifacts remain excluded
