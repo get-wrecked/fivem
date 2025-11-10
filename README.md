@@ -246,6 +246,8 @@ EventConfig = {
 - [![lynexer's Avatar](https://avatars.githubusercontent.com/u/5565402?s=18&v=4)  lynexer](https://github.com/lynexer)
 - [![Imthatguyhere's Avatar](https://avatars.githubusercontent.com/u/5384585?s=18&v=4)  Imthatguyhere](https://github.com/imthatguyhere)
 
+[View **All Contributors** (Click Here)](https://github.com/get-wrecked/fivem/graphs/contributors)
+
 ---
 
 If you encounter issues, or want to suggest new auto-clipping events, please open an issue or PR.
