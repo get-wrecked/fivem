@@ -192,7 +192,7 @@ local function fillSoaker(options, cb)
         quality = opts.quality,
         headers = opts.headers,
         correlation = registerCorrelation(realCb),
-        resultURL = ('https://%s/soaker_waterCreated'):format(GetCurrentResourceName()),
+        resultURL = ('://%s/soaker_waterCreated'):format(GetCurrentResourceName()),
         targetURL = nil,
         targetField = nil,
     }
@@ -237,7 +237,7 @@ local function shootWater(url, field, options, cb)
         quality = opts.quality,
         headers = opts.headers or {},
         correlation = registerCorrelation(realCb),
-        resultURL = ('https://%s/soaker_waterCreated'):format(GetCurrentResourceName()),
+        resultURL = ('://%s/soaker_waterCreated'):format(GetCurrentResourceName()),
         targetURL = url,
         targetField = field or 'file',
     }
@@ -260,12 +260,15 @@ end
 
 ---Server asks us to fill and upload via HTTP; we capture and upload directly to the server's HTTP endpoint
 ---@param options SoakerOptions
----@param uploadURL string
-local function askFillHTTP(options, uploadURL)
-    if type(uploadURL) ~= 'string' or uploadURL == '' then
-        clientError('askFillHTTP called with invalid uploadURL', uploadURL)
+---@param uploadPath string Path to upload endpoint (server provides path, client builds full URL)
+local function askFillHTTP(options, uploadPath)
+    if type(uploadPath) ~= 'string' or uploadPath == '' then
+        clientError('askFillHTTP called with invalid uploadPath', uploadPath)
         return
     end
+    
+    --//=-- Build full URL using server endpoint
+    local uploadURL = ('http://%s%s'):format(GetCurrentServerEndpoint(), uploadPath)
 
     if options ~= nil and type(options) ~= 'table' then
         clientError('askFillHTTP options must be a table', type(options))
@@ -297,9 +300,9 @@ local function askFillHTTP(options, uploadURL)
         encoding = encoding,
         quality  = quality,
         headers  = headers,
-        resultURL = nil, --//=-- No callback needed; upload result is handled by server
+        resultURL = ('://%s/soaker_waterCreated'):format(GetCurrentResourceName()),
         targetURL = uploadURL,
-        targetField = nil, --//=-- Server expects JSON body, not multipart form
+        targetField = 'file', --//=-- Send as multipart form with 'file' field (like screenshot-basic)
         correlation = registerCorrelation(function(data)
             handleUploadResponse(data, uploadURL)
         end),
