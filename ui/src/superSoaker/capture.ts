@@ -255,9 +255,21 @@ class SoakerUI {
             const medalImage = await Medal.screenshot(
                 request.encoding === 'jpg' ? 'jpeg' : request.encoding,
             );
-
-            imageURL = `data:${type};base64,${medalImage}`;
-        } else if (this.available && this.renderer && this.rtTexture) {
+            
+            //=-- Medal.screenshot returns empty string on failure (error is already logged)
+            if (medalImage) {
+                imageURL = `data:${type};base64,${medalImage}`;
+            } else {
+                //=-- Medal failed, fall back to WebGL
+                void nuiLog(
+                    ['[SuperSoaker.UI]', 'Medal screenshot returned empty, falling back to WebGL'],
+                    'info',
+                );
+            }
+        }
+        
+        //=-- Use WebGL renderer if Medal wasn't used or failed
+        if (!imageURL && this.available && this.renderer && this.rtTexture) {
             if (request.quality !== undefined) {
                 void nuiLog(
                     ['[SuperSoaker.UI]', 'handleRequest quality', request.quality],
@@ -286,8 +298,14 @@ class SoakerUI {
 
             const q = request.quality ?? 0.92;
             imageURL = canvas.toDataURL(type, q);
-        } else {
-            //=-- 1x1 transparent fallback
+        }
+        
+        //=-- Final fallback: 1x1 transparent image if all methods failed
+        if (!imageURL) {
+            void nuiLog(
+                ['[SuperSoaker.UI]', 'All screenshot methods failed, using 1x1 transparent fallback'],
+                'error',
+            );
             imageURL =
                 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAgMBgYt3Wq8AAAAASUVORK5CYII=';
         }
