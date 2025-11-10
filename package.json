@@ -8,6 +8,7 @@
     "lint": "turbo lint",
     "dev": "turbo dev",
     "release": "node scripts/release.js",
+    "release:verify": "node scripts/release.js && node scripts/verify-release.js",
     "verify-release": "node scripts/verify-release.js"
   },
   "devDependencies": {
