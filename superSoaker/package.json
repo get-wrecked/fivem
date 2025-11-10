@@ -6,7 +6,7 @@
   "type": "commonjs",
   "main": "dist/server.js",
   "scripts": {
-    "build": "tsc",
+    "build": "esbuild src/server.ts --bundle --platform=node --format=cjs --outfile=dist/server.js --external:@citizenfx/server",
     "lint": "tsc --noEmit"
   },
   "dependencies": {
@@ -22,6 +22,7 @@
     "@types/koa": "^2.15.0",
     "@types/koa-router": "^7.4.9",
     "@types/uuid": "^10.0.0",
+	"esbuild": "^0.25.12",
     "typescript": "catalog:"
   }
 }
