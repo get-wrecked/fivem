@@ -62,11 +62,36 @@ local function requestPlayerWater(playerSrc, options, cb)
         error('SuperSoaker: requestPlayerWater requires a callback (function or CFX function reference)')
     end
 
+    --//=-- Verify exports exist
+    local resourceName = GetCurrentResourceName()
+    local exportExists = pcall(function()
+        return exports[resourceName].generateToken ~= nil
+    end)
+    
+    if not exportExists then
+        if type(Logger) == 'table' and type(Logger.error) == 'function' then
+            Logger.error('[SuperSoaker.Server]', 'generateToken export not found in resource', resourceName)
+        else
+            print(('[SuperSoaker.Server] ERROR: generateToken export not found in resource %s'):format(resourceName))
+        end
+        error('SuperSoaker: generateToken export not available')
+    end
+
+    --//=-- Ensure playerSrc is a number (was generally passed as string from tested callers)
+    local playerSrcNum = tonumber(playerSrc)
+    if not playerSrcNum then
+        error(('SuperSoaker: Invalid playerSrc - cannot convert to number: %s'):format(tostring(playerSrc)))
+    end
+    
     --//=-- Generate unique token for this upload
-    local token = exports['medal-fivem']:generateToken()
+    local token = exports[resourceName]:generateToken()
+    
+    --//=-- Debug log playerSrc
+    debugLogValue('playerSrc type', type(playerSrc))
+    debugLogValue('playerSrc value', playerSrc)
     
     --//=-- Register the token and callback with the HTTP server
-    exports['medal-fivem']:registerUpload(token, playerSrc, cb)
+    exports[resourceName]:registerUpload(token, playerSrcNum, cb)
 
     local optionsLog
     if type(options) == 'table' then
@@ -81,9 +106,9 @@ local function requestPlayerWater(playerSrc, options, cb)
     end
     debugLogValue('requestPlayerWater options', optionsLog)
 
-    --//=-- Build upload URL and send to client. Client will NUI-capture and upload via HTTP
-    local uploadURL = ('http://%s/superSoaker/upload/%s'):format(GetCurrentResourceName(), token)
-    TriggerClientEvent('superSoaker:askFillHTTP', playerSrc, options or {}, uploadURL)
+    --//=-- Build upload path and send to client. Client will construct full URL with GetCurrentServerEndpoint()
+    local uploadPath = ('/%s/superSoaker/upload/%s'):format(GetCurrentResourceName(), token)
+    TriggerClientEvent('superSoaker:askFillHTTP', playerSrc, options or {}, uploadPath)
 end
 
 exports('requestPlayerWater', requestPlayerWater)
