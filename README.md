@@ -49,34 +49,87 @@ You can configure automatic capture triggers through the ingame menu. Common exa
 
 Your server can enable/disable specific events to fit its gameplay style.
 
-## UI Building (/ui)
+## Building
 
-The UI has its own Node.js project under `ui`. Use pnpm to install and build the UI.
+This resource uses a pnpm workspace to manage builds for both the UI and the SuperSoaker HTTP server.
 
 ### Prerequisites
 
-- Node.js LTS
+- Node.js LTS (v18+)
 - pnpm installed globally:
 
   ```bash
   npm i -g pnpm
   ```
 
-### Build steps
+### Build Steps
 
-1. From the `ui` directory, install dependencies:
+From the **root** of the resource:
+
+1. Install dependencies:
 
    ```bash
    pnpm install
    ```
 
-2. Build the UI assets:
+2. Build everything:
 
    ```bash
    pnpm build
    ```
 
-3. This builds `ui/src` into `ui/dist`, which is the NUI loaded by the resource/FXServer.
+This builds:
+
+- **UI**: `ui/src` → `ui/dist` (Vite build for the NUI)
+- **SuperSoaker Server**: `superSoaker/src/server/server.ts` → `superSoaker/dist/server.js` (TypeScript → CommonJS)
+
+### Individual Builds
+
+- `pnpm build:server` - Build only the SuperSoaker HTTP server
+- `pnpm build:ui` - Build only the React UI
+- `pnpm dev:ui` - Start Vite dev server for UI development
+
+**Note**: The compiled `superSoaker/dist/server.js` must exist before starting the resource.
+
+## Release
+
+To create a production-ready release package for deployment to FiveM servers:
+
+```bash
+pnpm release
+```
+
+To build a fresh release and immediately verify the output in one step, run:
+
+```bash
+pnpm release:verify
+```
+
+If you only need to run the verification checks against an existing release folder, use:
+
+```bash
+pnpm verify-release
+```
+
+These commands:
+
+1. **Automatically builds** the entire project (UI and TypeScript)
+2. **Creates** a `release/medal/` directory
+3. **Packages** only production files (~60 files, ~2.3 MB):
+   - Core resource files (`fxmanifest.lua`, `config.lua`)
+   - All Lua scripts (client/server/shared)
+   - Built JavaScript (`superSoaker/dist/server.js`)
+   - Built UI (`ui/dist/*`)
+   - Documentation (all README files, LICENSE)
+
+The release script:
+
+- **Dynamically excludes** files from `.gitignore` and `.git/info/exclude`
+- **Preserves** built `dist` folders (overriding gitignore) as they contain production code
+- **Works** on Windows, Linux, and macOS
+- **Verifies** the release contents to ensure required files ship and unwanted files stay excluded (`release:verify` or `verify-release`)
+
+The resulting `release/medal/` folder can be directly copied to your FiveM server's resources directory.
 
 ## Configuration Highlights
 
@@ -186,11 +239,14 @@ EventConfig = {
 - **Utilities**
   - [lib/](lib/README.md)
   - [services/](services/README.md)
+  - [scripts/](scripts/README.md)
 
-## Contributors
+## Primary Contributors
 
 - [![lynexer's Avatar](https://avatars.githubusercontent.com/u/5565402?s=18&v=4)  lynexer](https://github.com/lynexer)
 - [![Imthatguyhere's Avatar](https://avatars.githubusercontent.com/u/5384585?s=18&v=4)  Imthatguyhere](https://github.com/imthatguyhere)
+
+[View **All Contributors** (Click Here)](https://github.com/get-wrecked/fivem/graphs/contributors)
 
 ---
 

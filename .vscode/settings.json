@@ -92,6 +92,23 @@
     "yallist",
     "yourtype"
   ],
+  "Lua.diagnostics.globals": [
+    "fx_version",
+    "game",
+    "use_experimental_fxv2_oal",
+    "lua54",
+    "shared_scripts",
+    "client_scripts",
+    "server_scripts",
+    "files",
+    "ui_page",
+    "provide",
+    "version",
+    "description",
+    "author",
+    "license",
+    "url"
+  ],
   "stylua.targetReleaseVersion": "latest",
   "conventionalCommits.scopes": [
     "ore",

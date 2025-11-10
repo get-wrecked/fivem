@@ -1,4 +1,17 @@
-//=-- SuperSoaker NUI capture: turns game frame into water and handles fill/shoot flows.
+/*
+  Medal.tv - FiveM Resource
+  =========================
+  File: ui/src/superSoaker/capture.ts
+  =====================
+  Description:
+    SuperSoaker NUI capture: turns game frame into water and handles fill/shoot flows.
+  ---
+  Exports:
+    None
+  ---
+  Globals:
+    None
+*/
 
 import {
     CfxTexture,
@@ -15,6 +28,7 @@ import {
     WebGLRenderTarget,
 } from '@citizenfx/three';
 import { Medal } from '@/lib/medal';
+import { nuiLog } from '@/lib/nui';
 
 /** Output encoding type for screenshots. */
 type Encoding = 'jpg' | 'png' | 'webp';
@@ -244,6 +258,14 @@ class SoakerUI {
 
             imageURL = `data:${type};base64,${medalImage}`;
         } else if (this.available && this.renderer && this.rtTexture) {
+            if (request.quality !== undefined) {
+                void nuiLog(
+                    ['[SuperSoaker.UI]', 'handleRequest quality', request.quality],
+                    'debug',
+                );
+            } else {
+                void nuiLog(['[SuperSoaker.UI]', 'handleRequest quality', 'default'], 'debug');
+            }
             const read = new Uint8Array(window.innerWidth * window.innerHeight * 4);
             // @ts-ignore
             this.renderer.readRenderTargetPixels(
@@ -293,6 +315,20 @@ class SoakerUI {
                         ? getForm()
                         : JSON.stringify({ data: imageURL, id: request.correlation }),
                 });
+                if (!request.targetField && imageURL.startsWith('data:')) {
+                    void nuiLog(
+                        [
+                            '[SuperSoaker.UI]',
+                            'NUI -> targetURL',
+                            request.targetURL,
+                            '---BEGIN BASE64 PAYLOAD---',
+                            'Length:',
+                            imageURL.length,
+                            '---END BASE64 PAYLOAD---',
+                        ],
+                        'debug',
+                    );
+                }
                 const text = await resp.text();
 
                 if (request.resultURL) {
@@ -309,6 +345,20 @@ class SoakerUI {
                     mode: 'cors',
                     body: JSON.stringify({ data: imageURL, id: request.correlation }),
                 });
+                if (imageURL.startsWith('data:')) {
+                    void nuiLog(
+                        [
+                            '[SuperSoaker.UI]',
+                            'NUI -> Lua resultURL',
+                            request.resultURL,
+                            '---BEGIN BASE64 PAYLOAD---',
+                            'Length:',
+                            imageURL.length,
+                            '---END BASE64 PAYLOAD---',
+                        ],
+                        'debug',
+                    );
+                }
             }
         } catch (_e) {
             // swallow

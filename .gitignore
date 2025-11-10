@@ -11,3 +11,16 @@ ui/node_modules
 ui/dist
 ui/dist-ssr
 ui/*.local
+
+# SuperSoaker build artifacts
+superSoaker/node_modules
+superSoaker/dist
+
+# Root dependencies
+node_modules
+
+# Turborepo
+.turbo
+
+# Release builds
+release/

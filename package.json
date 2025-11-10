@@ -1,0 +1,18 @@
+{
+  "name": "medal-fivem-resource",
+  "private": true,
+  "version": "1.13.6",
+  "type": "module",
+  "scripts": {
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "dev": "turbo dev",
+    "release": "node scripts/release.js",
+    "release:verify": "node scripts/release.js && node scripts/verify-release.js",
+    "verify-release": "node scripts/verify-release.js"
+  },
+  "devDependencies": {
+    "turbo": "^2.6.0"
+  },
+  "packageManager": "pnpm@10.20.0"
+}

@@ -20,9 +20,13 @@ Screenshot capture and upload system that provides drop-in replacement for `scre
    - Listens for server requests to capture.
    - Uses a simple correlation map so async NUI replies route to the right callback.
 
-2. **Server** (`superSoaker/server-main.lua`)
-   - Provides an export to ask a specific player to capture, then invokes your callback when ready.
-   - Correlates requests using a generated id.
+2. **Server** (`superSoaker/server-main.lua` + `superSoaker/src/server/server.ts`)
+   - Lua server provides an export to ask a specific player to capture, then invokes your callback when ready.
+   - **NEW: HTTP Upload System** - The server now uses an HTTP-based upload system (similar to screenshot-basic) to handle large screenshot data that can't be sent via events.
+   - TypeScript HTTP server generates unique tokens and provides upload endpoints.
+   - When requesting a screenshot, the server generates a token, registers a callback, and sends the upload URL to the client.
+   - Client captures and uploads directly to the HTTP endpoint with the token.
+   - Server receives the upload, validates the token, and triggers the original callback.
 
 3. **NUI** (`ui/src/superSoaker/capture.ts` -> built to `ui/dist/` and served via `fxmanifest.lua`)
    - Uses the CitizenFX Three binding to read the game frame into a WebGL render target.
@@ -31,6 +35,25 @@ Screenshot capture and upload system that provides drop-in replacement for `scre
      - Uploads to a URL (shoot) and then returns the server response text.
 
 The `fxmanifest.lua` wires the built UI (`ui_page 'ui/dist/index.html'`). The client constructs a `resultURL` like `http://<resource>/soaker_waterCreated` that the UI calls to deliver results back to Lua.
+
+## Build Instructions
+
+The superSoaker HTTP server must be built before use. From the **root** of the resource:
+
+```bash
+pnpm install
+pnpm build
+```
+
+This compiles `src/server.ts` to `dist/server.js`, which is loaded by fxmanifest.
+
+### Build Commands
+
+- **`pnpm build`** - Builds both server and UI
+- **`pnpm build:server`** - Builds only the superSoaker HTTP server
+- **`pnpm build:ui`** - Builds only the React UI
+
+The compiled `dist/server.js` should be committed to your repo or built during deployment.
 
 ## Client API
 
@@ -66,12 +89,15 @@ end)
 
 ## Server API
 
-File: `superSoaker/server-main.lua`
+File: `superSoaker/server-main.lua` + `superSoaker/src/server/server.ts`
 
 - **requestPlayerWater(player: number, options: SoakerOptions, cb: fun(err:any|false, data:string, src:number))**
-  - Asks `player` to capture a screenshot.
-  - Calls back with `err=false` and `data` containing the Data URI returned by the client.
-  - If you want the image uploaded, have the client use `shootWater` directly instead.
+  - Asks `player` to capture a screenshot via HTTP upload.
+  - Generates a unique token and registers a callback with the HTTP server.
+  - Sends the client an upload URL with the token.
+  - Client captures and uploads the screenshot via HTTP (not via events, as data URIs are too large for events).
+  - When the upload completes, calls back with `err=false` and `data` containing the Data URI.
+  - **Important**: Screenshot data is now transmitted via HTTP instead of server events to handle large base64 strings.
 
 Example:
 
@@ -116,8 +142,8 @@ Feature parity and differences compared to `screenshot-basic`:
   - SuperSoaker supports optional `headers` on upload (e.g., auth) which is not documented in screenshot-basic README.
 
 - **Server-initiated capture**
-  - screenshot-basic: `requestClientScreenshot(player, options, cb)`; supports `fileName` on the server to store the image then return a path.
-  - SuperSoaker: `requestPlayerWater(player, options, cb)`; returns a Data URI from the client. There is no built-in server-side file storage option; if you need remote storage, prefer client `shootWater` to your own endpoint.
+  - screenshot-basic: `requestClientScreenshot(player, options, cb)`; supports `fileName` on the server to store the image then return a path. Uses HTTP upload with token-based authentication.
+  - SuperSoaker: `requestPlayerWater(player, options, cb)`; returns a Data URI from the client via HTTP upload (similar to screenshot-basic). Uses the same token-based HTTP upload system to handle large data URIs. There is no built-in server-side file storage option; if you need remote storage, prefer client `shootWater` to your own endpoint.
 
 - **Rendering backend**
   - Both use a Three.js wrapper around the Cfx game view texture; SuperSoaker’s implementation is in `ui/src/superSoaker/capture.ts`.

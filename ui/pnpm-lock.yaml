@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@citizenfx/http-wrapper':
+        specifier: ^0.2.2
+        version: 0.2.2
       '@citizenfx/three':
         specifier: ^0.100.0
         version: 0.100.0
@@ -235,6 +238,9 @@ packages:
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
+
+  '@citizenfx/http-wrapper@0.2.2':
+    resolution: {integrity: sha512-hFyrWN2U30KFRgYteyqs7PZ+9aXyiH3tsgOQL/vcOp9dGAZAyRSHDotJYZivTEpjRN4dMbgbZ2h9TgoDFRKi9w==}
 
   '@citizenfx/three@0.100.0':
     resolution: {integrity: sha512-qiJHVGNzhGfZP+poq4X3m9cDoi4H1mK4UgfbBTZoHmtSIiDRAIYEWsb93MHst+ADHtn0vJ8msMRQaAHC3horSA==}
@@ -2021,6 +2027,8 @@ snapshots:
 
   '@biomejs/cli-win32-x64@2.1.4':
     optional: true
+
+  '@citizenfx/http-wrapper@0.2.2': {}
 
   '@citizenfx/three@0.100.0': {}
 
