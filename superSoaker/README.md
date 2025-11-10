@@ -45,7 +45,7 @@ pnpm install
 pnpm build
 ```
 
-This compiles `src/server/server.ts` to `dist/server.js` which is loaded by fxmanifest.
+This compiles `src/server.ts` to `dist/server.js`, which is loaded by fxmanifest.
 
 ### Build Commands
 
