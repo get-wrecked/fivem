@@ -10,6 +10,7 @@ The auto-clipping system that monitors in-game events and triggers Medal.tv clip
   - Transport layer that sends clip requests to Medal.tv.
 - `client-main.lua`
   - Entry point that registers UI commands, keybinds, and initializes the clipping system.
+  - Command and keybind toggle the UI open/closed. Pressing again, running the command again, or clicking the X button, closes the UI.
   - Reads configuration from `Config.ClippingEvents` and builds the UI.
 - `__types.lua`
   - Type definitions for event configuration and vessel cargo.
