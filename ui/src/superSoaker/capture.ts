@@ -84,6 +84,7 @@ class SoakerUI {
     private pending: SoakerRequest | null = null;
     private available = false;
     private hasMedal = false;
+    private medalCheckInterval = 3000; //=-- Default, can be overridden by config
 
     /** Initializes rendering resources and message listeners. */
     async initialize() {
@@ -181,13 +182,28 @@ class SoakerUI {
                     'info'
                 );
             }
-        }, 3000);
+        }, this.medalCheckInterval);
 
-        //=-- Listen for capture requests from Lua
+        //=-- Listen for capture requests and config updates from Lua
         window.addEventListener('message', (event) => {
+            //=-- Handle capture requests
             const req: SoakerRequest | undefined = event.data?.request || undefined;
-            if (!req) return;
-            this.pending = req;
+            if (req) {
+                this.pending = req;
+                return;
+            }
+            
+            //=-- Handle Medal config updates
+            if (event.data?.action === 'medal:config' && event.data?.payload) {
+                const config = event.data.payload;
+                if (typeof config.checkIntervalMs === 'number') {
+                    this.medalCheckInterval = config.checkIntervalMs;
+                    void nuiLog(
+                        ['[SuperSoaker.UI]', `Medal check interval set to ${this.medalCheckInterval}ms from config`],
+                        'debug'
+                    );
+                }
+            }
         });
     }
 
