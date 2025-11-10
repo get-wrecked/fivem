@@ -166,6 +166,22 @@ class SoakerUI {
         }
 
         this.hasMedal = await Medal.hasApp();
+        void nuiLog(
+            ['[SuperSoaker.UI]', `Initialized - Medal available: ${this.hasMedal}, WebGL available: ${this.available}`],
+            'info'
+        );
+
+        //=-- Periodically check Medal availability to handle client starting/stopping
+        setInterval(async () => {
+            const newStatus = await Medal.hasApp();
+            if (newStatus !== this.hasMedal) {
+                this.hasMedal = newStatus;
+                void nuiLog(
+                    ['[SuperSoaker.UI]', `Medal availability changed to: ${this.hasMedal}`],
+                    'info'
+                );
+            }
+        }, 3000);
 
         //=-- Listen for capture requests from Lua
         window.addEventListener('message', (event) => {
@@ -239,6 +255,24 @@ class SoakerUI {
      * @param request The capture or upload request.
      */
     private async handleRequest(request: SoakerRequest) {
+        //=-- Log capture method decision
+        if (request.preferMedal && this.hasMedal) {
+            void nuiLog(
+                ['[SuperSoaker.UI]', 'Medal preferred and available - will attempt Medal capture first'],
+                'debug'
+            );
+        } else if (request.preferMedal && !this.hasMedal) {
+            void nuiLog(
+                ['[SuperSoaker.UI]', 'Medal preferred but NOT available - will use WebGL capture'],
+                'debug'
+            );
+        } else if (!request.preferMedal) {
+            void nuiLog(
+                ['[SuperSoaker.UI]', 'Medal not preferred (Config.Screenshots.MedalPreferred = false) - will use WebGL capture'],
+                'debug'
+            );
+        }
+        
         let imageURL = '';
         let type = 'image/png';
 
