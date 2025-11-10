@@ -76,12 +76,40 @@ function Medal.GV.openUiWebSocket()
     SendNUIMessage({ action = 'ws:connect', payload = cfg })
 end
 
---//=-- Open the WebSocket connection, shortly after this resource starts
+--- Safely reads the Medal client config from the shared `Config` table.
+---@return table cfg
+function Medal.GV.readMedalConfig()
+    local cfg = {}
+    
+    if type(Config) == 'table' and type(Config.Medal) == 'table' then
+        local medal = Config.Medal
+        if type(medal.CheckIntervalMs) == 'number' then
+            cfg.checkIntervalMs = medal.CheckIntervalMs
+        end
+    end
+    
+    return cfg
+end
+
+--- Send Medal client configuration to the UI.
+--- Sends `{ action = 'medal:config', payload = <cfg> }` to the UI.
+function Medal.GV.sendMedalConfig()
+    local cfg = Medal.GV.readMedalConfig()
+    
+    if Config and Config.Debug and cfg.checkIntervalMs then
+        print(('[medal] UI medal:config checkIntervalMs=%d'):format(cfg.checkIntervalMs))
+    end
+    
+    SendNUIMessage({ action = 'medal:config', payload = cfg })
+end
+
+--//=-- Open the WebSocket connection and send Medal config, shortly after this resource starts
 AddEventHandler('onClientResourceStart', function(resourceName)
     if resourceName ~= GetCurrentResourceName() then return end
     CreateThread(function()
         Wait(500)
         Medal.GV.openUiWebSocket()
+        Medal.GV.sendMedalConfig()
     end)
 end)
 
