@@ -16,9 +16,23 @@
 
 import { setHttpCallback } from '@citizenfx/http-wrapper';
 import { v4 } from 'uuid';
+import * as fs from 'fs';
 import Koa from 'koa';
 import Router from 'koa-router';
 import koaBody from 'koa-body';
+import { File } from 'formidable';
+
+//=-- Suppress only the Buffer() deprecation warning (DEP0005) from old formidable version
+const originalEmitWarning = process.emitWarning;
+process.emitWarning = function(warning: any, ...args: any[]) {
+    if (typeof warning === 'string' && warning.includes('Buffer()')) {
+        return;
+    }
+    if (warning && warning.name === 'DeprecationWarning' && warning.code === 'DEP0005') {
+        return;
+    }
+    return originalEmitWarning.call(process, warning, ...args);
+};
 
 //=-- Logger interface from Lua shared-logger.lua
 interface Logger {
@@ -33,6 +47,16 @@ const Logger = (global as any).Logger as Logger | undefined;
 
 const app = new Koa();
 const router = new Router();
+
+//=-- Log all incoming HTTP requests for debugging
+app.use(async (ctx, next) => {
+    if (Logger?.debug) {
+        Logger.debug('[SuperSoaker.HTTP]', 'RAW REQUEST', `Method: ${ctx.method}`, `Path: ${ctx.path}`, `URL: ${ctx.url}`);
+    } else {
+        console.log(`[SuperSoaker.HTTP] RAW REQUEST - Method: ${ctx.method}, Path: ${ctx.path}, URL: ${ctx.url}`);
+    }
+    await next();
+});
 
 //=-- Utility to redact base64 strings for logging
 function redactBase64(value: any): any {
@@ -51,7 +75,7 @@ function redactBase64(value: any): any {
 
 //=-- Data structure for pending upload requests
 class UploadData {
-    cb: (err: string | boolean, data: string, src: number) => void;
+    cb: (err: string | boolean, data: string) => void;
     playerSrc: number;
 }
 
@@ -59,7 +83,7 @@ class UploadData {
 const uploads: { [token: string]: UploadData } = {};
 
 //=-- HTTP endpoint for receiving screenshot uploads
-router.post('/upload/:token', async (ctx) => {
+router.post('/superSoaker/upload/:token', async (ctx) => {
     const tkn: string = ctx.params['token'];
     const requestInfo = {
         method: ctx.method,
@@ -108,80 +132,50 @@ router.post('/upload/:token', async (ctx) => {
                     if (Logger?.error) {
                         Logger.error('[SuperSoaker.HTTP]', 'Upload failed:', err, `PlayerSrc: ${upload.playerSrc}`);
                     }
-                    upload.cb(err, data || '', upload.playerSrc);
+                    upload.cb(err, data || '');
                 } else {
                     if (Logger?.debug) {
                         Logger.debug('[SuperSoaker.HTTP]', 'Upload successful', `PlayerSrc: ${upload.playerSrc}`, `DataSize: ${data?.length || 0}`);
                     }
-                    upload.cb(false, data || '', upload.playerSrc);
+                    upload.cb(false, data || '');
                 }
             });
         };
 
-        //=-- Validate request body exists
-        if (!ctx.request.body) {
-            const error = 'Request body is missing';
+        //=-- Get uploaded file from multipart form (like screenshot-basic)
+        const f = ctx.request.files?.['file'] as File | undefined;
+
+        if (f) {
+            //=-- Read file and convert to base64 data URI
+            fs.readFile(f.path, (err, data) => {
+                if (err) {
+                    const error = `Failed to read uploaded file: ${err.message}`;
+                    if (Logger?.error) {
+                        Logger.error('[SuperSoaker.HTTP]', error, `Token: ${tkn}`);
+                    }
+                    finish(error, null);
+                    return;
+                }
+
+                //=-- Clean up temp file
+                fs.unlink(f.path, (unlinkErr) => {
+                    if (unlinkErr && Logger?.debug) {
+                        Logger.debug('[SuperSoaker.HTTP]', 'Failed to delete temp file:', unlinkErr.message);
+                    }
+                    
+                    //=-- Return data in base64 data URI format
+                    const dataUri = `data:${f.type || 'image/jpeg'};base64,${data.toString('base64')}`;
+                    finish(null, dataUri);
+                });
+            });
+        } else {
+            const error = 'No file uploaded';
             if (Logger?.error) {
                 Logger.error('[SuperSoaker.HTTP]', error, `Token: ${tkn}`);
             }
             finish(error, null);
-            ctx.status = 400;
-            ctx.body = { success: false, error };
-            return;
         }
 
-        //=-- Validate request body is an object
-        if (typeof ctx.request.body !== 'object') {
-            const error = `Malformed request body: expected object, got ${typeof ctx.request.body}`;
-            if (Logger?.error) {
-                Logger.error('[SuperSoaker.HTTP]', error, `Token: ${tkn}`);
-            }
-            finish(error, null);
-            ctx.status = 400;
-            ctx.body = { success: false, error: 'Malformed request body' };
-            return;
-        }
-
-        const body = ctx.request.body as { data?: string };
-
-        //=-- Validate data field exists
-        if (!body.data) {
-            const error = 'No data field in request body';
-            if (Logger?.error) {
-                Logger.error('[SuperSoaker.HTTP]', error, `Token: ${tkn}`, `Body keys: ${Object.keys(body).join(', ')}`);
-            }
-            finish(error, null);
-            ctx.status = 400;
-            ctx.body = { success: false, error: 'No data received' };
-            return;
-        }
-
-        //=-- Validate data is a string
-        if (typeof body.data !== 'string') {
-            const error = `Malformed data field: expected string, got ${typeof body.data}`;
-            if (Logger?.error) {
-                Logger.error('[SuperSoaker.HTTP]', error, `Token: ${tkn}`);
-            }
-            finish(error, null);
-            ctx.status = 400;
-            ctx.body = { success: false, error: 'Malformed data field' };
-            return;
-        }
-
-        //=-- Validate data is not empty
-        if (body.data.length === 0) {
-            const error = 'Data field is empty';
-            if (Logger?.error) {
-                Logger.error('[SuperSoaker.HTTP]', error, `Token: ${tkn}`);
-            }
-            finish(error, null);
-            ctx.status = 400;
-            ctx.body = { success: false, error: 'Data field is empty' };
-            return;
-        }
-
-        //=-- Success: process upload
-        finish(null, body.data);
         ctx.status = 200;
         ctx.body = { success: true };
     } catch (err) {
@@ -202,7 +196,7 @@ router.post('/upload/:token', async (ctx) => {
 });
 
 //=-- OPTIONS handler for CORS preflight
-router.options('/upload/:token', async (ctx) => {
+router.options('/superSoaker/upload/:token', async (ctx) => {
     try {
         if (Logger?.debug) {
             Logger.debug('[SuperSoaker.HTTP]', 'CORS preflight:', ctx.path);
@@ -244,24 +238,35 @@ app.use(async (ctx, next) => {
 app.use(koaBody({
         patchKoa: true,
         multipart: true,
-        json: true,
-        text: false,
-        onError: (err) => {
-            if (Logger?.error) {
-                Logger.error('[SuperSoaker.HTTP]', 'Body parsing error:', err.message);
-            }
-        },
     }))
    .use(router.routes())
    .use(router.allowedMethods());
 
-setHttpCallback(app.callback());
+setHttpCallback((req, res) => {
+    console.log(`[SuperSoaker.HTTP] setHttpCallback invoked - URL: ${req.url}, Method: ${req.method}`);
+    if (Logger?.debug) {
+        Logger.debug('[SuperSoaker.HTTP]', 'setHttpCallback invoked', `URL: ${req.url}`, `Method: ${req.method}`);
+    }
+    return app.callback()(req, res);
+});
+
+//=-- Confirm HTTP server loaded
+if (Logger?.info) {
+    Logger.info('[Medal SuperSoaker.HTTP]', 'HTTP server initialized for screenshot uploads');
+} else {
+    console.log('[Medal SuperSoaker.HTTP] HTTP server initialized for screenshot uploads');
+}
 
 //=-- Export for Lua to register upload callbacks
 const exp = (<any>global).exports;
 
-exp('registerUpload', (token: string, playerSrc: number, cb: (err: string | boolean, data: string, src: number) => void) => {
+exp('registerUpload', (token: string, playerSrc: number, cb: (err: string | boolean, data: string) => void) => {
     try {
+        //=-- Debug log received parameters
+        if (Logger?.debug) {
+            Logger.debug('[SuperSoaker.Server]', 'registerUpload called', `token type: ${typeof token}`, `playerSrc type: ${typeof playerSrc}`, `playerSrc value: ${playerSrc}`, `cb type: ${typeof cb}`);
+        }
+        
         if (!token || typeof token !== 'string') {
             const error = 'Invalid token provided to registerUpload';
             if (Logger?.error) {
@@ -273,7 +278,7 @@ exp('registerUpload', (token: string, playerSrc: number, cb: (err: string | bool
         if (typeof playerSrc !== 'number') {
             const error = 'Invalid playerSrc provided to registerUpload';
             if (Logger?.error) {
-                Logger.error('[SuperSoaker.Server]', error, `PlayerSrc: ${playerSrc}`);
+                Logger.error('[SuperSoaker.Server]', error, `PlayerSrc type: ${typeof playerSrc}`, `PlayerSrc value: ${playerSrc}`);
             }
             throw new Error(error);
         }
