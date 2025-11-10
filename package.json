@@ -6,7 +6,8 @@
   "scripts": {
     "build": "turbo build",
     "lint": "turbo lint",
-    "dev": "turbo dev"
+    "dev": "turbo dev",
+    "release": "node scripts/release.js"
   },
   "devDependencies": {
     "turbo": "^2.6.0"
