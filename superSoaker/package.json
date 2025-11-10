@@ -12,6 +12,7 @@
   "dependencies": {
     "@citizenfx/http-wrapper": "^0.2.2",
     "@citizenfx/server": "^1.0.651",
+    "formidable": "^3.5.4",
     "koa": "^2.16.3",
     "koa-body": "^4.2.0",
     "koa-router": "^7.4.0",
