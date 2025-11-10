@@ -61,6 +61,10 @@ RegisterNetEvent('medal:services:medalState', function (hasMedal)
         identifier = GetPlayerIdentifierByType(source, 'license')
     end
 
+    if not identifier then
+        return
+    end
+
     local _, id = string.strsplit(':', identifier, 2)
 
     Medal.Services.HoneyComb.playerJoin(id, hasMedal)
