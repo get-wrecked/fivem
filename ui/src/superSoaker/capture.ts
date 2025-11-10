@@ -256,7 +256,7 @@ class SoakerUI {
                 request.encoding === 'jpg' ? 'jpeg' : request.encoding,
             );
             
-            //=-- Medal.screenshot returns empty string on failure (error is already logged)
+            //=-- Check if Medal screenshot succeeded (empty string indicates failure)
             if (medalImage) {
                 imageURL = `data:${type};base64,${medalImage}`;
             } else {
