@@ -33,7 +33,8 @@ A FiveM/GTA V server resource that integrates with the Medal.tv desktop client t
 - Toggle the Medal UI in-game:
   - Chat command: `/medal` (from `Config.Command`)
   - Default keybind: `Page Up` (from `Config.Keybind`)
-  - Send the command, or press the keybind again, or click the X button, to close the UI.
+  - The keybind is shown in the UI using FiveM's current binding for the command (resolved via `GetHashKey` + `GetControlInstructionalButton`), so if a player rebinds the key in FiveM, the UI label follows their current binding.
+  - Send the command again, press the keybind again, press ESC, or click the X button to close the UI. The UI listens for the same key that opened it and closes on key press (keydown).
 - In the UI, you can:
   - Toggle auto-clipping on/off
   - Set clip length
