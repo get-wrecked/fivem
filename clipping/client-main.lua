@@ -55,9 +55,12 @@ function Medal.AC.registerCommand()
         return
     end
 
+    --//=-- Single command handles both chat and keybind
     RegisterCommand(Config.Command, function ()
+        Logger.debug('[Medal.AC] Command triggered: ' .. Config.Command)
+        
         if isUiOpen then
-            Logger.debug('Closing Medal UI')
+            Logger.debug('[Medal.AC] Closing Medal UI')
             isUiOpen = false
             SetNuiFocus(false, false)
             SendNUIMessage({
@@ -65,12 +68,21 @@ function Medal.AC.registerCommand()
                 payload = false
             })
         else
-            Logger.debug('Opening Medal UI')
+            Logger.debug('[Medal.AC] Opening Medal UI')
             isUiOpen = true
             SetNuiFocus(true, true)
+            
+            --//=-- Get actual bound key and send to UI when opening
+            local boundKey = nil
+            if Medal.GV and Medal.GV.getCurrentKeybind then
+                boundKey = Medal.GV.getCurrentKeybind(Config.Command)
+                Logger.debug('[Medal.AC] boundKey: ' .. tostring(boundKey))
+            end
+            
             SendNUIMessage({
                 action = 'show',
-                payload = true
+                payload = true,
+                closeKey = boundKey
             })
         end
     end, false)
@@ -151,7 +163,12 @@ RegisterNuiCallback('ac:length', function (length, cb)
 end)
 
 RegisterNuiCallback('hide', function (_, cb)
+    Logger.debug('Closing Medal UI from hide callback')
     isUiOpen = false
     SetNuiFocus(false, false)
+    SendNUIMessage({
+        action = 'show',
+        payload = false
+    })
     cb('ok')
 end)
