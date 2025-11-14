@@ -16,14 +16,12 @@
 import { useNuiVisibility } from '@tsfx/hooks';
 import type React from 'react';
 import type { PropsWithChildren } from 'react';
-////=-- Indicators extracted to standalone components
+import { useEffect, useState } from 'react';
 import { ApiIndicator } from '@/components/api-indicator';
-////=-- WebSocket indicator extracted to its own component
 import { WebSocketIndicator } from '@/components/websocket-indicator';
+import { nuiLog } from '@/lib/nui';
 import { cn } from '@/lib/utils';
 import logo from '../assets/logo.svg';
-
-////=-- Tooltips handled within indicator components
 
 const Header: React.FC = () => {
     const { setVisible } = useNuiVisibility();
@@ -70,7 +68,90 @@ const Header: React.FC = () => {
 };
 
 export const Container: React.FC<PropsWithChildren> = ({ children }) => {
-    const { visible } = useNuiVisibility();
+    const { visible, setVisible } = useNuiVisibility();
+    const [closeKey, setCloseKey] = useState<string | null>(null);
+
+    //=-- Listen for show messages with closeKey
+    useEffect(() => {
+        const handleMessage = (event: MessageEvent) => {
+            if (event.data?.action === 'show' && event.data?.payload === true) {
+                //=-- Update closeKey when opening (user might have rebound the key)
+                if (event.data?.closeKey) {
+                    void nuiLog(
+                        ['[Container]', 'Received closeKey', event.data.closeKey],
+                        'debug',
+                    );
+                    setCloseKey(event.data.closeKey);
+                } else {
+                    void nuiLog(
+                        ['[Container]', 'No closeKey received, keybind close will not work'],
+                        'debug',
+                    );
+                    setCloseKey(null);
+                }
+            }
+        };
+
+        window.addEventListener('message', handleMessage);
+        return () => window.removeEventListener('message', handleMessage);
+    }, []);
+
+    //=-- Handle key press to close UI with bound key
+    useEffect(() => {
+        if (!visible || !closeKey) {
+            void nuiLog([
+                '[Container]',
+                'Key listener not active',
+                { visible, closeKey },
+            ], 'debug');
+            return;
+        }
+
+        void nuiLog(['[Container]', 'Key listener active for closeKey', closeKey], 'debug');
+
+        const handleKeyDown = (event: KeyboardEvent) => {
+            void nuiLog(
+                ['[Container]', 'Keydown detected', { key: event.key, code: event.code, closeKey }],
+                'debug',
+            );
+            
+            //=-- Handle special characters (like PageUp, F keys, etc.)
+            if (closeKey.includes('SpecialCharacter.')) {
+                //=-- Skip mouse and wheel events
+                if (closeKey.includes('WheelMouseMove') || closeKey.includes('MouseClick')) {
+                    return;
+                }
+                const specialKey = closeKey.replace('SpecialCharacter.', '');
+                void nuiLog(
+                    ['[Container]', 'Comparing special key', { code: event.code, specialKey }],
+                    'debug',
+                );
+                if (event.code === specialKey) {
+                    void nuiLog(['[Container]', 'Match on special key - closing UI'], 'debug');
+                    event.preventDefault();
+                    setVisible(false);
+                }
+            } else {
+                //=-- Regular character keys
+                void nuiLog(
+                    [
+                        '[Container]',
+                        'Comparing regular key',
+                        { key: event.key.toLowerCase(), closeKey: closeKey.toLowerCase() },
+                    ],
+                    'debug',
+                );
+                if (event.key.toLowerCase() === closeKey.toLowerCase()) {
+                    void nuiLog(['[Container]', 'Match on regular key - closing UI'], 'debug');
+                    event.preventDefault();
+                    setVisible(false);
+                }
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [visible, closeKey, setVisible]);
 
     return (
         <div

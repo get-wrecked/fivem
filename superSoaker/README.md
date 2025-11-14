@@ -116,11 +116,12 @@ File: `ui/src/superSoaker/capture.ts`
   - `encoding`, `quality`, `headers`, `correlation`
   - `resultURL?` — NUI will POST `{ id, data }` here (either image data URI or upload response text)
   - `targetURL?` and `targetField?` — if present, NUI uploads a file via `multipart/form-data`
-- Screenshot capture priority:
+- Screenshot capture priority (evaluated for each request):
   1. **Medal.tv capture** (when `preferMedal: true` and Medal client is available)
      - High-quality direct game capture
      - If Medal is unreachable (network error, timeout, etc.), this automatically falls back to WebGL
      - Failures are logged as warnings with the error details
+     - **Medal availability is checked periodically** (default: 3 seconds, configurable via `Config.Medal.CheckIntervalMs`), so the system adapts if Medal starts, stops, or crashes mid-game
   2. **WebGL/Three.js capture** (fallback or when Medal not preferred)
      - Uses `@citizenfx/three` to read pixels from game frame
      - Reliable fallback for when Medal is unavailable or fails
@@ -163,6 +164,7 @@ Feature parity and differences compared to `screenshot-basic`:
     2. **WebGL/Three.js** (automatic fallback) - Uses CitizenFX Three binding if Medal doesn't respond, or is not running.
     3. **1×1 transparent PNG** (final fallback) - Safe fallback when all capture methods fail.
   - Medal failures are automatically detected and logged, with seamless fallback to WebGL/Three.js.
+  - **Dynamic availability detection**: Medal client status is checked periodically (default: 3 seconds, configurable via `Config.Medal.CheckIntervalMs`), allowing the system to automatically adapt if Medal starts, stops, or crashes during gameplay.
   - screenshot-basic returns a 1×1 transparent PNG when the Three binding is unavailable.
 
 ## Notes & tips

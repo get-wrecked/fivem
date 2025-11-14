@@ -10,6 +10,8 @@ The auto-clipping system that monitors in-game events and triggers Medal.tv clip
   - Transport layer that sends clip requests to Medal.tv.
 - `client-main.lua`
   - Entry point that registers UI commands, keybinds, and initializes the clipping system.
+  - `/medal` and its keybind share the same underlying command from `Config.Command` and `Config.Keybind`. FiveM's keybinding system resolves the actual key, and the UI uses that to show the currently bound key.
+  - Command and keybind both toggle the UI open/closed. Pressing the keybind again, running the command again, Pressing ESC, or clicking the X button, closes the UI. The UI closes on key press (keydown) of the bound key.
   - Reads configuration from `Config.ClippingEvents` and builds the UI.
 - `__types.lua`
   - Type definitions for event configuration and vessel cargo.

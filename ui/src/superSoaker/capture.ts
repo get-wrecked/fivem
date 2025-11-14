@@ -84,6 +84,8 @@ class SoakerUI {
     private pending: SoakerRequest | null = null;
     private available = false;
     private hasMedal = false;
+    private medalCheckInterval = 3000; //=-- Default, can be overridden by config
+    private medalCheckTimer: number | null = null;
 
     /** Initializes rendering resources and message listeners. */
     async initialize() {
@@ -166,13 +168,65 @@ class SoakerUI {
         }
 
         this.hasMedal = await Medal.hasApp();
+        void nuiLog(
+            ['[SuperSoaker.UI]', `Initialized - Medal available: ${this.hasMedal}, WebGL available: ${this.available}`],
+            'info',
+        );
 
-        //=-- Listen for capture requests from Lua
-        window.addEventListener('message', (event) => {
-            const req: SoakerRequest | undefined = event.data?.request || undefined;
-            if (!req) return;
-            this.pending = req;
+        //=-- Periodically check Medal availability to handle client starting/stopping
+        this.startMedalAvailabilityTimer();
+
+        //=-- Ensure we clean up timers when the NUI page is unloaded
+        window.addEventListener('beforeunload', () => {
+            this.stopMedalAvailabilityTimer();
         });
+
+        //=-- Listen for capture requests and config updates from Lua
+        window.addEventListener('message', (event) => {
+            //=-- Handle capture requests
+            const req: SoakerRequest | undefined = event.data?.request || undefined;
+            if (req) {
+                this.pending = req;
+                return;
+            }
+            
+            //=-- Handle Medal config updates
+            if (event.data?.action === 'medal:config' && event.data?.payload) {
+                const config = event.data.payload;
+                if (typeof config.checkIntervalMs === 'number') {
+                    this.medalCheckInterval = config.checkIntervalMs;
+                    this.startMedalAvailabilityTimer();
+                    void nuiLog(
+                        ['[SuperSoaker.UI]', `Medal check interval set to ${this.medalCheckInterval}ms from config`],
+                        'debug',
+                    );
+                }
+            }
+        });
+    }
+
+    //=-- (Re)starts Medal availability polling with the current interval
+    private startMedalAvailabilityTimer() {
+        this.stopMedalAvailabilityTimer();
+
+        this.medalCheckTimer = window.setInterval(async () => {
+            const newStatus = await Medal.hasApp();
+            if (newStatus !== this.hasMedal) {
+                this.hasMedal = newStatus;
+                void nuiLog(
+                    ['[SuperSoaker.UI]', `Medal availability changed to: ${this.hasMedal}`],
+                    'info',
+                );
+            }
+        }, this.medalCheckInterval);
+    }
+
+    //=-- Stops Medal availability polling and clears the active timer, if any
+    private stopMedalAvailabilityTimer() {
+        if (this.medalCheckTimer !== null) {
+            clearInterval(this.medalCheckTimer);
+            this.medalCheckTimer = null;
+        }
     }
 
     /**
@@ -239,6 +293,24 @@ class SoakerUI {
      * @param request The capture or upload request.
      */
     private async handleRequest(request: SoakerRequest) {
+        //=-- Log capture method decision
+        if (request.preferMedal && this.hasMedal) {
+            void nuiLog(
+                ['[SuperSoaker.UI]', 'Medal preferred and available - will attempt Medal capture first'],
+                'debug'
+            );
+        } else if (request.preferMedal && !this.hasMedal) {
+            void nuiLog(
+                ['[SuperSoaker.UI]', 'Medal preferred but NOT available - will use WebGL capture'],
+                'debug'
+            );
+        } else if (!request.preferMedal) {
+            void nuiLog(
+                ['[SuperSoaker.UI]', 'Medal not preferred (Config.Screenshots.MedalPreferred = false) - will use WebGL capture'],
+                'debug'
+            );
+        }
+        
         let imageURL = '';
         let type = 'image/png';
 

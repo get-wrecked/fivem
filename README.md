@@ -6,7 +6,7 @@ A FiveM/GTA V server resource that integrates with the Medal.tv desktop client t
 
 - **Auto-Clipping UI**: Toggle auto-clipping, configure clip length, and enable/disable specific events.
 - **Custom Event Signals**: Dynamically register your own clipping events at runtime via the `registerSignal` export.
-- **SuperSoaker Screenshots**: Drop-in replacement for `screenshot-basic` with both local capture and HTTP upload. Features automatic fallback from Medal.tv to WebGL if some unforeseen issue with the Medal connection occurs.
+- **SuperSoaker Screenshots**: Drop-in replacement for `screenshot-basic`, with both local capture, and HTTP upload. Features automatic fallback from Medal.tv to WebGL, if some unforeseen issue with the Medal connection occurs. Medal availability is monitored continuously (configurable interval), adapting in real-time, if Medal starts, stops, or crashes.
 - **GameVein Data Pipeline**: Allows the Medal client to get game context and server info when clipping.
 - **Framework-Aware**: The server detects framework (ESX → QBX → QB → ND → OX → TMC → unknown) and provides safe export helpers to avoid errors, without loading any framework resource files directly.
 
@@ -30,9 +30,11 @@ A FiveM/GTA V server resource that integrates with the Medal.tv desktop client t
 ## Usage
 
 - Ensure the Medal.tv desktop client is running before joining the server.
-- Open the Medal UI in-game:
+- Toggle the Medal UI in-game:
   - Chat command: `/medal` (from `Config.Command`)
   - Default keybind: `Page Up` (from `Config.Keybind`)
+  - The keybind is shown in the UI using FiveM's current binding for the command (resolved via `GetHashKey` + `GetControlInstructionalButton`), so if a player rebinds the key in FiveM, the UI label follows their current binding.
+  - Send the command again, press the keybind again, press ESC, or click the X button to close the UI. The UI listens for the same key that opened it and closes on key press (keydown).
 - In the UI, you can:
   - Toggle auto-clipping on/off
   - Set clip length
@@ -137,7 +139,7 @@ The resulting `release/medal/` folder can be directly copied to your FiveM serve
   - `Config.Command` and `Config.Keybind` control how players open the UI.
   - `Config.ClippingEvents` pre-registers events visible in the Auto-Clipping UI.
   - `Config.Screenshots`
-    - `MedalPreferred`: Prefer Medal.tv for screenshots when available. If Medal is unable to respond (network errors, timeouts, etc.), the resource automatically falls back to WebGL/Three.js capture.
+    - `MedalPreferred`: Prefer Medal.tv for screenshots when available. If Medal is unable to respond (network errors, timeouts, etc.), the resource automatically falls back to WebGL/Three.js capture. Medal availability is checked periodically (default: 3 seconds, configurable via `Config.Medal.CheckIntervalMs`), allowing automatic adaptation if Medal starts, stops, or crashes during gameplay.
     - `ScreenshotBasicOverride`: Provides compatibility for `screenshot-basic` exports.
 
 ## Exports

@@ -25,6 +25,8 @@ Medal.AC = Medal.AC or {} --//=-- The namespace for the client Auto Clipping fun
 --//=-- Wait Constants
 local RESOURCE_START_DELAY_MS = 100
 
+local isUiOpen = false --//=-- UI State
+
 ---Safely reads a specific event config from the shared `Config` table
 ---@param eventId string
 ---@return EventConfig
@@ -53,19 +55,41 @@ function Medal.AC.registerCommand()
         return
     end
 
+    --//=-- Single command handles both chat and keybind
     RegisterCommand(Config.Command, function ()
-        Logger.debug('Opening Medal UI')
-
-        SetNuiFocus(true, true)
-        SendNUIMessage({
-            action = 'show',
-            payload = true
-        })
+        Logger.debug('[Medal.AC] Command triggered: ' .. Config.Command)
+        
+        if isUiOpen then
+            Logger.debug('[Medal.AC] Closing Medal UI')
+            isUiOpen = false
+            SetNuiFocus(false, false)
+            SendNUIMessage({
+                action = 'show',
+                payload = false
+            })
+        else
+            Logger.debug('[Medal.AC] Opening Medal UI')
+            isUiOpen = true
+            SetNuiFocus(true, true)
+            
+            --//=-- Get actual bound key and send to UI when opening
+            local boundKey = nil
+            if Medal.GV and Medal.GV.getCurrentKeybind then
+                boundKey = Medal.GV.getCurrentKeybind(Config.Command)
+                Logger.debug('[Medal.AC] boundKey: ' .. tostring(boundKey))
+            end
+            
+            SendNUIMessage({
+                action = 'show',
+                payload = true,
+                closeKey = boundKey
+            })
+        end
     end, false)
 
     if Config.Keybind and type(Config.Keybind) == 'string' then
         Logger.debug(('Registering Medal UI keymapping: %s'):format(Config.Keybind))
-        RegisterKeyMapping(Config.Command, 'Open Medal Clipping UI', 'keyboard', Config.Keybind)
+        RegisterKeyMapping(Config.Command, 'Toggle Medal Clipping UI', 'keyboard', Config.Keybind)
     end
 end
 
@@ -139,6 +163,12 @@ RegisterNuiCallback('ac:length', function (length, cb)
 end)
 
 RegisterNuiCallback('hide', function (_, cb)
+    Logger.debug('Closing Medal UI from hide callback')
+    isUiOpen = false
     SetNuiFocus(false, false)
+    SendNUIMessage({
+        action = 'show',
+        payload = false
+    })
     cb('ok')
 end)

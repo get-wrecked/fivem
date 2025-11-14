@@ -13,6 +13,8 @@
     None
 */
 
+import { nuiLog } from '@/lib/nui';
+
 interface ClipOptions {
     duration?: number;
     captureDelayMs?: number;
@@ -102,16 +104,22 @@ class Medal {
                 );
             }
         } catch (error) {
-            console.error('Network error while triggering clip:', error);
+            void nuiLog(['[Medal API]', 'Network error while triggering clip:', error], 'error');
         }
     }
 
     public async hasApp(): Promise<boolean> {
         try {
             const response = await Medal.request('user/profile');
-
-            return response.ok;
-        } catch (_err) {
+            const isAvailable = response.ok;
+            
+            if (!isAvailable && response.status !== 0) {
+                void nuiLog(['[Medal API]', `hasApp check failed with status: ${response.status}`], 'debug');
+            }
+            
+            return isAvailable;
+        } catch (err) {
+            void nuiLog(['[Medal API]', 'hasApp check failed with error:', err], 'debug');
             return false;
         }
     }
@@ -134,7 +142,7 @@ class Medal {
 
             return result.imageBase64;
         } catch (error) {
-            console.error('Network error while retrieving base64 screenshot:', error);
+            void nuiLog(['[Medal API]', 'Network error while retrieving base64 screenshot:', error], 'error');
             return '';
         }
     }
@@ -150,7 +158,7 @@ class Medal {
                 );
             }
         } catch (error) {
-            console.error('Network error while setting game context:', error);
+            void nuiLog(['[Medal API]', 'Network error while setting game context:', error], 'error');
         }
     }
 }

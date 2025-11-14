@@ -78,3 +78,8 @@ Config.Assayer = {
     RequestTimeoutMs = 1500, --//=-- Default timeout (ms) for waiting on nearby players' responses
     BucketMismatchLogTolerance = 5.0, --//=-- Extra tolerance (meters) used only for debug logging on bucket mismatches
 }
+
+--//=-- Medal client integration settings
+Config.Medal = {
+    CheckIntervalMs = 3 * S --//=-- How often to check Medal client availability (milliseconds). Lower = faster detection, higher = less CPU usage
+}
