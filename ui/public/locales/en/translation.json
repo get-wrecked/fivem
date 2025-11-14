@@ -15,5 +15,10 @@
     "seconds_one": "{{count}} second",
     "seconds_other": "{{count}} seconds",
     "title": "Clip Length"
+  },
+  "download": {
+    "button": "Download",
+    "subtitle": "Automatically clip top events for this server",
+    "title": "Enable Auto Clipping with Medal"
   }
 }
