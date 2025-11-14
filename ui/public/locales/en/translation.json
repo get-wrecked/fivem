@@ -8,5 +8,12 @@
     "disabled": "OFF",
     "enabled": "ON",
     "title": "Auto Clipping"
+  },
+  "clip_length": {
+    "minutes_one": "{{count}} minute",
+    "minutes_other": "{{count}} minutes",
+    "seconds_one": "{{count}} second",
+    "seconds_other": "{{count}} seconds",
+    "title": "Clip Length"
   }
 }

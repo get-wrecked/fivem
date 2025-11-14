@@ -8,5 +8,14 @@
     "disabled": "",
     "enabled": "",
     "title": ""
+  },
+  "clip_length": {
+    "minutes_one": "",
+    "minutes_many": "",
+    "minutes_other": "",
+    "seconds_one": "",
+    "seconds_many": "",
+    "seconds_other": "",
+    "title": ""
   }
 }
