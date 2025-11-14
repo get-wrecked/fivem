@@ -19,6 +19,7 @@ import type { PropsWithChildren } from 'react';
 import { useEffect, useState } from 'react';
 import { ApiIndicator } from '@/components/api-indicator';
 import { WebSocketIndicator } from '@/components/websocket-indicator';
+import { nuiLog } from '@/lib/nui';
 import { cn } from '@/lib/utils';
 import logo from '../assets/logo.svg';
 
@@ -76,10 +77,16 @@ export const Container: React.FC<PropsWithChildren> = ({ children }) => {
             if (event.data?.action === 'show' && event.data?.payload === true) {
                 //=-- Update closeKey when opening (user might have rebound the key)
                 if (event.data?.closeKey) {
-                    console.log('[Container] Received closeKey:', event.data.closeKey);
+                    void nuiLog(
+                        ['[Container]', 'Received closeKey', event.data.closeKey],
+                        'debug',
+                    );
                     setCloseKey(event.data.closeKey);
                 } else {
-                    console.log('[Container] No closeKey received, keybind close will not work');
+                    void nuiLog(
+                        ['[Container]', 'No closeKey received, keybind close will not work'],
+                        'debug',
+                    );
                     setCloseKey(null);
                 }
             }
@@ -92,14 +99,21 @@ export const Container: React.FC<PropsWithChildren> = ({ children }) => {
     //=-- Handle key press to close UI with bound key
     useEffect(() => {
         if (!visible || !closeKey) {
-            console.log('[Container] Key listener not active. visible:', visible, 'closeKey:', closeKey);
+            void nuiLog([
+                '[Container]',
+                'Key listener not active',
+                { visible, closeKey },
+            ], 'debug');
             return;
         }
 
-        console.log('[Container] Key listener active for closeKey:', closeKey);
+        void nuiLog(['[Container]', 'Key listener active for closeKey', closeKey], 'debug');
 
         const handleKeyDown = (event: KeyboardEvent) => {
-            console.log('[Container] Keydown detected - key:', event.key, 'code:', event.code, 'closeKey:', closeKey);
+            void nuiLog(
+                ['[Container]', 'Keydown detected', { key: event.key, code: event.code, closeKey }],
+                'debug',
+            );
             
             //=-- Handle special characters (like PageUp, F keys, etc.)
             if (closeKey.includes('SpecialCharacter.')) {
@@ -108,17 +122,27 @@ export const Container: React.FC<PropsWithChildren> = ({ children }) => {
                     return;
                 }
                 const specialKey = closeKey.replace('SpecialCharacter.', '');
-                console.log('[Container] Comparing special key - event.code:', event.code, 'vs specialKey:', specialKey);
+                void nuiLog(
+                    ['[Container]', 'Comparing special key', { code: event.code, specialKey }],
+                    'debug',
+                );
                 if (event.code === specialKey) {
-                    console.log('[Container] Match! Closing UI');
+                    void nuiLog(['[Container]', 'Match on special key - closing UI'], 'debug');
                     event.preventDefault();
                     setVisible(false);
                 }
             } else {
                 //=-- Regular character keys
-                console.log('[Container] Comparing regular key - event.key:', event.key.toLowerCase(), 'vs closeKey:', closeKey.toLowerCase());
+                void nuiLog(
+                    [
+                        '[Container]',
+                        'Comparing regular key',
+                        { key: event.key.toLowerCase(), closeKey: closeKey.toLowerCase() },
+                    ],
+                    'debug',
+                );
                 if (event.key.toLowerCase() === closeKey.toLowerCase()) {
-                    console.log('[Container] Match! Closing UI');
+                    void nuiLog(['[Container]', 'Match on regular key - closing UI'], 'debug');
                     event.preventDefault();
                     setVisible(false);
                 }
