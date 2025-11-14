@@ -208,7 +208,6 @@ function Medal.GV.sendMedalConfig()
     if Config and Config.Debug then
         local parts = {}
         if cfg.checkIntervalMs then parts[#parts+1] = ('checkIntervalMs=%d'):format(cfg.checkIntervalMs) end
-        if cfg.keybind then parts[#parts+1] = ('keybind=%s'):format(cfg.keybind) end
         if #parts > 0 then
             Logger.debug(('[medal] UI medal:config ' .. table.concat(parts, ' ')))
         end
