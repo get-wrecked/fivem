@@ -176,6 +176,11 @@ class SoakerUI {
         //=-- Periodically check Medal availability to handle client starting/stopping
         this.startMedalAvailabilityTimer();
 
+        //=-- Ensure we clean up timers when the NUI page is unloaded
+        window.addEventListener('beforeunload', () => {
+            this.stopMedalAvailabilityTimer();
+        });
+
         //=-- Listen for capture requests and config updates from Lua
         window.addEventListener('message', (event) => {
             //=-- Handle capture requests
@@ -202,9 +207,7 @@ class SoakerUI {
 
     //=-- (Re)starts Medal availability polling with the current interval
     private startMedalAvailabilityTimer() {
-        if (this.medalCheckTimer !== null) {
-            clearInterval(this.medalCheckTimer);
-        }
+        this.stopMedalAvailabilityTimer();
 
         this.medalCheckTimer = window.setInterval(async () => {
             const newStatus = await Medal.hasApp();
@@ -216,6 +219,14 @@ class SoakerUI {
                 );
             }
         }, this.medalCheckInterval);
+    }
+
+    //=-- Stops Medal availability polling and clears the active timer, if any
+    private stopMedalAvailabilityTimer() {
+        if (this.medalCheckTimer !== null) {
+            clearInterval(this.medalCheckTimer);
+            this.medalCheckTimer = null;
+        }
     }
 
     /**
