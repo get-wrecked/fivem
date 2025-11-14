@@ -3,5 +3,10 @@
     "available": "Available",
     "message": "Autoclipping API: {{status}}",
     "unavailable": "Unavailable"
+  },
+  "auto_clipping": {
+    "disabled": "OFF",
+    "enabled": "ON",
+    "title": "Auto Clipping"
   }
 }

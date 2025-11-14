@@ -3,5 +3,10 @@
     "available": "",
     "message": "",
     "unavailable": ""
+  },
+  "auto_clipping": {
+    "disabled": "",
+    "enabled": "",
+    "title": ""
   }
 }

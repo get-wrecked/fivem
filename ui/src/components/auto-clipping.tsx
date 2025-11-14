@@ -17,6 +17,7 @@ import { fetchNui, useNuiEvent } from '@tsfx/hooks';
 import clsx from 'clsx';
 import type React from 'react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useApiStatus } from '@/hooks/use-api-status';
 import { Download } from './download';
 import { Event, type EventData } from './event';
@@ -27,6 +28,7 @@ export const AutoClipping: React.FC = () => {
     const [events, setEvents] = useState<EventData[]>([]);
     const [enabled, setEnabled] = useState<boolean>(false);
     const { isAvailable } = useApiStatus();
+    const { t } = useTranslation();
 
     const updateEnabled = (toggle: boolean): void => {
         setEnabled(toggle);
@@ -57,11 +59,11 @@ export const AutoClipping: React.FC = () => {
                     />
                 )}
 
-                <h4 className='font-medium'>Auto Clipping</h4>
+                <h4 className='font-medium'>{t('auto_clipping.title')}</h4>
 
                 <div className='flex items-center gap-1.5'>
                     <span className='text-foreground-700 text-xs font-normal'>
-                        {enabled ? 'ON' : 'OFF'}
+                        {enabled ? t('auto_clipping.enabled') : t('auto_clipping.disabled')}
                     </span>
 
                     <Switch checked={enabled} onCheckedChange={updateEnabled} />
