@@ -13,8 +13,8 @@ import { useNuiEvent, useNuiVisibility } from '@tsfx/hooks';
 import type { PropsWithChildren } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { WebSocketStatusContext } from '@/contexts/websocket-status-context';
-import wsClient from '@/ws/websocket';
 import { nuiLog } from '@/lib/nui';
+import wsClient from '@/ws/websocket';
 
 /**
  * The WebSocket status provider for the UI.
@@ -25,11 +25,14 @@ export const WebSocketStatusProvider: React.FC<PropsWithChildren> = ({ children 
 
     //=-- Log status changes with debug info
     const updateStatus = useCallback((status: boolean, source: string) => {
-        setIsConnected(prevStatus => {
+        setIsConnected((prevStatus) => {
             if (prevStatus !== status) {
                 void nuiLog(
-                    ['[Medal WebSocket Status]', `Changed from ${prevStatus} to ${status} (source: ${source})`],
-                    'info'
+                    [
+                        '[Medal WebSocket Status]',
+                        `Changed from ${prevStatus} to ${status} (source: ${source})`,
+                    ],
+                    'info',
                 );
             }
             return status;
@@ -69,10 +72,10 @@ export const WebSocketStatusProvider: React.FC<PropsWithChildren> = ({ children 
     //=-- Poll every few seconds while the UI is visible to catch any missed transitions
     useEffect(() => {
         if (!visible) return;
-        
+
         //=-- Log visibility state
         void nuiLog(['[Medal WebSocket Status]', `UI visible, starting polling checks`], 'debug');
-        
+
         //=-- Set immediately on visibility change
         try {
             const currentStatus = wsClient.isConnected();
