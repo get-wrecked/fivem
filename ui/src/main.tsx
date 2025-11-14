@@ -18,11 +18,18 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import '@/superSoaker/capture'; //=-- This import boots the SuperSoaker NUI capture as a side-effect
+import i18n from 'i18next';
+import Backend from 'i18next-http-backend';
+import { initReactI18next } from 'react-i18next';
 import { AutoClipping } from './components/auto-clipping';
 import { ClipLength } from './components/clip-length';
 import { Container } from './components/container';
 import { ServerDetails } from './components/server-details';
 import Providers from './providers';
+
+i18n.use(Backend)
+    .use(initReactI18next)
+    .init({ debug: true, fallbackLng: 'en', interpolation: { escapeValue: false } });
 
 /**
  * Root application component.
