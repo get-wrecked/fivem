@@ -22,5 +22,10 @@
     "button": "",
     "subtitle": "",
     "title": ""
+  },
+  "websocket_status": {
+    "connected": "",
+    "disconnected": "",
+    "message": ""
   }
 }

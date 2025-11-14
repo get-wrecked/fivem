@@ -20,5 +20,10 @@
     "button": "Download",
     "subtitle": "Automatically clip top events for this server",
     "title": "Enable Auto Clipping with Medal"
+  },
+  "websocket_status": {
+    "connected": "Connected",
+    "disconnected": "Disconnected",
+    "message": "WebSocket: {{status}}"
   }
 }
