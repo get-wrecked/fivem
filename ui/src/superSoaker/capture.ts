@@ -85,6 +85,7 @@ class SoakerUI {
     private available = false;
     private hasMedal = false;
     private medalCheckInterval = 3000; //=-- Default, can be overridden by config
+    private medalCheckTimer: number | null = null;
 
     /** Initializes rendering resources and message listeners. */
     async initialize() {
@@ -169,20 +170,11 @@ class SoakerUI {
         this.hasMedal = await Medal.hasApp();
         void nuiLog(
             ['[SuperSoaker.UI]', `Initialized - Medal available: ${this.hasMedal}, WebGL available: ${this.available}`],
-            'info'
+            'info',
         );
 
         //=-- Periodically check Medal availability to handle client starting/stopping
-        setInterval(async () => {
-            const newStatus = await Medal.hasApp();
-            if (newStatus !== this.hasMedal) {
-                this.hasMedal = newStatus;
-                void nuiLog(
-                    ['[SuperSoaker.UI]', `Medal availability changed to: ${this.hasMedal}`],
-                    'info'
-                );
-            }
-        }, this.medalCheckInterval);
+        this.startMedalAvailabilityTimer();
 
         //=-- Listen for capture requests and config updates from Lua
         window.addEventListener('message', (event) => {
@@ -198,13 +190,32 @@ class SoakerUI {
                 const config = event.data.payload;
                 if (typeof config.checkIntervalMs === 'number') {
                     this.medalCheckInterval = config.checkIntervalMs;
+                    this.startMedalAvailabilityTimer();
                     void nuiLog(
                         ['[SuperSoaker.UI]', `Medal check interval set to ${this.medalCheckInterval}ms from config`],
-                        'debug'
+                        'debug',
                     );
                 }
             }
         });
+    }
+
+    //=-- (Re)starts Medal availability polling with the current interval
+    private startMedalAvailabilityTimer() {
+        if (this.medalCheckTimer !== null) {
+            clearInterval(this.medalCheckTimer);
+        }
+
+        this.medalCheckTimer = window.setInterval(async () => {
+            const newStatus = await Medal.hasApp();
+            if (newStatus !== this.hasMedal) {
+                this.hasMedal = newStatus;
+                void nuiLog(
+                    ['[SuperSoaker.UI]', `Medal availability changed to: ${this.hasMedal}`],
+                    'info',
+                );
+            }
+        }, this.medalCheckInterval);
     }
 
     /**
