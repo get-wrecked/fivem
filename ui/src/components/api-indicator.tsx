@@ -15,11 +15,13 @@
 
 import { Camera, CameraOff } from 'lucide-react';
 import type React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useApiStatus } from '@/hooks/use-api-status';
 
 ////=-- Standalone indicator for Autoclipping API availability
 export const ApiIndicator: React.FC = () => {
+    const { t } = useTranslation();
     const { isAvailable } = useApiStatus();
 
     return (
@@ -38,7 +40,14 @@ export const ApiIndicator: React.FC = () => {
                 </span>
             </TooltipTrigger>
             <TooltipContent sideOffset={6}>
-                Autoclipping API: {isAvailable ? 'Available' : 'Unavailable'}
+                <Trans
+                    i18nKey='api_status.message'
+                    values={{
+                        status: isAvailable
+                            ? t('api_status.available')
+                            : t('api_status.unavailable'),
+                    }}
+                />
             </TooltipContent>
         </Tooltip>
     );
