@@ -39,7 +39,7 @@ i18n.use(Backend)
  * Renders the primary container and child panels for the Medal auto-clipping in-game UI.
  */
 export const App: React.FC = () => {
-    useNuiEvent<string>('locale', { handler: (locale) => i18n.changeLanguage(locale) });
+    useNuiEvent<string>('ui:locale', { handler: (locale) => i18n.changeLanguage(locale) });
 
     return (
         <div className='w-screen h-screen overflow-hidden relative select-none'>
