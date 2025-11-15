@@ -10,7 +10,7 @@
     "title": "Automatisches Clip"
   },
   "clip_length": {
-    "minutes_one": "{{count}} Minütig",
+    "minutes_one": "{{count}} Minute",
     "minutes_other": "{{count}} Minuten",
     "seconds_one": "{{count}} Sekunde",
     "seconds_other": "{{count}} Sekunden",
