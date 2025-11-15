@@ -1,29 +1,29 @@
 {
   "api_status": {
-    "available": "",
-    "message": "",
-    "unavailable": ""
+    "available": "Shipshape an' sailin'",
+    "message": "Autoclippin' API, ye scallywags: {{status}}",
+    "unavailable": "Scuttled an' sinkin'"
   },
   "auto_clipping": {
-    "disabled": "",
-    "enabled": "",
-    "title": ""
+    "disabled": "Keelhauled (OFF)",
+    "enabled": "Hoisted an' hackin' (ON)",
+    "title": "Auto-Clippin' Contraption"
   },
   "clip_length": {
-    "minutes_one": "",
-    "minutes_other": "",
-    "seconds_one": "",
-    "seconds_other": "",
-    "title": ""
+    "minutes_one": "{{count}} minute o' plunder",
+    "minutes_other": "{{count}} minutes o' plunder",
+    "seconds_one": "{{count}} second o' glory",
+    "seconds_other": "{{count}} seconds o' glory",
+    "title": "Length o' the booty clip"
   },
   "download": {
-    "button": "",
-    "subtitle": "",
-    "title": ""
+    "button": "Grab the cursed booty",
+    "subtitle": "Auto-slice the crew's finest shenanigans fer this scurvy server",
+    "title": "Hoist Auto-Clippin' with Medal"
   },
   "websocket_status": {
-    "connected": "",
-    "disconnected": "",
-    "message": ""
+    "connected": "Lashed tight to the mainmast",
+    "disconnected": "Cut loose an' adrift",
+    "message": "Whisperin' tubes be: {{status}}"
   }
 }
