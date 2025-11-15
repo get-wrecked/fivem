@@ -1,27 +1,27 @@
 {
   "api_status": {
-    "available": "",
-    "message": "",
-    "unavailable": ""
+    "available": "사용 가능",
+    "message": "자동 캡처 API: {{status}}",
+    "unavailable": "사용 불가"
   },
   "auto_clipping": {
-    "disabled": "",
-    "enabled": "",
-    "title": ""
+    "disabled": "끄기",
+    "enabled": "켜짐",
+    "title": "자동 캡처"
   },
   "clip_length": {
-    "minutes_other": "",
-    "seconds_other": "",
-    "title": ""
+    "minutes_other": "{{count}}분",
+    "seconds_other": "{{count}}초",
+    "title": "캡처 길이"
   },
   "download": {
-    "button": "",
-    "subtitle": "",
-    "title": ""
+    "button": "다운로드",
+    "subtitle": "이 서버의 주요 이벤트를 자동으로 캡처합니다",
+    "title": "메달로 자동 클리핑 활성화"
   },
   "websocket_status": {
-    "connected": "",
-    "disconnected": "",
-    "message": ""
+    "connected": "연결됨",
+    "disconnected": "연결이 끊김",
+    "message": "웹 소켓: {{status}}"
   }
 }
