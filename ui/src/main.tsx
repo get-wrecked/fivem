@@ -13,19 +13,21 @@
     None
 */
 
+import { useNuiEvent } from '@tsfx/hooks';
+import i18n from 'i18next';
+import Backend from 'i18next-http-backend';
 import type React from 'react';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import './index.css';
-import '@/superSoaker/capture'; //=-- This import boots the SuperSoaker NUI capture as a side-effect
-import i18n from 'i18next';
-import Backend from 'i18next-http-backend';
 import { initReactI18next } from 'react-i18next';
 import { AutoClipping } from './components/auto-clipping';
 import { ClipLength } from './components/clip-length';
 import { Container } from './components/container';
 import { ServerDetails } from './components/server-details';
 import Providers from './providers';
+
+import './index.css';
+import '@/superSoaker/capture'; //=-- This import boots the SuperSoaker NUI capture as a side-effect
 
 i18n.use(Backend)
     .use(initReactI18next)
@@ -37,6 +39,8 @@ i18n.use(Backend)
  * Renders the primary container and child panels for the Medal auto-clipping in-game UI.
  */
 export const App: React.FC = () => {
+    useNuiEvent<string>('locale', { handler: (locale) => i18n.changeLanguage(locale) });
+
     return (
         <div className='w-screen h-screen overflow-hidden relative select-none'>
             <Container>
