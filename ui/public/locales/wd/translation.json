@@ -1,29 +1,30 @@
+
 {
   "api_status": {
-    "available": "",
-    "message": "",
-    "unavailable": ""
+    "available": "🟢✅📡📶✨",
+    "message": "✂️🎬📡⚙️: {{status}}✨",
+    "unavailable": "🔴❌📴🚫"
   },
   "auto_clipping": {
-    "disabled": "",
-    "enabled": "",
-    "title": ""
+    "disabled": "⏹️✂️🚫💤",
+    "enabled": "▶️✂️⚡✨",
+    "title": "🤖✂️🎬✨"
   },
   "clip_length": {
-    "minutes_one": "",
-    "minutes_other": "",
-    "seconds_one": "",
-    "seconds_other": "",
-    "title": ""
+    "minutes_one": "{{count}} ⏱️🕒",
+    "minutes_other": "{{count}} ⏱️🕒🕒",
+    "seconds_one": "{{count}} ⏱️⏲️",
+    "seconds_other": "{{count}} ⏱️⏲️⏲️",
+    "title": "✂️🎬⏱️📏"
   },
   "download": {
-    "button": "",
-    "subtitle": "",
-    "title": ""
+    "button": "📥⬇️💾",
+    "subtitle": "🤖✂️📌🌟🏆🎮🖥️📡",
+    "title": "🔓🤖✂️🎬🏅"
   },
   "websocket_status": {
-    "connected": "",
-    "disconnected": "",
-    "message": ""
+    "connected": "🟢🔗📡📶",
+    "disconnected": "🔴❌🔌📴",
+    "message": "🕸️🔌📡: {{status}}"
   }
 }
