@@ -113,6 +113,11 @@ function Medal.AC.buildClippingUi()
         payload = Settings.clipLength
     })
 
+    SendNUIMessage({
+        action = 'ui:locale',
+        payload = Config.Locale
+    })
+
     for _, event in ipairs(Config.ClippingEvents) do
         if event.enabled then
             SendNUIMessage({
