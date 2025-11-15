@@ -30,8 +30,8 @@ Config.Keybind = 'pageup'
 
 --//=-- Locale for UI text and messages
 --//=-- Available: 'en' (English), 'pt' (Portuguese), 'ar' (Arabic), 'de' (German), 'es' (Spanish), 'fr' (French),
---//=--             'ja' (Japanese), 'ko' (Korean), 'zh' (Chinese), 'pt' (Pirate), 'wd' (Webdings)
-Config.Locale = 'en'
+--//=--             'ja' (Japanese), 'ko' (Korean), 'zh' (Chinese), 'pr' (Pirate), 'wd' (Wingdings)
+Config.Locale = 'wd'
 
 --//=-- List of events that can trigger automatic clipping
 --//=-- To add new events, reference the clipping folder for implementation examples
