@@ -1,0 +1,37 @@
+{
+  "api_status": {
+    "available": "متوفر",
+    "message": "واجهة برمجة تطبيقات التقاط تلقائي: {{status}}",
+    "unavailable": "غير متوفر"
+  },
+  "auto_clipping": {
+    "disabled": "تعطيل",
+    "enabled": "تمكين",
+    "title": "التقاط تلقائي"
+  },
+  "clip_length": {
+    "minutes_zero": "دقيقة {{count}}",
+    "minutes_one": "دقيقة {{count}}",
+    "minutes_two": "دقيقة {{count}}",
+    "minutes_few": "دقيقة {{count}}",
+    "minutes_many": "دقيقة {{count}}",
+    "minutes_other": "دقيقة {{count}}",
+    "seconds_zero": "ثانية {{count}}",
+    "seconds_one": "ثانية {{count}}",
+    "seconds_two": "ثانية {{count}}",
+    "seconds_few": "ثانية {{count}}",
+    "seconds_many": "ثانية {{count}}",
+    "seconds_other": " {{count}}ثانية",
+    "title": ""
+  },
+  "download": {
+    "button": "تنزيل",
+    "subtitle": "التقاط الأحداث الأهم لهذا الخادم تلقائيًا",
+    "title": "تمكين القص التلقائي مع الميدالية"
+  },
+  "websocket_status": {
+    "connected": "متصل",
+    "disconnected": "غير متصل",
+    "message": "مقبس الويب: {{status}}"
+  }
+}
