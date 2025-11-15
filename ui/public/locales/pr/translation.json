@@ -5,20 +5,20 @@
     "unavailable": "Scuttled an' sinkin'"
   },
   "auto_clipping": {
-    "disabled": "Keelhauled (OFF)",
-    "enabled": "Hoisted an' hackin' (ON)",
-    "title": "Auto-Clippin' Contraption"
+    "disabled": "Keelhauled",
+    "enabled": "Hoisted an' hackin'",
+    "title": "Harpoon Harry:"
   },
   "clip_length": {
-    "minutes_one": "{{count}} minute o' plunder",
-    "minutes_other": "{{count}} minutes o' plunder",
-    "seconds_one": "{{count}} second o' glory",
-    "seconds_other": "{{count}} seconds o' glory",
-    "title": "Length o' the booty clip"
+    "minutes_one": "{{count}} glug",
+    "minutes_other": "{{count}} glugs",
+    "seconds_one": "{{count}} swig",
+    "seconds_other": "{{count}} swigs",
+    "title": "Length o' booty"
   },
   "download": {
     "button": "Grab the cursed booty",
-    "subtitle": "Auto-slice the crew's finest shenanigans fer this scurvy server",
+    "subtitle": "Slice yer crew's shenanigans in this scurvy tub",
     "title": "Hoist Auto-Clippin' with Medal"
   },
   "websocket_status": {
