@@ -77,10 +77,7 @@ export const Container: React.FC<PropsWithChildren> = ({ children }) => {
             if (event.data?.action === 'show' && event.data?.payload === true) {
                 //=-- Update closeKey when opening (user might have rebound the key)
                 if (event.data?.closeKey) {
-                    void nuiLog(
-                        ['[Container]', 'Received closeKey', event.data.closeKey],
-                        'debug',
-                    );
+                    void nuiLog(['[Container]', 'Received closeKey', event.data.closeKey], 'debug');
                     setCloseKey(event.data.closeKey);
                 } else {
                     void nuiLog(
@@ -99,11 +96,7 @@ export const Container: React.FC<PropsWithChildren> = ({ children }) => {
     //=-- Handle key press to close UI with bound key
     useEffect(() => {
         if (!visible || !closeKey) {
-            void nuiLog([
-                '[Container]',
-                'Key listener not active',
-                { visible, closeKey },
-            ], 'debug');
+            void nuiLog(['[Container]', 'Key listener not active', { visible, closeKey }], 'debug');
             return;
         }
 
@@ -114,7 +107,7 @@ export const Container: React.FC<PropsWithChildren> = ({ children }) => {
                 ['[Container]', 'Keydown detected', { key: event.key, code: event.code, closeKey }],
                 'debug',
             );
-            
+
             //=-- Handle special characters (like PageUp, F keys, etc.)
             if (closeKey.includes('SpecialCharacter.')) {
                 //=-- Skip mouse and wheel events

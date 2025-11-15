@@ -1,0 +1,29 @@
+{
+  "api_status": {
+    "available": "Available",
+    "message": "Autoclipping API: {{status}}",
+    "unavailable": "Unavailable"
+  },
+  "auto_clipping": {
+    "disabled": "OFF",
+    "enabled": "ON",
+    "title": "Auto Clipping"
+  },
+  "clip_length": {
+    "minutes_one": "{{count}} minute",
+    "minutes_other": "{{count}} minutes",
+    "seconds_one": "{{count}} second",
+    "seconds_other": "{{count}} seconds",
+    "title": "Clip Length"
+  },
+  "download": {
+    "button": "Download",
+    "subtitle": "Automatically clip top events for this server",
+    "title": "Enable Auto Clipping with Medal"
+  },
+  "websocket_status": {
+    "connected": "Connected",
+    "disconnected": "Disconnected",
+    "message": "WebSocket: {{status}}"
+  }
+}

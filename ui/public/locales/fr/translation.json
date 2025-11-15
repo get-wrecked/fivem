@@ -1,0 +1,31 @@
+{
+  "api_status": {
+    "available": "Disponible",
+    "message": "API de Capture Automatique: {{status}}",
+    "unavailable": "Indisponible"
+  },
+  "auto_clipping": {
+    "disabled": "DÉSACTIVÉ",
+    "enabled": "ACTIVÉ",
+    "title": "Capture Automatique"
+  },
+  "clip_length": {
+    "minutes_one": "{{count}} minute",
+    "minutes_many": "{{count}} minutes",
+    "minutes_other": "{{count}} minutes",
+    "seconds_one": "{{count}} seconde",
+    "seconds_many": "{{count}} secondes",
+    "seconds_other": "{{count}} secondes",
+    "title": "Longueur de Capture"
+  },
+  "download": {
+    "button": "Télécharger",
+    "subtitle": "Capturer automatiquement les événements importants",
+    "title": "Activer la capture automatique avec Medal"
+  },
+  "websocket_status": {
+    "connected": "Connecté",
+    "disconnected": "Déconnecté",
+    "message": "Socket Web: {{status}}"
+  }
+}

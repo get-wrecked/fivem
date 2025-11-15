@@ -25,11 +25,14 @@ export const ApiStatusProvider: React.FC<PropsWithChildren> = ({ children }) => 
 
     //=-- Log status changes with debug info
     const updateStatus = useCallback((status: boolean, source: string) => {
-        setIsAvailable(prevStatus => {
+        setIsAvailable((prevStatus) => {
             if (prevStatus !== status) {
                 void nuiLog(
-                    ['[Medal API Status]', `Changed from ${prevStatus} to ${status} (source: ${source})`],
-                    'info'
+                    [
+                        '[Medal API Status]',
+                        `Changed from ${prevStatus} to ${status} (source: ${source})`,
+                    ],
+                    'info',
                 );
             }
             return status;
@@ -57,7 +60,7 @@ export const ApiStatusProvider: React.FC<PropsWithChildren> = ({ children }) => 
 
         //=-- Log initial visibility state
         void nuiLog(['[Medal API Status]', `UI visible, starting polling checks`], 'debug');
-        
+
         //=-- Run immediately on visibility change and then on an interval
         void check();
         const id = window.setInterval(() => {

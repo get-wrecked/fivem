@@ -169,7 +169,10 @@ class SoakerUI {
 
         this.hasMedal = await Medal.hasApp();
         void nuiLog(
-            ['[SuperSoaker.UI]', `Initialized - Medal available: ${this.hasMedal}, WebGL available: ${this.available}`],
+            [
+                '[SuperSoaker.UI]',
+                `Initialized - Medal available: ${this.hasMedal}, WebGL available: ${this.available}`,
+            ],
             'info',
         );
 
@@ -189,7 +192,7 @@ class SoakerUI {
                 this.pending = req;
                 return;
             }
-            
+
             //=-- Handle Medal config updates
             if (event.data?.action === 'medal:config' && event.data?.payload) {
                 const config = event.data.payload;
@@ -197,7 +200,10 @@ class SoakerUI {
                     this.medalCheckInterval = config.checkIntervalMs;
                     this.startMedalAvailabilityTimer();
                     void nuiLog(
-                        ['[SuperSoaker.UI]', `Medal check interval set to ${this.medalCheckInterval}ms from config`],
+                        [
+                            '[SuperSoaker.UI]',
+                            `Medal check interval set to ${this.medalCheckInterval}ms from config`,
+                        ],
                         'debug',
                     );
                 }
@@ -296,21 +302,27 @@ class SoakerUI {
         //=-- Log capture method decision
         if (request.preferMedal && this.hasMedal) {
             void nuiLog(
-                ['[SuperSoaker.UI]', 'Medal preferred and available - will attempt Medal capture first'],
-                'debug'
+                [
+                    '[SuperSoaker.UI]',
+                    'Medal preferred and available - will attempt Medal capture first',
+                ],
+                'debug',
             );
         } else if (request.preferMedal && !this.hasMedal) {
             void nuiLog(
                 ['[SuperSoaker.UI]', 'Medal preferred but NOT available - will use WebGL capture'],
-                'debug'
+                'debug',
             );
         } else if (!request.preferMedal) {
             void nuiLog(
-                ['[SuperSoaker.UI]', 'Medal not preferred (Config.Screenshots.MedalPreferred = false) - will use WebGL capture'],
-                'debug'
+                [
+                    '[SuperSoaker.UI]',
+                    'Medal not preferred (Config.Screenshots.MedalPreferred = false) - will use WebGL capture',
+                ],
+                'debug',
             );
         }
-        
+
         let imageURL = '';
         let type = 'image/png';
 
@@ -327,7 +339,7 @@ class SoakerUI {
             const medalImage = await Medal.screenshot(
                 request.encoding === 'jpg' ? 'jpeg' : request.encoding,
             );
-            
+
             //=-- Check if Medal screenshot succeeded (empty string indicates failure)
             if (medalImage) {
                 imageURL = `data:${type};base64,${medalImage}`;
@@ -339,7 +351,7 @@ class SoakerUI {
                 );
             }
         }
-        
+
         //=-- Use WebGL renderer if Medal wasn't used or failed
         if (!imageURL && this.available && this.renderer && this.rtTexture) {
             if (request.quality !== undefined) {
@@ -371,11 +383,14 @@ class SoakerUI {
             const q = request.quality ?? 0.92;
             imageURL = canvas.toDataURL(type, q);
         }
-        
+
         //=-- Final fallback: 1x1 transparent image if all methods failed
         if (!imageURL) {
             void nuiLog(
-                ['[SuperSoaker.UI]', 'All screenshot methods failed, using 1x1 transparent fallback'],
+                [
+                    '[SuperSoaker.UI]',
+                    'All screenshot methods failed, using 1x1 transparent fallback',
+                ],
                 'error',
             );
             imageURL =

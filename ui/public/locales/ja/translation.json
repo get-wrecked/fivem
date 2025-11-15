@@ -1,0 +1,27 @@
+{
+  "api_status": {
+    "available": "利用可能",
+    "message": "自動キャプチャAPI: {{status}}",
+    "unavailable": "利用不可"
+  },
+  "auto_clipping": {
+    "disabled": "障害のある",
+    "enabled": "有効化済み",
+    "title": "自動キャプチャ"
+  },
+  "clip_length": {
+    "minutes_other": "{{count}}分",
+    "seconds_other": "{{count}}秒",
+    "title": "キャプチャ長"
+  },
+  "download": {
+    "button": "ダウンロード",
+    "subtitle": "主要イベントを自動的に捕捉する",
+    "title": "メダルで自動キャプチャを有効にする"
+  },
+  "websocket_status": {
+    "connected": "接続済み",
+    "disconnected": "切断状態",
+    "message": "ウェブソケット: {{status}}"
+  }
+}

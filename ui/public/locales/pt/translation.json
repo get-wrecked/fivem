@@ -1,0 +1,31 @@
+{
+  "api_status": {
+    "available": "Disponível",
+    "message": "API de Captura Automática: {{status}}",
+    "unavailable": "Indisponível"
+  },
+  "auto_clipping": {
+    "disabled": "DESLIGADO",
+    "enabled": "LIGADO",
+    "title": "Captura Automática"
+  },
+  "clip_length": {
+    "minutes_one": "{{count}} minuto",
+    "minutes_many": "{{count}} minutos",
+    "minutes_other": "{{count}} minutos",
+    "seconds_one": "{{count}} segundo",
+    "seconds_many": "{{count}} segundos",
+    "seconds_other": "{{count}} segundos",
+    "title": "Comprimento do Clipe"
+  },
+  "download": {
+    "button": "Descarregar",
+    "subtitle": "Capture automaticamente eventos importantes",
+    "title": "Ativar captura automática com medalha"
+  },
+  "websocket_status": {
+    "connected": "Conectado",
+    "disconnected": "Desligado",
+    "message": "Socket Web: {{status}}"
+  }
+}

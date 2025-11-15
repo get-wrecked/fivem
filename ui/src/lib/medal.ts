@@ -112,11 +112,14 @@ class Medal {
         try {
             const response = await Medal.request('user/profile');
             const isAvailable = response.ok;
-            
+
             if (!isAvailable && response.status !== 0) {
-                void nuiLog(['[Medal API]', `hasApp check failed with status: ${response.status}`], 'debug');
+                void nuiLog(
+                    ['[Medal API]', `hasApp check failed with status: ${response.status}`],
+                    'debug',
+                );
             }
-            
+
             return isAvailable;
         } catch (err) {
             void nuiLog(['[Medal API]', 'hasApp check failed with error:', err], 'debug');
@@ -142,7 +145,10 @@ class Medal {
 
             return result.imageBase64;
         } catch (error) {
-            void nuiLog(['[Medal API]', 'Network error while retrieving base64 screenshot:', error], 'error');
+            void nuiLog(
+                ['[Medal API]', 'Network error while retrieving base64 screenshot:', error],
+                'error',
+            );
             return '';
         }
     }
@@ -158,7 +164,10 @@ class Medal {
                 );
             }
         } catch (error) {
-            void nuiLog(['[Medal API]', 'Network error while setting game context:', error], 'error');
+            void nuiLog(
+                ['[Medal API]', 'Network error while setting game context:', error],
+                'error',
+            );
         }
     }
 }

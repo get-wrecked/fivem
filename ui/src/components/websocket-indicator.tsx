@@ -15,11 +15,13 @@
 
 import { Wifi, WifiOff } from 'lucide-react';
 import type React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useWebSocketStatus } from '@/hooks/use-websocket-status';
 
 ////=-- Standalone indicator for WebSocket connectivity state
 export const WebSocketIndicator: React.FC = () => {
+    const { t } = useTranslation();
     const { isConnected } = useWebSocketStatus();
 
     return (
@@ -39,7 +41,14 @@ export const WebSocketIndicator: React.FC = () => {
             </TooltipTrigger>
 
             <TooltipContent sideOffset={6}>
-                WebSocket: {isConnected ? 'Connected' : 'Disconnected'}
+                <Trans
+                    i18nKey='websocket_status.message'
+                    values={{
+                        status: isConnected
+                            ? t('websocket_status.connected')
+                            : t('websocket_status.disconnected'),
+                    }}
+                />
             </TooltipContent>
         </Tooltip>
     );

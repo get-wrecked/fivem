@@ -1,0 +1,27 @@
+{
+  "api_status": {
+    "available": "可用",
+    "message": "自動錄製 API: {{status}}",
+    "unavailable": "不可用"
+  },
+  "auto_clipping": {
+    "disabled": "失能",
+    "enabled": "啟用",
+    "title": "自動錄音"
+  },
+  "clip_length": {
+    "minutes_other": "{{count}}分鐘",
+    "seconds_other": "{{count}}秒",
+    "title": "錄音長度"
+  },
+  "download": {
+    "button": "下載",
+    "subtitle": "自動截取此伺服器的頂部事件",
+    "title": "啟用獎章自動錄製功能"
+  },
+  "websocket_status": {
+    "connected": "相連",
+    "disconnected": "斷開連接",
+    "message": "Web Socket: {{status}}"
+  }
+}
