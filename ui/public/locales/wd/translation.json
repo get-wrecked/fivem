@@ -1,0 +1,29 @@
+{
+  "api_status": {
+    "available": "",
+    "message": "",
+    "unavailable": ""
+  },
+  "auto_clipping": {
+    "disabled": "",
+    "enabled": "",
+    "title": ""
+  },
+  "clip_length": {
+    "minutes_one": "",
+    "minutes_other": "",
+    "seconds_one": "",
+    "seconds_other": "",
+    "title": ""
+  },
+  "download": {
+    "button": "",
+    "subtitle": "",
+    "title": ""
+  },
+  "websocket_status": {
+    "connected": "",
+    "disconnected": "",
+    "message": ""
+  }
+}

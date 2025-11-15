@@ -4,7 +4,14 @@ export default defineConfig({
     locales: [
         "en",
         "fr",
-        "pt"
+        "pt",
+        "de",
+        "es",
+        "zh",
+        "ja",
+        "ko",
+        "pr",
+        "wd"
     ],
     extract: {
         input: "src/**/*.{js,jsx,ts,tsx}",
