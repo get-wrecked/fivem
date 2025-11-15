@@ -22,7 +22,7 @@
     "seconds_few": "ثانية {{count}}",
     "seconds_many": "ثانية {{count}}",
     "seconds_other": " {{count}}ثانية",
-    "title": ""
+    "title": "مدة المقطع"
   },
   "download": {
     "button": "تنزيل",
