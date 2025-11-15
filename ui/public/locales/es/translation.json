@@ -1,31 +1,31 @@
 {
   "api_status": {
-    "available": "",
-    "message": "",
-    "unavailable": ""
+    "available": "Disponible",
+    "message": "API de captura automática: {{status}}",
+    "unavailable": "No disponible"
   },
   "auto_clipping": {
-    "disabled": "",
-    "enabled": "",
-    "title": ""
+    "disabled": "APAGADO",
+    "enabled": "ENCENDIDO",
+    "title": "Captura Automática"
   },
   "clip_length": {
-    "minutes_one": "",
-    "minutes_many": "",
-    "minutes_other": "",
-    "seconds_one": "",
-    "seconds_many": "",
-    "seconds_other": "",
-    "title": ""
+    "minutes_one": "{{count}} minuto",
+    "minutes_many": "{{count}} minutos",
+    "minutes_other": "{{count}} minutos",
+    "seconds_one": "{{count}} segundo",
+    "seconds_many": "{{count}} segundos",
+    "seconds_other": "{{count}} segundos",
+    "title": "Longitud de Captura"
   },
   "download": {
-    "button": "",
-    "subtitle": "",
-    "title": ""
+    "button": "Descargar",
+    "subtitle": "Capturar automáticamente los eventos más importantes",
+    "title": "Habilitar captura automática con Medal"
   },
   "websocket_status": {
-    "connected": "",
-    "disconnected": "",
-    "message": ""
+    "connected": "Conectado",
+    "disconnected": "Desconectado",
+    "message": "Socket web: {{status}}"
   }
 }
