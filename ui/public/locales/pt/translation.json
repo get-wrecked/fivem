@@ -13,7 +13,7 @@
     "minutes_one": "{{count}} minuto",
     "minutes_many": "{{count}} minutos",
     "minutes_other": "{{count}} minutos",
-    "seconds_one": "{{count}} segunda",
+    "seconds_one": "{{count}} segundo",
     "seconds_many": "{{count}} segundos",
     "seconds_other": "{{count}} segundos",
     "title": "Comprimento do Clipe"
