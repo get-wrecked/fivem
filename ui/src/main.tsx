@@ -32,7 +32,6 @@ import '@/superSoaker/capture'; //=-- This import boots the SuperSoaker NUI capt
 i18n.use(Backend)
     .use(initReactI18next)
     .init({
-        debug: true,
         fallbackLng: 'en',
         interpolation: { escapeValue: false },
         backend: {

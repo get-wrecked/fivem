@@ -5,6 +5,8 @@ packages:
 catalog:
   typescript: ^5.9.3
 
+minimumReleaseAge: 10080
+
 onlyBuiltDependencies:
   - '@swc/core'
   - esbuild
