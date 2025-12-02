@@ -52,7 +52,7 @@ export const ServerDetailsProvider: React.FC<PropsWithChildren<ServerDetailsProv
         handler: async ({ id, version }) => {
             try {
                 const response = await fetch(
-                    `https://servers-frontend.fivem.net/api/servers/single/${id}`,
+                    `https://frontend.cfx-services.net/api/servers/single/${id}`,
                 );
 
                 if (!response.ok) {
@@ -79,7 +79,7 @@ export const ServerDetailsProvider: React.FC<PropsWithChildren<ServerDetailsProv
 
                 if (iconVersion) {
                     setIconUrl(
-                        `https://servers-live.fivem.net/servers/icon/${id}/${iconVersion}.png`,
+                        `https://frontend.cfx-services.net/api/servers/icon/${id}/${iconVersion}.png`,
                     );
                 }
 
