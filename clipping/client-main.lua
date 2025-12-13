@@ -154,6 +154,7 @@ AddEventHandler('onClientResourceStart', function (resourceName)
 end)
 
 RegisterNuiCallback('ac:toggle', function (toggle, cb)
+    Logger.debug('NUI ac:toggle', 'clippingEnabled=' .. tostring(toggle))
     Settings.clippingEnabled = toggle
     Settings:save()
 
@@ -161,6 +162,7 @@ RegisterNuiCallback('ac:toggle', function (toggle, cb)
 end)
 
 RegisterNuiCallback('ac:length', function (length, cb)
+    Logger.debug('NUI ac:length', 'clipLength=' .. tostring(length))
     Settings.clipLength = tonumber(length)
     Settings:save()
 
