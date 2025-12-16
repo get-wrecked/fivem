@@ -20,13 +20,17 @@ Medal.AC = Medal.AC or {}
 
 ---@param cargo VesselCargo
 function Medal.AC.vesselDepart(cargo)
+    local action = ('ac:clip:%s'):format(cargo.eventId)
+    Logger.debug('vesselDepart sending NUI', 'action=' .. action, 'tags=' .. json.encode(cargo.tags or {}))
+
     SendNUIMessage({
-        action = ('ac:clip:%s'):format(cargo.eventId),
+        action = action,
         payload = cargo.tags or {}
     })
 end
 
 RegisterNuiCallback('ac:event:toggle', function (data, cb)
+    Logger.debug('NUI ac:event:toggle', 'id=' .. tostring(data.id), 'toggle=' .. tostring(data.toggle))
     Settings.eventToggles[data.id] = data.toggle
     Settings:save()
 
@@ -34,5 +38,6 @@ RegisterNuiCallback('ac:event:toggle', function (data, cb)
 end)
 
 RegisterNuiCallback('ac:event:enable', function (eventId, cb)
+    Logger.debug('NUI ac:event:enable', 'eventId=' .. tostring(eventId), 'result=' .. tostring(Settings.eventToggles[eventId]))
     cb(Settings.eventToggles[eventId])
 end)
