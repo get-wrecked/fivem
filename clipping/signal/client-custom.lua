@@ -51,14 +51,16 @@ exports('registerSignal', function (event, options)
         Logger.debug('Custom signal fired:', event, 'eventId=' .. tostring(options.id), 'enabled=' .. tostring(enabled))
 
         --//=-- Dump full Settings snapshot for debugging
-        if Settings then
-            if json and type(json.encode) == 'function' then
-                Logger.debug('Custom signal Settings dump:', json.encode(Settings))
+        if Logger and Logger.isDebugEnabled and Logger.isDebugEnabled() then
+            if Settings then
+                if json and type(json.encode) == 'function' then
+                    Logger.debug('Custom signal Settings dump:', json.encode(Settings))
+                else
+                    Logger.debug('Custom signal Settings dump (no json.encode available):', tostring(Settings))
+                end
             else
-                Logger.debug('Custom signal Settings dump (no json.encode available):', tostring(Settings))
+                Logger.debug('Custom signal Settings dump: Settings is nil')
             end
-        else
-            Logger.debug('Custom signal Settings dump: Settings is nil')
         end
 
         Medal.AC.Lookout.handleCustomEvent(options.id, options.tags or {})
