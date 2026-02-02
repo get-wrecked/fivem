@@ -19,6 +19,7 @@ import NuiHandlers from './handlers/nui-handlers';
 import { ApiStatusProvider } from './providers/api-status-provider';
 import { ClipLengthProvider } from './providers/clip-length-provider';
 import { ServerDetailsProvider } from './providers/server-details-provider';
+import { UiModeProvider } from './providers/ui-mode-provider';
 import { WebSocketStatusProvider } from './providers/websocket-status-provider';
 
 /**
@@ -36,17 +37,19 @@ const Providers: React.FC<PropsWithChildren<{ debug?: boolean }>> = ({
     return (
         <NuiProvider debug={debug}>
             <NuiVisibilityProvider debug={debug}>
-                <ApiStatusProvider>
-                    <WebSocketStatusProvider>
-                        <ServerDetailsProvider>
-                            <ClipLengthProvider>
-                                {/*//=-- Registers listeners for messages from Lua/CFX */}
-                                <NuiHandlers />
-                                {children}
-                            </ClipLengthProvider>
-                        </ServerDetailsProvider>
-                    </WebSocketStatusProvider>
-                </ApiStatusProvider>
+                <UiModeProvider>
+                    <ApiStatusProvider>
+                        <WebSocketStatusProvider>
+                            <ServerDetailsProvider>
+                                <ClipLengthProvider>
+                                    {/*//=-- Registers listeners for messages from Lua/CFX */}
+                                    <NuiHandlers />
+                                    {children}
+                                </ClipLengthProvider>
+                            </ServerDetailsProvider>
+                        </WebSocketStatusProvider>
+                    </ApiStatusProvider>
+                </UiModeProvider>
             </NuiVisibilityProvider>
         </NuiProvider>
     );
