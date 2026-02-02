@@ -19,12 +19,12 @@ import type { PropsWithChildren } from 'react';
 import { useEffect, useState } from 'react';
 import { ApiIndicator } from '@/components/api-indicator';
 import { WebSocketIndicator } from '@/components/websocket-indicator';
+import { useUiMode } from '@/hooks/use-ui-mode';
 import { nuiLog } from '@/lib/nui';
 import { cn } from '@/lib/utils';
 import logo from '../assets/logo.svg';
 
-const Header: React.FC = () => {
-    const { setVisible } = useNuiVisibility();
+const Header: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     ////=-- Status handled by <ApiIndicator /> and <WebSocketIndicator />
 
     return (
@@ -43,7 +43,7 @@ const Header: React.FC = () => {
                 {/*//=-- Close button */}
                 <button
                     type='button'
-                    onClick={() => setVisible(false)}
+                    onClick={onClose}
                     className='group size-14 flex items-center justify-center hover:bg-accent-secondary cursor-pointer'
                 >
                     <svg
@@ -68,13 +68,15 @@ const Header: React.FC = () => {
 };
 
 export const Container: React.FC<PropsWithChildren> = ({ children }) => {
-    const { visible, setVisible } = useNuiVisibility();
+    const { mode, closeAll } = useUiMode();
     const [closeKey, setCloseKey] = useState<string | null>(null);
+
+    const visible = mode === 'slideover';
 
     //=-- Listen for show messages with closeKey
     useEffect(() => {
         const handleMessage = (event: MessageEvent) => {
-            if (event.data?.action === 'show' && event.data?.payload === true) {
+            if (event.data?.action === 'ui:mode' && event.data?.payload === 'slideover') {
                 //=-- Update closeKey when opening (user might have rebound the key)
                 if (event.data?.closeKey) {
                     void nuiLog(['[Container]', 'Received closeKey', event.data.closeKey], 'debug');
@@ -122,7 +124,7 @@ export const Container: React.FC<PropsWithChildren> = ({ children }) => {
                 if (event.code === specialKey) {
                     void nuiLog(['[Container]', 'Match on special key - closing UI'], 'debug');
                     event.preventDefault();
-                    setVisible(false);
+                    closeAll();
                 }
             } else {
                 //=-- Regular character keys
@@ -137,14 +139,14 @@ export const Container: React.FC<PropsWithChildren> = ({ children }) => {
                 if (event.key.toLowerCase() === closeKey.toLowerCase()) {
                     void nuiLog(['[Container]', 'Match on regular key - closing UI'], 'debug');
                     event.preventDefault();
-                    setVisible(false);
+                    closeAll();
                 }
             }
         };
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [visible, closeKey, setVisible]);
+    }, [visible, closeKey, closeAll]);
 
     return (
         <div
@@ -154,7 +156,7 @@ export const Container: React.FC<PropsWithChildren> = ({ children }) => {
                 'data-[state=show]:animate-in data-[state=hide]:animate-out slide-in-from-right fade-in slide-out-to-right fade-out duration-200 ease-in-out',
             )}
         >
-            <Header />
+            <Header onClose={closeAll} />
 
             <div className='w-full grow py-4 px-6 flex flex-col gap-4 text-foreground-0'>
                 {children}
