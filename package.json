@@ -12,7 +12,7 @@
     "verify-release": "node scripts/verify-release.js"
   },
   "devDependencies": {
-    "turbo": "^2.6.1"
+    "turbo": "^2.7.6"
   },
-  "packageManager": "pnpm@10.20.0"
+  "packageManager": "pnpm@10.28.2"
 }
