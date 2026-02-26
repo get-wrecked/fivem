@@ -22,7 +22,18 @@ Medal.AC.Lookout = Medal.AC.Lookout or {}
 function Medal.AC.Lookout.handleCustomEvent(eventId, tags)
     Logger.debug('handleCustomEvent called', 'eventId=' .. tostring(eventId), 'toggle=' .. tostring(Settings.eventToggles[eventId]), 'clippingEnabled=' .. tostring(Settings.clippingEnabled))
 
-    if Settings.eventToggles[eventId] then
+    if not Settings.clippingEnabled then
+        Logger.debug('handleCustomEvent skipped (clipping disabled)', eventId)
+        return
+    end
+
+    local details = Medal.AC.readEventConfig(eventId)
+    if not details then
+        Logger.debug('handleCustomEvent skipped (no details found)', eventId)
+        return
+    end
+
+    if details.enabled and Settings.eventToggles[eventId] then
         Logger.debug('handleCustomEvent -> vesselDepart', eventId)
         Medal.AC.vesselDepart({
             eventId = eventId,
