@@ -20,7 +20,7 @@ Medal.AC.Lookout = Medal.AC.Lookout or {}
 ---@param event string
 ---@param options EventConfig
 local function validateOptions(event, options)
-    -- Validate required fields
+    --//=-- Validate required fields
     if type(event) ~= 'string' or event == '' then
         Logger.error('registerSignal: event must be a non-empty string')
         return false
@@ -38,7 +38,7 @@ local function validateOptions(event, options)
         return false
     end
 
-    -- Validate optional fields if present
+    --//=-- Validate optional fields if present
     if options.desc ~= nil and type(options.desc) ~= 'string' then
         Logger.error('registerSignal: options.desc must be a string if provided')
         return false
