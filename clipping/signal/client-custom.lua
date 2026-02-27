@@ -65,6 +65,14 @@ exports('registerSignal', function (event, options)
         return
     end
 
+    --//=-- Find registered event by options.id
+    for _, eventData in ipairs(Config.ClippingEvents) do
+        if eventData.id == options.id then
+            Logger.debug('Custom signal already registered:', eventData.id)
+            return
+        end
+    end
+
     options.enabled = options.enabled ~= false
     Config.ClippingEvents[#Config.ClippingEvents+1] = options
 
