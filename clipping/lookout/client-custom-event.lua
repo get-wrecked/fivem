@@ -28,7 +28,7 @@ function Medal.AC.Lookout.handleCustomEvent(eventId, tags)
     end
 
     local details = Medal.AC.readEventConfig(eventId)
-    if not details then
+    if not details or next(details) == nil then
         Logger.debug('handleCustomEvent skipped (no details found)', eventId)
         return
     end
