@@ -65,10 +65,10 @@ RegisterNetEvent('medal:services:medalState', function (hasMedal)
 
     playersJoined[src] = true
 
-    local identifier = GetPlayerIdentifierByType(source, 'fivem')
+    local identifier = GetPlayerIdentifierByType(src, 'fivem')
 
     if not identifier then
-        identifier = GetPlayerIdentifierByType(source, 'license')
+        identifier = GetPlayerIdentifierByType(src, 'license')
     end
 
     if not identifier then
