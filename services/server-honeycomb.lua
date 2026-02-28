@@ -79,3 +79,13 @@ RegisterNetEvent('medal:services:medalState', function (hasMedal)
 
     Medal.Services.HoneyComb.playerJoin(id, hasMedal)
 end)
+
+AddEventHandler('playerDropped', function()
+    local src = source
+
+    if not playersJoined[src] then
+        return
+    end
+
+    playersJoined[src] = nil
+end)
