@@ -39,10 +39,10 @@ export const ClipLength: React.FC = () => {
                 <SelectContent>
                     <SelectItem value='15'>{t('clip_length.seconds', { count: 15 })}</SelectItem>
                     <SelectItem value='30'>{t('clip_length.seconds', { count: 30 })}</SelectItem>
-                    <SelectItem value='1'>{t('clip_length.minutes', { count: 1 })}</SelectItem>
-                    <SelectItem value='2'>{t('clip_length.minutes', { count: 2 })}</SelectItem>
-                    <SelectItem value='3'>{t('clip_length.minutes', { count: 3 })}</SelectItem>
-                    <SelectItem value='5'>{t('clip_length.minutes', { count: 5 })}</SelectItem>
+                    <SelectItem value='60'>{t('clip_length.minutes', { count: 1 })}</SelectItem>
+                    <SelectItem value='120'>{t('clip_length.minutes', { count: 2 })}</SelectItem>
+                    <SelectItem value='180'>{t('clip_length.minutes', { count: 3 })}</SelectItem>
+                    <SelectItem value='300'>{t('clip_length.minutes', { count: 5 })}</SelectItem>
                 </SelectContent>
             </Select>
         </div>
