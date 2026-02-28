@@ -22,6 +22,8 @@ Medal.Services = Medal.Services or {}
 ---@field playerJoin fun(fivemId: string, hasMedal: boolean)
 Medal.Services.HoneyComb = Medal.Services.HoneyComb or {}
 
+local playersJoined = {}
+
 local function noop() end
 
 function Medal.Services.HoneyComb.startup()
@@ -55,10 +57,18 @@ Citizen.CreateThread(function ()
 end)
 
 RegisterNetEvent('medal:services:medalState', function (hasMedal)
-    local identifier = GetPlayerIdentifierByType(source, 'fivem')
+    local src = source
+
+    if playersJoined[src] then
+        return
+    end
+
+    playersJoined[src] = true
+
+    local identifier = GetPlayerIdentifierByType(src, 'fivem')
 
     if not identifier then
-        identifier = GetPlayerIdentifierByType(source, 'license')
+        identifier = GetPlayerIdentifierByType(src, 'license')
     end
 
     if not identifier then
@@ -68,4 +78,14 @@ RegisterNetEvent('medal:services:medalState', function (hasMedal)
     local _, id = string.strsplit(':', identifier, 2)
 
     Medal.Services.HoneyComb.playerJoin(id, hasMedal)
+end)
+
+AddEventHandler('playerDropped', function()
+    local src = source
+
+    if not playersJoined[src] then
+        return
+    end
+
+    playersJoined[src] = nil
 end)
