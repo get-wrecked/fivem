@@ -19,8 +19,62 @@ Medal.AC.Lookout = Medal.AC.Lookout or {}
 
 ---@param event string
 ---@param options EventConfig
+local function validateOptions(event, options)
+    --//=-- Validate required fields
+    if type(event) ~= 'string' or event == '' then
+        Logger.error('registerSignal: event must be a non-empty string')
+        return false
+    end
+    if type(options) ~= 'table' then
+        Logger.error('registerSignal: options must be a table (EventConfig)')
+        return false
+    end
+    if type(options.id) ~= 'string' or options.id == '' then
+        Logger.error('registerSignal: options.id must be a non-empty string')
+        return false
+    end
+    if type(options.title) ~= 'string' or options.title == '' then
+        Logger.error('registerSignal: options.title must be a non-empty string')
+        return false
+    end
+
+    --//=-- Validate optional fields if present
+    if options.desc ~= nil and type(options.desc) ~= 'string' then
+        Logger.error('registerSignal: options.desc must be a string if provided')
+        return false
+    end
+    if options.enabled ~= nil and type(options.enabled) ~= 'boolean' then
+        Logger.error('registerSignal: options.enabled must be a boolean if provided')
+        return false
+    end
+    if options.tags ~= nil and type(options.tags) ~= 'table' then
+        Logger.error('registerSignal: options.tags must be a table (string[]) if provided')
+        return false
+    end
+
+    return true
+end
+
+---@param event string
+---@param options EventConfig
 exports('registerSignal', function (event, options)
     Logger.debug('Registering custom signal:', event)
+
+    --//=-- Validate options
+    if not validateOptions(event, options) then
+        return
+    end
+
+    --//=-- Find registered event by options.id
+    for _, eventData in ipairs(Config.ClippingEvents) do
+        if eventData.id == options.id then
+            Logger.debug('Custom signal already registered:', eventData.id)
+            return
+        end
+    end
+
+    options.enabled = options.enabled ~= false
+    Config.ClippingEvents[#Config.ClippingEvents+1] = options
 
     SendNUIMessage({
         action = 'ac:event:register',
@@ -40,7 +94,7 @@ exports('registerSignal', function (event, options)
                 Settings.eventToggles[options.id] = GetResourceKvpInt(kvpKey) == 1
             else
                 --//=-- KVP doesn't exist, default to enabled and save
-                Settings.eventToggles[options.id] = options.enabled ~= false
+                Settings.eventToggles[options.id] = options.enabled
                 SetResourceKvpInt(kvpKey, Settings.eventToggles[options.id] and 1 or 0)
             end
         end
