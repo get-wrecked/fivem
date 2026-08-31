@@ -13,18 +13,18 @@ jobs:
         run: sudo apt install zip
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         with:
-          version: 10.15.1
+          version: 10.34.5
           run_install: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22.x
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
           ref: ${{ github.event.repository.default_branch }}
@@ -35,7 +35,7 @@ jobs:
           TGT_RELEASE_VERSION: ${{ github.ref_name }}
 
       - name: Push version bump change
-        uses: EndBug/add-and-commit@v9
+        uses: EndBug/add-and-commit@a94899bca583c204427a224a7af87c02f9b325d5 # v9
         with:
           add: '["fxmanifest.lua"]'
           push: true
@@ -60,13 +60,13 @@ jobs:
           cd ./temp && zip -r ../medal.zip ./medal
 
       - name: Create release
-        uses: 'marvinpinto/action-automatic-releases@v1.2.1'
+        uses: 'marvinpinto/action-automatic-releases@919008cf3f741b179569b7a6fb4d8860689ab7f0' # v1.2.1
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: false
           files: medal.zip
 
       - name: Update tag
-        uses: EndBug/latest-tag@v1
+        uses: EndBug/latest-tag@8fcae8848c1e23fd8212258f69a9619bc62cad67 # v1
         with:
           ref: ${{ github.ref_name }}
