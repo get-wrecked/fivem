@@ -15,7 +15,7 @@ importers:
   .:
     devDependencies:
       turbo:
-        specifier: ^2.7.6
+        specifier: 2.7.6
         version: 2.7.6
 
   superSoaker:
